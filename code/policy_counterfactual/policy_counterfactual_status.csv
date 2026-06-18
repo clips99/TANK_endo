@@ -1,0 +1,3 @@
+scenario,label,psi_L,ucrit,nu,ubar1,ubar2,status,notes
+policy_cf_baseline,Baseline model (psi_L = 0),0,1,250,0.975,0.995,ok,
+policy_cf_fiscal_discipline,Debt-limit constraint (psi_L = 6),6,1,250,0.975,0.995,ok,

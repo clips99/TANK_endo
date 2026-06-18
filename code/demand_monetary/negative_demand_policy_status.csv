@@ -1,0 +1,6 @@
+scenario,label,phi_pi,rho_demand,shock_stderr,status,notes
+negative_demand_phi_110,phi_pi = 1.1,1.1,0.8,0.0025,ok,
+negative_demand_baseline_policy,Baseline rule: phi_pi = 1.5,1.5,0.8,0.0025,ok,
+negative_demand_phi_200,phi_pi = 2.0,2,0.8,0.0025,ok,
+negative_demand_phi_250,phi_pi = 2.5,2.5,0.8,0.0025,ok,
+negative_demand_strong_inflation_policy,Stronger rule: phi_pi = 3.0,3,0.8,0.0025,ok,

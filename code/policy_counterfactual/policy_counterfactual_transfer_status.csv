@@ -1,0 +1,3 @@
+scenario,label,rho_z,psi_z,phi_z_ds,phi_z_b,status,notes
+policy_cf_no_transfer_stabilizer,No central transfer stabilizer,0,0,0,0,ok,
+policy_cf_central_transfer_stabilizer,Central transfer stabilizer,0.7,0.2,0.05,0.02,ok,

@@ -1,0 +1,4 @@
+scenario,label,output_ratio,s1,s2,b_y1,b_y2,status,notes
+scale_development_y100,Y1/Y2 = 1.0,1,0.5,0.5,0.4,1,ok,
+scale_development_y150,Y1/Y2 = 1.5,1.5,0.6,0.4,0.4,1,ok,
+scale_development_y200,Y1/Y2 = 2.0,2,0.66666667,0.33333333,0.4,1,ok,

@@ -1,0 +1,5 @@
+scenario,label,phi_pi,status,notes
+hawkish_phi_110,phi_pi = 1.1,1.1,ok,
+hawkish_phi_150,phi_pi = 1.5,1.5,ok,
+hawkish_phi_200,phi_pi = 2.0,2,ok,
+hawkish_phi_300,phi_pi = 3.0,3,ok,

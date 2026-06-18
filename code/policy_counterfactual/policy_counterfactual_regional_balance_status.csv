@@ -1,0 +1,3 @@
+scenario,label,phi_reg,status,notes
+policy_cf_standard_taylor,Standard Taylor rule,0,ok,
+policy_cf_regional_balance_taylor,Regional-balance Taylor rule,2,ok,

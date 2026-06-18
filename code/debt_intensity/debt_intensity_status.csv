@@ -1,0 +1,5 @@
+scenario,label,debt_ratio,status,notes
+debt_intensity_b040,B2/Y2 = 40%,0.4,ok,
+debt_intensity_b080,B2/Y2 = 80%,0.8,ok,
+debt_intensity_b120,B2/Y2 = 120%,1.2,ok,
+debt_intensity_b160,B2/Y2 = 160%,1.6,ok,
