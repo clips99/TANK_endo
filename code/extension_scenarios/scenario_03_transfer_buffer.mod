@@ -1,23 +1,21 @@
-// Baseline two-region TANK DSGE model.
-// Simplified first pass:
-// - no local government bond risk premium: mu_b = 0
-// - no earmarked transfer effect in the public investment rule: psi_z = 0
-// - no technology, government spending, transfer, or public investment shocks
-// - only a common contractionary monetary policy shock is active
+// Two-region TANK DSGE model with endogenous public investment under
+// local-government optimization.
+// Experiment files are generated from this model by changing calibration,
+// shock, or policy blocks while preserving the same baseline structure.
 // - asset market is closed by common risk-free Euler for region 1 and risk-sharing condition for region 2
 
 var
     cr1 ch1 c1 nr1 nh1 n1 inv1 k1 qk1 lam1
     y1 ym1 w1 rk1 mc1 pinf1 pim1 pstar1 xone1 xtwo1 v1
-    b1 rb1 ds1 fs1 fp1 ig1 kg1 a1 g1 tr1 z1
+    b1 rb1 ds1 fs1 ig1 kg1 phiig1 phib1 lamg1 qg1 mbg1 a1 g1 tr1 z1
     cr2 ch2 c2 nr2 nh2 n2 inv2 k2 qk2 lam2
     y2 ym2 w2 rk2 mc2 pinf2 pim2 pstar2 xone2 xtwo2 v2
-    b2 rb2 ds2 fs2 fp2 ig2 kg2 a2 g2 tr2 z2
+    b2 rb2 ds2 fs2 ig2 kg2 phiig2 phib2 lamg2 qg2 mbg2 a2 g2 tr2 z2
     m11 m21 m12 m22
     q11 q21 q12 q22
-    yagg pinfagg r mp;
+    yagg pinfagg r mp d;
 
-varexo emp;
+varexo emp ed;
 
 predetermined_variables k1 k2 kg1 kg2;
 
@@ -25,9 +23,10 @@ parameters
     beta sigma varphi chi_n lambda1 lambda2
     delta_k delta_g phi_i alpha gamma_g
     theta_p epsilon_p omega1 omega2 eta
-    rho_a rho_g rho_tr rho_z rho_fp rho_ig rho_mp rho_r
+    rho_a rho_g rho_tr rho_z rho_mp rho_d rho_r
     phi_pi phi_y tau_y theta_T
-    mu_b psi_ds psi_fs psi_b psi_z phi_z_ds phi_z_b
+    mu_b phi_z_ds phi_z_b
+    beta_g omega_y chi_ig varphi_b
     s1 s2
     rbar pinfbar ybar ybar1 ybar2 ymbar1 ymbar2 mcbar rkbar
     b_y1 b_y2 bbar1 bbar2
@@ -35,7 +34,9 @@ parameters
     kgbar1 kgbar2 igbar1 igbar2
     nbar1 nbar2 wbar1 wbar2
     cbar1 cbar2 gbar1 gbar2 trbar1 trbar2
-    dsbar1 dsbar2 fpbar1 fpbar2 fsbar1 fsbar2
+    dsbar1 dsbar2 fsbar1 fsbar2
+    lamgbar1 lamgbar2 qgbar1 qgbar2
+    mbgbar1 mbgbar2
     zbar1 zbar2;
 
 // -------------------------------------------------------------------------
@@ -72,22 +73,22 @@ rho_a      = 0.70;
 rho_g      = 0.70;
 rho_tr     = 0.70;
 rho_z      = 0.5;
-rho_fp     = 0.70;
-rho_ig     = 0.70;
-rho_mp     = 0.70;
-rho_r      = 0.70;
+rho_mp     = 0.50;
+rho_d      = 0.50;
+rho_r      = 0.75;
 phi_pi     = 1.50;
-phi_y      = 0.50;
-tau_y      = 0.40;
+phi_y      = 0.125;
+tau_y      = 0.20;
 theta_T    = 0.60;
 
 mu_b       = 0.00;
-psi_ds     = 0.10;
-psi_fs     = 0.10;
-psi_b      = 0.05;
-psi_z      = 0.2;
 phi_z_ds   = 0.2;
 phi_z_b    = 0.00;
+
+beta_g     = beta;
+omega_y    = 1.00;
+chi_ig     = 20.00;
+varphi_b   = 0.05;
 
 s1         = 0.50;
 s2         = 0.50;
@@ -107,15 +108,25 @@ ymbar2     = (1 - omega1) * ybar1 + omega2 * ybar2;
 
 // Only exogenous regional asymmetry in the baseline:
 // region 1 is low-debt, region 2 is high-debt.
-b_y1       = 0.40;
+b_y1       = 0.35;
 b_y2       = 1.00;
 bbar1      = b_y1 * ybar1;
 bbar2      = b_y2 * ybar2;
 
-igbar1     = 0.08 * ybar1;
-igbar2     = 0.08 * ybar2;
+igbar1     = 0.12 * ybar1;
+igbar2     = 0.12 * ybar2;
 kgbar1     = igbar1 / delta_g;
 kgbar2     = igbar2 / delta_g;
+lamgbar1   = (omega_y * gamma_g / kgbar1)
+             / (1 / beta_g - 1 + delta_g
+                - (1 - theta_T) * tau_y * gamma_g * ybar1 / kgbar1);
+lamgbar2   = (omega_y * gamma_g / kgbar2)
+             / (1 / beta_g - 1 + delta_g
+                - (1 - theta_T) * tau_y * gamma_g * ybar2 / kgbar2);
+qgbar1     = lamgbar1;
+qgbar2     = lamgbar2;
+mbgbar1    = qgbar1 * (1 / beta_g - 1 + delta_g);
+mbgbar2    = qgbar2 * (1 / beta_g - 1 + delta_g);
 
 kbar1      = alpha * mcbar * ymbar1 / rkbar;
 kbar2      = alpha * mcbar * ymbar2 / rkbar;
@@ -127,8 +138,8 @@ nbar2      = (ymbar2 / (kgbar2^gamma_g * kbar2^alpha))^(1 / (1 - alpha));
 wbar1      = (1 - alpha) * mcbar * ymbar1 / nbar1;
 wbar2      = (1 - alpha) * mcbar * ymbar2 / nbar2;
 
-gbar1      = 0.12 * ybar1;
-gbar2      = 0.12 * ybar2;
+gbar1      = 0.10 * ybar1;
+gbar2      = 0.10 * ybar2;
 cbar1      = ybar1 - invbar1 - gbar1 - igbar1;
 cbar2      = ybar2 - invbar2 - gbar2 - igbar2;
 
@@ -138,8 +149,6 @@ chi_n      = cbar1^(-sigma) * wbar1 / (nbar1^varphi);
 
 dsbar1     = (rbar - 1) * bbar1 / ybar1;
 dsbar2     = (rbar - 1) * bbar2 / ybar2;
-fpbar1     = dsbar1;
-fpbar2     = dsbar2;
 fsbar1     = igbar1;
 fsbar2     = igbar2;
 
@@ -157,10 +166,14 @@ model;
     # sinv2  = phi_i / 2 * (inv2 / inv2(-1) - 1)^2;
     # spinv2 = phi_i * (inv2 / inv2(-1) - 1);
     # spinv2p = phi_i * (inv2(+1) / inv2 - 1);
+    # rig1  = ig1 / ig1(-1);
+    # rig1p = ig1(+1) / ig1;
+    # rig2  = ig2 / ig2(-1);
+    # rig2p = ig2(+1) / ig2;
 
     // Region 1 households and private capital
     lam1 = cr1^(-sigma);
-    lam1 = beta * lam1(+1) * r / pinf1(+1);
+    lam1 = beta * lam1(+1) * r / pinf1(+1) * exp(-d);
     chi_n * nr1^varphi = lam1 * w1;
     ch1 = w1 * nh1 + tr1;
     chi_n * nh1^varphi = ch1^(-sigma) * w1;
@@ -196,7 +209,7 @@ model;
     q11 / q11(-1) = pim1 / pinf1;
     q21 / q21(-1) = pim2 / pinf1;
     q12 / q12(-1) = pim1 / pinf2;
-    q22 / q22(-1) = pim2 / pinf2;
+    q11 * q22 = q12 * q21;
 
     // Intermediate goods production and price setting
     log(a1) = rho_a * log(a1(-1));
@@ -225,19 +238,24 @@ model;
     pstar2 = epsilon_p / (epsilon_p - 1) * xone2 / xtwo2;
     v2 = (1 - theta_p) * pstar2^(-epsilon_p) + theta_p * pim2^epsilon_p * v2(-1);
 
-    // Local governments and public capital
+    // Local governments and endogenous public capital
     ds1 = (rb1(-1) / pinf1 - 1) * b1(-1) / y1;
     fs1 = (1 - theta_T) * tau_y * y1 + z1
           - (rb1(-1) / pinf1 - 1) * b1(-1) - g1 - lambda1 * tr1;
+    phiig1 = chi_ig / 2 * (rig1 - 1)^2 * ig1;
+    phib1 = varphi_b / 2 * (b1 / ybar1 - b_y1)^2 * ybar1;
     rb1 / r = exp(mu_b * ((b1 / y1) / b_y1 - 1));
-    fp1 = rho_fp * fp1(-1) + (1 - rho_fp) * ds1;
-    ig1 / igbar1 = (ig1(-1) / igbar1)^rho_ig
-        * exp(-psi_ds * (fp1 / fpbar1 - 1)
-              + psi_fs * (fs1 / fsbar1 - 1)
-              - psi_b * ((b1(-1) / y1(-1)) / b_y1 - 1)
-              + psi_z * (z1 / zbar1 - 1));
+    lamg1 * (1 + chi_ig * (rig1 - 1) * rig1
+              + chi_ig / 2 * (rig1 - 1)^2)
+        = qg1 + beta_g * lamg1(+1) * chi_ig * (rig1p - 1) * rig1p^2;
+    qg1 = beta_g * (mbg1(+1) + (1 - delta_g) * qg1(+1));
+    mbg1 = omega_y * gamma_g / kg1
+           + lamg1 * (1 - theta_T) * tau_y * gamma_g * y1 / kg1;
+    lamg1 * (1 - varphi_b * (b1 / ybar1 - b_y1))
+        = beta_g * lamg1(+1) * rb1 / pinf1(+1)
+          * (1 + mu_b * ((b1 / y1) / b_y1));
     kg1(+1) = (1 - delta_g) * kg1 + ig1;
-    b1 = rb1(-1) / pinf1 * b1(-1) + g1 + ig1 + lambda1 * tr1
+    b1 = rb1(-1) / pinf1 * b1(-1) + g1 + ig1 + phiig1 + phib1 + lambda1 * tr1
          - (1 - theta_T) * tau_y * y1 - z1;
     log(g1 / gbar1) = rho_g * log(g1(-1) / gbar1);
     log(tr1 / trbar1) = rho_tr * log(tr1(-1) / trbar1);
@@ -248,15 +266,20 @@ model;
     ds2 = (rb2(-1) / pinf2 - 1) * b2(-1) / y2;
     fs2 = (1 - theta_T) * tau_y * y2 + z2
           - (rb2(-1) / pinf2 - 1) * b2(-1) - g2 - lambda2 * tr2;
+    phiig2 = chi_ig / 2 * (rig2 - 1)^2 * ig2;
+    phib2 = varphi_b / 2 * (b2 / ybar2 - b_y2)^2 * ybar2;
     rb2 / r = exp(mu_b * ((b2 / y2) / b_y2 - 1));
-    fp2 = rho_fp * fp2(-1) + (1 - rho_fp) * ds2;
-    ig2 / igbar2 = (ig2(-1) / igbar2)^rho_ig
-        * exp(-psi_ds * (fp2 / fpbar2 - 1)
-              + psi_fs * (fs2 / fsbar2 - 1)
-              - psi_b * ((b2(-1) / y2(-1)) / b_y2 - 1)
-              + psi_z * (z2 / zbar2 - 1));
+    lamg2 * (1 + chi_ig * (rig2 - 1) * rig2
+              + chi_ig / 2 * (rig2 - 1)^2)
+        = qg2 + beta_g * lamg2(+1) * chi_ig * (rig2p - 1) * rig2p^2;
+    qg2 = beta_g * (mbg2(+1) + (1 - delta_g) * qg2(+1));
+    mbg2 = omega_y * gamma_g / kg2
+           + lamg2 * (1 - theta_T) * tau_y * gamma_g * y2 / kg2;
+    lamg2 * (1 - varphi_b * (b2 / ybar2 - b_y2))
+        = beta_g * lamg2(+1) * rb2 / pinf2(+1)
+          * (1 + mu_b * ((b2 / y2) / b_y2));
     kg2(+1) = (1 - delta_g) * kg2 + ig2;
-    b2 = rb2(-1) / pinf2 * b2(-1) + g2 + ig2 + lambda2 * tr2
+    b2 = rb2(-1) / pinf2 * b2(-1) + g2 + ig2 + phiig2 + phib2 + lambda2 * tr2
          - (1 - theta_T) * tau_y * y2 - z2;
     log(g2 / gbar2) = rho_g * log(g2(-1) / gbar2);
     log(tr2 / trbar2) = rho_tr * log(tr2(-1) / trbar2);
@@ -268,12 +291,13 @@ model;
     yagg = s1 * y1 + s2 * y2;
     pinfagg = pinf1^s1 * pinf2^s2;
     mp = rho_mp * mp(-1) + emp;
+    d = rho_d * d(-1) - ed;
     r / rbar = (r(-1) / rbar)^rho_r
         * ((pinfagg / pinfbar)^phi_pi * (yagg / ybar)^phi_y)^(1 - rho_r)
         * exp(mp);
 
-    y1 = c1 + inv1 + g1 + ig1;
-    y2 = c2 + inv2 + g2 + ig2;
+    y1 = c1 + inv1 + g1 + ig1 + phiig1 + phib1;
+    y2 = c2 + inv2 + g2 + ig2 + phiig2 + phib2;
 end;
 
 steady_state_model;
@@ -302,9 +326,13 @@ steady_state_model;
     rb1 = rbar;
     ds1 = dsbar1;
     fs1 = fsbar1;
-    fp1 = fpbar1;
     ig1 = igbar1;
     kg1 = kgbar1;
+    phiig1 = 0;
+    phib1 = 0;
+    lamg1 = lamgbar1;
+    qg1 = qgbar1;
+    mbg1 = mbgbar1;
     a1 = 1;
     g1 = gbar1;
     tr1 = trbar1;
@@ -335,9 +363,13 @@ steady_state_model;
     rb2 = rbar;
     ds2 = dsbar2;
     fs2 = fsbar2;
-    fp2 = fpbar2;
     ig2 = igbar2;
     kg2 = kgbar2;
+    phiig2 = 0;
+    phib2 = 0;
+    lamg2 = lamgbar2;
+    qg2 = qgbar2;
+    mbg2 = mbgbar2;
     a2 = 1;
     g2 = gbar2;
     tr2 = trbar2;
@@ -355,10 +387,11 @@ steady_state_model;
     pinfagg = pinfbar;
     r = rbar;
     mp = 0;
+    d = 0;
 end;
 
 shocks;
-    var emp; stderr 0.0025;
+    var emp; stderr 0.01;
 end;
 
 resid;
@@ -368,7 +401,8 @@ check;
 
 stoch_simul(order = 1, irf = 40, nograph)
     mp r rb1 rb2 z1 z2
+    d phiig1 phiig2 phib1 phib2
     ds1 ds2 fs1 fs2
-    ig1 ig2 kg1 kg2
+    ig1 ig2 kg1 kg2 lamg1 lamg2 qg1 qg2 mbg1 mbg2
     ym1 ym2 y1 y2 inv1 inv2 n1 n2 w1 w2 c1 c2
     pinf1 pinf2;

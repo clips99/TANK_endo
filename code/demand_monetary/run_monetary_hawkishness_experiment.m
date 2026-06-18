@@ -140,28 +140,7 @@ if ~isempty(results)
 end
 
 function text = make_negative_demand_model(text, rho_demand, demand_shock_stderr)
-    text = replace_exactly_once(text, 'yagg pinfagg r mp;', ...
-        'yagg pinfagg r mp demand;');
-    text = replace_exactly_once(text, 'varexo emp;', 'varexo emp ed;');
-    text = replace_exactly_once(text, ...
-        'rho_a rho_g rho_tr rho_z rho_fp rho_ig rho_mp rho_r', ...
-        'rho_a rho_g rho_tr rho_z rho_fp rho_ig rho_mp rho_r rho_demand');
-
-    text = regex_replace_once(text, '(?m)^(rho_r\s*=\s*[^;]+;)', ...
-        sprintf('$1\nrho_demand = %.8g;', rho_demand));
-
-    old_euler = 'lam1 = beta * lam1(+1) * r / pinf1(+1);';
-    new_euler = ['lam1 = beta * lam1(+1) * r / pinf1(+1) * exp(-demand); ' ...
-        '// positive ed creates a persistent negative demand wedge'];
-    text = replace_exactly_once(text, old_euler, new_euler);
-
-    demand_process_block = sprintf(['mp = rho_mp * mp(-1) + emp;\n' ...
-        '    demand = rho_demand * demand(-1) - ed;']);
-    text = replace_exactly_once(text, 'mp = rho_mp * mp(-1) + emp;', ...
-        demand_process_block);
-
-    text = regex_replace_once(text, '(?m)^(\s*mp\s*=\s*0;)', ...
-        sprintf('$1\n    demand = 0;'));
+    text = set_parameter_line(text, 'rho_d', rho_demand);
 
     shock_block = sprintf(['shocks;\n' ...
         '    var emp; stderr 0;\n' ...
@@ -170,7 +149,7 @@ function text = make_negative_demand_model(text, rho_demand, demand_shock_stderr
     text = regex_replace_once(text, 'shocks;[\s\S]*?end;', shock_block);
 
     simul_block = sprintf(['stoch_simul(order = 1, irf = 40, nograph)\n' ...
-        '    mp demand r rb1 rb2 yagg pinfagg\n' ...
+        '    mp d r rb1 rb2 yagg pinfagg\n' ...
         '    ds1 ds2 fs1 fs2\n' ...
         '    ig1 ig2 kg1 kg2\n' ...
         '    cr1 ch1 nr1 nh1 cr2 ch2 nr2 nh2\n' ...
@@ -192,7 +171,7 @@ function text = set_parameter_line(text, name, value)
 end
 
 function summary = collect_summary(oo_, scenario, shock_suffix, periods)
-    demand = get_irf(oo_, 'demand', shock_suffix);
+    demand = get_irf(oo_, 'd', shock_suffix);
     r = get_irf(oo_, 'r', shock_suffix);
     yagg = get_irf(oo_, 'yagg', shock_suffix);
     pinfagg = get_irf(oo_, 'pinfagg', shock_suffix);
@@ -238,7 +217,7 @@ function summary = collect_summary(oo_, scenario, shock_suffix, periods)
 end
 
 function series = collect_irf_series(oo_, scenario, shock_suffix)
-    demand = get_irf(oo_, 'demand', shock_suffix);
+    demand = get_irf(oo_, 'd', shock_suffix);
     r = get_irf(oo_, 'r', shock_suffix);
     yagg = get_irf(oo_, 'yagg', shock_suffix);
     pinfagg = get_irf(oo_, 'pinfagg', shock_suffix);

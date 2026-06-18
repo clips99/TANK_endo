@@ -1,7 +1,7 @@
 scenario,label,status,notes
 scenario_01_baseline,Baseline,ok,"mu_b=0, no transfer response, omega=0.85, eta=0.90"
 scenario_02_risk_premium,Local debt risk premium,ok,"mu_b>0 raises local financing costs when debt ratios rise"
-scenario_03_transfer_buffer,Central transfer buffer,ok,"central transfers react to DS and support public investment"
+scenario_03_transfer_buffer,Central transfer buffer,ok,"central transfers react to DS through the local-government budget"
 scenario_04_risk_and_transfer,Risk premium plus transfer buffer,ok,"risk premium and central transfer buffer active together"
 scenario_05_strong_io,Stronger input-output linkages,ok,"lower home bias and lower substitution elasticity"
 scenario_06_weak_io,Weaker input-output linkages,ok,"higher home bias and higher substitution elasticity"

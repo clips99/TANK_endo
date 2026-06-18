@@ -117,9 +117,11 @@
 		
 		定义 Ricardian 家庭的消费边际效用为 $\Lambda_{R,t}^j=(C_{R,t}^j)^{-\sigma}$。由于金融市场完全统一且跨境无摩擦，两地区的跨期套利行为可以由地区 1 的基准 Euler 方程与地区 2 的完全风险分担条件共同闭合：
 		\begin{align}
-			\Lambda_{R,t}^1 &=\beta \E_t\left[\Lambda_{R,t+1}^1\frac{R_t}{\Pi_{t+1}^1}\right], \label{eq:euler_rf} \\
-			\Lambda_{R,t}^2 &=\Lambda_{R,t}^1\frac{Q_{1,t}^1}{Q_{1,t}^2}.
-			\label{eq:risk_sharing}
+			\Lambda_{R,t}^1 &=\beta \E_t\left[\Lambda_{R,t+1}^1\frac{R_t}{\Pi_{t+1}^1}\right]\exp(-D_t), \label{eq:euler_rf} \\
+			\Lambda_{R,t}^2 &=\Lambda_{R,t}^1\frac{Q_{1,t}^1}{Q_{1,t}^2},
+			\label{eq:risk_sharing}\\
+			D_t&=\rho_DD_{t-1}-\varepsilon_{D,t}.
+			\label{eq:demand_process}
 		\end{align}
 		劳动供给的一阶最优选择条件为：
 		\begin{equation}
@@ -236,6 +238,25 @@
 		
 		地方政府发行一时期名义债券。令 $B_t^j$ 表示以地区最终品计价的期末实际地方债务，$R_{B,t}^j$ 表示地区 $j$ 地方债名义利率。为刻画中国式央地财政关系，设地区总财政收入以比例 $\tau_Y$ 随产出变动。这里的 $\tau_Y Y_t^j$ 应理解为非扭曲的比例型财政收入，而不是会直接进入企业边际成本的一般流转税。中央政府分享比例为 $\theta_T\in[0,1]$，地方政府留成比例为 $1-\theta_T$。因此，地区 $j$ 的地方税收留成为 $(1-\theta_T)\tau_Y Y_t^j$，中央对地方的净转移支付为 $Z_t^j$。
 		
+		地方政府在预算约束中面临两类财政摩擦。第一，公共投资项目具有开工、停工、续建和支付节奏调整成本。第二，债务率偏离长期目标会带来债务管理、融资协调、审计合规和风险处置成本。两类成本分别定义为
+		\begin{align}
+			\Phi_{I,t}^j
+			&=
+			\frac{\chi_I}{2}
+			\left(
+			\frac{I_{G,t}^j}{I_{G,t-1}^j}-1
+			\right)^2 I_{G,t}^j,
+			\label{eq:PhiI}\\
+			\Phi_{B,t}^j
+			&=
+			\frac{\varphi_B}{2}
+			\left(
+			\frac{B_t^j}{\bar Y^j}-\bar b^j
+			\right)^2\bar Y^j.
+			\label{eq:PhiB}
+		\end{align}
+		其中 $\chi_I>0$ 为公共投资调整成本系数，$\varphi_B>0$ 为债务管理成本系数。这里将债务率成本放入预算约束，而不是放入地方政府目标函数，意在刻画债务限额管理、隐性债务化解、融资合规和风险处置对地方财政资源的占用。由于 $\Phi_{B,t}^j$ 被解释为真实财政资源占用和债务管理资源成本，后文最终品资源约束中也相应将其计入资源使用项；若将其解释为纯金融惩罚或账面考核压力，则不应进入资源约束。
+		
 		地区 $j$ 的地方政府预算约束为
 		\begin{equation}
 			B_t^j
@@ -243,6 +264,8 @@
 			\frac{R_{B,t-1}^j}{\Pi_t^j}B_{t-1}^j
 			+G_t^j
 			+I_{G,t}^j
+			+\Phi_{I,t}^j
+			+\Phi_{B,t}^j
 			+\lambda_jTR_{H,t}^j
 			-(1-\theta_T)\tau_Y Y_t^j
 			-Z_t^j.
@@ -270,7 +293,7 @@
 			\frac{B_{t-1}^j}{Y_t^j}.
 			\label{eq:DS}
 		\end{align}
-		其中 $FS_t^j$ 表示扣除实际付息支出、地方政府消费和居民转移支付之后，地方政府可用于公共投资和债务稳定的财政资源；$DS_t^j$ 表示以地区产出标准化的实际债务付息压力。需要强调的是，$FS_t^j$ 和 $DS_t^j$ 不再直接进入公共投资反应规则，而是通过地方政府预算约束和财政资金影子价格影响最优公共投资决策。
+		其中 $FS_t^j$ 表示扣除实际付息支出、地方政府消费和居民转移支付之后，地方政府可用于公共投资、公共投资调整成本、债务管理成本和债务稳定的财政资源；$DS_t^j$ 表示以地区产出标准化的实际债务付息压力。需要强调的是，$FS_t^j$ 和 $DS_t^j$ 不再直接进入公共投资反应规则，而是通过地方政府预算约束和财政资金影子价格影响最优公共投资决策。
 		
 		地方债券名义利率由统一政策利率和地区债务风险溢价共同决定：
 		\begin{equation}
@@ -297,22 +320,11 @@
 		\begin{equation}
 			\max_{\{I_{G,t}^j,K_{G,t+1}^j,B_t^j\}}
 			E_0\sum_{t=0}^{\infty}\beta_G^t
-			\left[
-			\omega_Y\log Y_t^j
-			+\omega_G^j\log K_{G,t}^j
-			-\frac{\chi_B}{2}
-			\left(
-			\frac{B_t^j}{Y_t^j}-\bar b^j
-			\right)^2
-			-\frac{\chi_I}{2}
-			\left(
-			\frac{I_{G,t}^j}{I_{G,t-1}^j}-1
-			\right)^2
-			\right].
+			\omega_Y\log Y_t^j .
 			\label{eq:gov_objective}
 		\end{equation}
-		其中 $\beta_G\in(0,1)$ 为地方政府贴现因子，$\omega_Y>0$ 表示地方政府对地区经济发展目标的重视程度，$\omega_G^j>0$ 表示公共资本本身带来的公共服务和生产性收益，$\chi_B>0$ 表示债务率偏离长期目标的惩罚强度，$\chi_I>0$ 表示公共投资调整成本。该目标函数刻画了地方政府在经济发展、公共资本积累、债务稳定和项目支出平滑之间的权衡。
-		
+		其中 $\beta_G\in(0,1)$ 为地方政府贴现因子，$\omega_Y>0$ 表示地方政府对地区经济发展目标的重视程度。本文不再将 $\log K_{G,t}^j$ 直接写入地方政府目标函数，以避免公共资本的生产性收益在目标函数与生产函数中被重复计入。公共投资的收益主要来自公共资本对未来产出和地方税基的提升；公共投资调整成本与债务管理成本则进入地方政府预算约束，使财政摩擦体现为对可支配预算资源的实际占用。
+
 		公共资本积累满足
 		\begin{equation}
 			K_{G,t+1}^j
@@ -325,27 +337,36 @@
 		
 		\subsubsection{最优公共投资与债务选择}
 		
-		令 $\Lambda_{G,t}^j$ 表示地方政府预算约束的影子价格，$Q_{G,t}^j$ 表示公共资本的影子价值。地方政府最优公共投资满足
+		令 $\Lambda_{G,t}^j$ 表示地方政府预算约束的影子价格，$Q_{G,t}^j$ 表示公共资本的影子价值。由于公共投资调整成本进入预算约束，地方政府最优公共投资满足
 		\begin{align}
 			\Lambda_{G,t}^j
-			=
-			Q_{G,t}^j
-			-\chi_I
+			\left[
+			1
+			+\chi_I
 			\left(
 			\frac{I_{G,t}^j}{I_{G,t-1}^j}-1
 			\right)
-			\frac{1}{I_{G,t-1}^j}
+			\frac{I_{G,t}^j}{I_{G,t-1}^j}
+			+\frac{\chi_I}{2}
+			\left(
+			\frac{I_{G,t}^j}{I_{G,t-1}^j}-1
+			\right)^2
+			\right]
+			=
+			Q_{G,t}^j
 			+\beta_G E_t
 			\left[
-			\chi_I
+			\Lambda_{G,t+1}^j\chi_I
 			\left(
 			\frac{I_{G,t+1}^j}{I_{G,t}^j}-1
 			\right)
-			\frac{I_{G,t+1}^j}{(I_{G,t}^j)^2}
+			\left(
+			\frac{I_{G,t+1}^j}{I_{G,t}^j}
+			\right)^2
 			\right].
 			\label{eq:IG_FOC}
 		\end{align}
-		该式表明，地方政府会在财政资金的边际影子成本、公共资本的边际影子价值以及公共投资调整成本之间进行权衡。当货币紧缩提高实际付息压力、压缩预算空间时，$\Lambda_{G,t}^j$ 上升；在给定公共资本边际价值下，最优公共投资随之下降。
+		该式表明，地方政府会在财政资金的边际影子成本、公共资本的边际影子价值以及公共投资调整成本之间进行权衡。当货币紧缩提高实际付息压力、压缩预算空间时，$\Lambda_{G,t}^j$ 上升；在给定公共资本边际价值下，新增一单位公共投资的总预算成本提高，最优公共投资随之下降。
 		
 		公共资本的影子价值满足
 		\begin{equation}
@@ -359,38 +380,42 @@
 			\right],
 			\label{eq:QG_euler}
 		\end{equation}
-		其中 $MB_{G,t+1}^j$ 表示下一期公共资本的边际收益。若公共资本以生产外部性的形式进入中间品生产函数，则可将公共资本边际收益写为
+		其中 $MB_{G,t+1}^j$ 表示下一期公共资本的边际收益。若公共资本以生产外部性的形式进入中间品生产函数，且公共资本产出弹性为 $\gamma_G$，则由目标函数中的 $\log Y_t^j$ 可得
 		\begin{equation}
 			MB_{G,t}^j
 			=
-			\omega_G^j\frac{1}{K_{G,t}^j}
-			+
-			\omega_Y\gamma_G\frac{Y_t^j}{K_{G,t}^j}
+			\omega_Y\frac{\gamma_G}{K_{G,t}^j}
 			+
 			\Lambda_{G,t}^j(1-\theta_T)\tau_Y
 			\gamma_G\frac{Y_t^j}{K_{G,t}^j}.
 			\label{eq:MBG}
 		\end{equation}
-		式 \eqref{eq:MBG} 中，第一项表示公共资本本身的公共服务收益，第二项表示公共资本提高地区产出的发展收益，第三项表示公共资本提高产出税基后带来的地方财政收入收益。
-		
+		式 \eqref{eq:MBG} 中，第一项表示公共资本提高地区产出所带来的发展收益，第二项表示公共资本提高产出税基后带来的地方财政收入收益。由于地方政府目标函数采用 $\log Y_t^j$，公共资本对发展目标的边际贡献为 $\omega_Y\gamma_G/K_{G,t}^j$，而不是 $\omega_Y\gamma_G Y_t^j/K_{G,t}^j$。式 \eqref{eq:MBG} 采用公共资本生产外部性的局部包络边际收益表示，即地方政府在选择公共投资时将公共资本对地区产出和税基的边际贡献近似为 $\partial Y_t^j/\partial K_{G,t}^j=\gamma_GY_t^j/K_{G,t}^j$。这一处理避免在地方政府问题中重复求解完整跨地区价格体系的全局导数，同时保留公共资本积累影响产出和财政收入的核心机制。
+
 		地方政府最优债务选择满足
 		\begin{equation}
 			\Lambda_{G,t}^j
+			\left[
+			1
+			-\varphi_B
+			\left(
+			\frac{B_t^j}{\bar Y^j}-\bar b^j
+			\right)
+			\right]
 			=
 			\beta_G E_t
 			\left[
 			\Lambda_{G,t+1}^j
 			\frac{R_{B,t}^j}{\Pi_{t+1}^j}
-			\right]
-			+
-			\chi_B
 			\left(
-			\frac{B_t^j}{Y_t^j}-\bar b^j
+			1+
+			\mu_B
+			\frac{B_t^j/Y_t^j}{\bar B^j/\bar Y^j}
 			\right)
-			\frac{1}{Y_t^j}.
+			\right].
 			\label{eq:B_FOC}
 		\end{equation}
-		该式是地方政府债务 Euler 方程。左侧为当期财政资金的影子价值，右侧第一项为滚动一单位债务在下一期形成的实际偿还成本，第二项为债务率偏离长期目标带来的边际财政可持续性成本。当地区债务率高于长期目标时，债务惩罚项上升，地方政府通过减少新增举债和压缩公共投资来稳定债务路径。
+		该式是地方政府债务 Euler 方程。左侧为新增一单位债务在当期带来的边际财政资源，其大小受到债务管理成本的削弱；右侧为滚动一单位债务在下一期形成的实际偿还成本，并进一步考虑当 $\mu_B>0$ 时新增债务通过提高地区债务风险溢价所产生的边际融资成本。当基准模拟令 $\mu_B=0$ 时，括号中的风险溢价边际项退化为 1，债务 Euler 方程回到标准形式。当地区债务率高于长期目标时，新增债务的有效边际融资收益下降，地方政府通过减少新增举债和压缩公共投资来稳定债务路径。
 		
 		由此，公共投资不再由简化式规则直接决定，而是由地方政府优化问题内生给出。货币紧缩冲击提高 $R_t$ 并降低 $\Pi_t^j$，使既有名义债务的实际付息压力上升；高债务地区由于 $B_{t-1}^j/Y_t^j$ 更高，预算约束更紧，$\Lambda_{G,t}^j$ 上升更明显，从而内生导致更大幅度的公共投资收缩和公共资本积累放缓。
 		
@@ -400,7 +425,7 @@
 		\[
 		\mathcal P(U_t^j)=\frac{1}{\nu_L}\log\left[1+\exp\left(\nu_L\left(\frac{B_t^j}{B_{\max}^j}-U^{crit}\right)\right)\right].
 		\]
-		该项不再直接进入公共投资选择，而是作为附加债务稳定成本进入地方政府目标函数，或等价地体现为更高的债务率惩罚强度 $\chi_B$。因此，债务限额强化通过提高债务偏离的边际成本影响最优举债和公共投资选择。
+		该项不再直接进入公共投资选择，也不作为地方政府目标函数中的效用惩罚，而是作为附加债务管理成本进入地方政府预算约束，等价地体现为更高的债务管理成本系数 $\varphi_B$。因此，债务限额强化通过占用预算资源并降低新增债务的有效边际融资收益，影响最优举债和公共投资选择。
 		
 		2. \textbf{前瞻响应型中央转移支付稳定器}：拓展中央政府转移支付规则，使其对地方当期的实际付息压力与债务偏离实施定向反周期输血：
 		\begin{equation}
@@ -412,7 +437,7 @@
 			\label{eq:Z_rule_ext}
 		\end{equation}
 		
-		\subsection{统一货币政策规则与全局均衡}
+\subsection{统一货币政策规则与全局均衡}
 		
 		统一中央银行依据包含总体产出与总体通胀的经典 Taylor 规则进行名义利率调节。两地区在全国宏观决策中的权重记为 $s_j$（满足 $s_1+s_2=1$）。总体加权产出与加权通胀分别为：
 		\begin{equation}
@@ -433,7 +458,7 @@
 		
 		各地区最终品市场的总资源约束出清条件满足：
 		\begin{equation}
-			Y_t^j=C_t^j+I_t^j+G_t^j+I_{G,t}^j.
+			Y_t^j=C_t^j+I_t^j+G_t^j+I_{G,t}^j+\Phi_{I,t}^j+\Phi_{B,t}^j.
 			\label{eq:resource}
 		\end{equation}
 		由于跨地区中间品贸易结算已经完全内化在式 \eqref{eq:demand_local}、\eqref{eq:demand_foreign} 与式 \eqref{eq:intermediate_clearing} 中，最终品资源约束式 \eqref{eq:resource} 无需额外增设净出口项。
@@ -491,15 +516,14 @@
 		\subsubsection{央地财税体制与地方政府优化参数}
 		总税基规费率 $\tau_Y$ 与中央分成比例 $\theta_T$ 参考王文甫等（2020）对中国流转税、所得税及非税收入的综合税率测算，将生产总税率设定为 $\tau_Y = 0.20$；中央与地方的税收分享比例遵循分税制改革后的典型事实，中央分享比例设定为 $\theta_T = 0.60$（即地方自有留成比例为 40\%）。
 		
-		在完全内生化公共投资版本中，地方公共投资不再由 $\rho_{IG}$、$\psi_{DS}$、$\psi_{FS}$ 和 $\psi_B$ 等简化式反应参数直接决定，而是由地方政府在预算约束、公共资本积累约束和债务稳定目标下的优化问题内生给出。因此，原公共投资规则参数从基准模型中删除，并替换为地方政府贴现因子、公共投资调整成本、债务率偏离惩罚强度以及公共资本收益权重等结构参数。
+		在完全内生化公共投资版本中，地方公共投资不再由 $\rho_{IG}$、$\psi_{DS}$、$\psi_{FS}$ 和 $\psi_B$ 等简化式反应参数直接决定，而是由地方政府在预算约束、公共资本积累约束和财政摩擦成本下的优化问题内生给出。因此，原公共投资规则参数从基准模型中删除，并替换为地方政府贴现因子、公共投资调整成本、债务管理成本以及地方政府发展目标权重等结构参数。
 		
 		地方政府贴现因子 $\beta_G$ 设定为与居民贴现因子相同，即 $\beta_G=\beta=0.99$。这一处理意味着地方政府与私人部门具有一致的跨期贴现基准，避免通过政府耐心程度人为制造公共投资波动。公共投资调整成本系数设定为 $\chi_I=20.00$，用于刻画地方基础设施项目的多年度建设、预算滚动安排和跨期支付特征。较高的 $\chi_I$ 使公共投资对财政资金影子价格变化呈现平滑响应，而非当期跳跃式调整。
 		
-		债务率偏离目标的惩罚强度设定为 $\chi_B=0.05$。该参数对应地方政府目标函数中债务率偏离长期目标 $\bar b^j$ 的二次成本，用以刻画债务限额管理、预算约束强化和隐性债务化解考核下的防御性财政反应。该取值保证债务动态具有稳定机制，但不会使债务纪律完全支配短期公共投资决策。地方政府经济发展目标权重归一化为 $\omega_Y=1.00$。地区公共资本收益权重 $\omega_G^j$ 不直接外生设定，而是由稳态公共投资--产出比和公共资本 Euler 方程反推，使模型稳态能够精确匹配中国地方公共投资的长期比例。
+		债务管理成本系数设定为 $\varphi_B=0.05$。该参数对应地方政府预算约束中债务率偏离长期目标 $\bar b^j$ 的二次成本，用以刻画债务限额管理、预算约束强化、融资合规和隐性债务化解考核对地方财政资源的占用。该取值保证债务动态具有稳定机制，但不会使债务纪律完全支配短期公共投资决策。地方政府经济发展目标权重归一化为 $\omega_Y=1.00$。公共资本不再以独立的公共资本存量效用项进入地方政府目标函数，其边际收益通过公共资本对未来产出和地方税基的影响体现。
 		
-		总体而言，$\beta_G=\beta=0.99$、$\chi_I=20.00$、$\chi_B=0.05$ 和 $\omega_Y=1.00$ 的组合，使地方公共投资由财政资金影子价格、公共资本影子价值、投资调整成本和债务稳定目标共同决定。实际付息压力 $DS_t^j$ 与可支配财政空间 $FS_t^j$ 不再作为公共投资决策中的解释变量，而是通过地方政府预算约束改变 $\Lambda_{G,t}^j$，进而影响最优公共投资。由于地方债 Euler 方程与居民无风险资产 Euler 方程共同决定稳态利率，基准模型中保持 $\beta_G=\beta$。稳健性检验中，本文进一步考察 $\chi_I\in[10,40]$ 和 $\chi_B\in[0.02,0.10]$ 的替代取值。
-		
-		
+		总体而言，$\beta_G=\beta=0.99$、$\chi_I=20.00$、$\varphi_B=0.05$ 和 $\omega_Y=1.00$ 的组合，使地方公共投资由财政资金影子价格、公共资本影子价值、投资调整成本和债务管理成本共同决定。实际付息压力 $DS_t^j$ 与可支配财政空间 $FS_t^j$ 不再作为公共投资决策中的解释变量，而是通过地方政府预算约束改变 $\Lambda_{G,t}^j$，进而影响最优公共投资。由于地方债 Euler 方程与居民无风险资产 Euler 方程共同决定稳态利率，基准模型中保持 $\beta_G=\beta$。稳健性检验中，本文进一步考察 $\chi_I\in[10,40]$ 和 $\varphi_B\in[0.02,0.10]$ 的替代取值。
+
 		\subsubsection{中央转移支付规则参数}
 		
 		在包含转移支付反事实扩展的规则 \eqref{eq:Z_rule_ext} 中，中央财政对地方付息压力和债务率的反馈系数分别设定为 $\phi_{Z,DS}=0.05$ 和 $\phi_{Z,B}=0.02$。这一组参数反映三个制度事实。
@@ -508,7 +532,7 @@
 		
 		据此，本文设定 $\phi_{Z,DS}>\phi_{Z,B}$，即中央转移支付对当期付息压力的反应强于对债务存量偏离的反应。这一处理符合现实中中央财政更重视短期流动性压力和局部风险化解的政策逻辑。同时，$\phi_{Z,DS}$ 和 $\phi_{Z,B}$ 均设定为较小数值，以避免中央转移支付完全保险地方债务风险。在完全内生化公共投资版本中，中央转移支付不再通过简化式公共投资支撑系数直接进入公共投资选择，而是作为地方政府预算收入项进入 \eqref{eq:gov_budget}，通过降低财政资金影子价格 $\Lambda_{G,t}^j$ 间接支撑最优公共投资。
 		
-		\subsubsection{货币政策与冲击参数}
+\subsubsection{货币政策与冲击参数}
 		
 		货币政策规则采用含利率平滑的 Taylor 型规则。利率平滑系数设定为 $\rho_R=0.75$，通胀反馈系数设定为 $\phi_\pi=1.50$，产出缺口反馈系数设定为 $\phi_Y=0.125$。其中，$\rho_R=0.75$ 反映货币当局在利率调整中的渐进主义特征；$\phi_\pi=1.50$ 满足泰勒原理，有助于保证理性预期均衡的确定性；$\phi_Y=0.125$ 则对应货币政策对实际经济波动的适度反应。该设定与 Taylor (1993)、Clarida et al. (2000) 以及 Christiano et al. (2005) 等标准新凯恩斯文献保持一致，也与中国货币政策规则估计文献中关于利率平滑和通胀反馈的经验结果相近（岳超云和牛霖琳，2013；Li, 2017）。
 		
@@ -542,19 +566,25 @@
 			\begin{equation}
 				\frac{\bar K_G^j}{\bar Y^j}=\frac{\kappa_G}{\delta_G}.
 			\end{equation}
-			给定 $\beta_G$、$\delta_G$、$\gamma_G$、$\tau_Y$、$\theta_T$ 和 $\omega_Y$，地区公共资本收益权重 $\omega_G^j$ 由公共资本 Euler 方程 \eqref{eq:QG_euler} 反推。若稳态中归一化 $\bar\Lambda_G^j=\bar Q_G^j=1$，则
+			给定 $\beta_G$、$\delta_G$、$\gamma_G$、$\tau_Y$、$\theta_T$ 和 $\omega_Y$，稳态公共资本 Euler 方程与公共投资一阶条件共同决定地方财政资金影子价格。由于稳态中公共投资调整成本为零，公共投资一阶条件给出 $\bar\Lambda_G^j=\bar Q_G^j$。结合公共资本 Euler 方程可得
 			\begin{equation}
-				\overline{MB}_G^j=\frac{1}{\beta_G}-1+\delta_G,
-			\end{equation}
-			并有
-			\begin{equation}
-				\omega_G^j
+				\bar\Lambda_G^j\left(\frac{1}{\beta_G}-1+\delta_G\right)
 				=
-				\bar K_G^j\left(\frac{1}{\beta_G}-1+\delta_G\right)
-				-\omega_Y\gamma_G\bar Y^j
-				-\bar\Lambda_G^j(1-\theta_T)\tau_Y\gamma_G\bar Y^j.
+				\omega_Y\frac{\gamma_G}{\bar K_G^j}
+				+
+				\bar\Lambda_G^j(1-\theta_T)\tau_Y\gamma_G\frac{\bar Y^j}{\bar K_G^j}.
 			\end{equation}
-			
+			因此，稳态财政资金影子价格为
+			\begin{equation}
+				\bar\Lambda_G^j
+				=
+				\frac{\omega_Y\gamma_G/\bar K_G^j}
+				{\left(\frac{1}{\beta_G}-1+\delta_G\right)-(1-\theta_T)\tau_Y\gamma_G\frac{\bar Y^j}{\bar K_G^j}},
+				\qquad
+				\bar Q_G^j=\bar\Lambda_G^j.
+			\end{equation}
+			该式要求分母为正，即公共资本带来的财政税基收益不能完全覆盖公共资本的跨期持有成本。若需要使模型精确匹配给定的稳态公共投资--产出比，数值实现中应优先检查 $\gamma_G$、$\kappa_G$ 与 $\tau_Y$ 的组合是否满足该正性条件，而不是额外引入独立的公共资本效用权重。
+
 			\item \textbf{地方财政国库配平}：
 			在稳态下，由于 $\bar{\Pi} = 1$，由式 \eqref{eq:DS} 可知，各地区实际债务付息压力等同于净利息成本：
 			\begin{equation}
@@ -596,9 +626,8 @@
 				$\theta_T$ & 中央税收分享比例 & $0.60$ & 分税制典型事实（地方自有留成 40\%） \\
 				$\beta_G$ & 地方政府贴现因子 & $0.99$ & 与居民贴现因子保持一致 \\
 				$\chi_I$ & 公共投资调整成本系数 & $20.00$ & 地方基建项目跨期平滑特征 \\
-				$\chi_B$ & 债务率偏离目标惩罚强度 & $0.05$ & 债务限额管理与财政可持续性约束 \\
+				$\varphi_B$ & 债务管理成本系数 & $0.05$ & 债务限额管理、融资合规与财政可持续性约束 \\
 				$\omega_Y$ & 地方政府经济发展目标权重 & $1.00$ & 归一化设定 \\
-				$\omega_G^j$ & 地区公共资本收益权重 & 内生校准 & 由稳态公共投资--产出比反推 \\
 				$\rho_R$ & 统一 Taylor 利率平滑系数 & $0.75$ & 卞志村（2006）；中央银行泰勒规则估计 \\
 				$\phi_\pi$ & Taylor 规则通胀反馈反应系数 & $1.50$ & 张成思（2012）；满足泰勒稳定性原理 \\
 				$\phi_Y$ & Taylor 规则产出反馈反应系数 & $0.125$ & 对应年化产出调节系数为 0.5 \\
@@ -653,7 +682,7 @@
 		
 		\subsection{全国性负向需求冲击下的货币政策稳定反应权衡}
 		
-		本小节转向对总体负向需求冲击的考察。偏好冲击以阻尼楔子的形式进入共同 Euler 方程（式 \eqref{a40}，持续性 $\rho_D=0.80$）。我们重点评估统一中央银行通过调整 Taylor 规则中的通胀反应系数 $\phi_\pi \in \{1.1, 1.5, 2.0, 2.5, 3.0\}$ 对全局稳定性与区域同步性产生的影响。图 \ref{fig:stability_sync} 将动态路径压缩为二维“总体波动--区域不同步”空间。
+		本小节转向对总体负向需求冲击的考察。偏好冲击以阻尼楔子的形式进入 Ricardian 家庭跨期 Euler 方程 \eqref{a2}，其外生过程由式 \eqref{a41D} 给出，持续性设定为 $\rho_D=0.80$。我们重点评估统一中央银行通过调整 Taylor 规则中的通胀反应系数 $\phi_\pi \in \{1.1, 1.5, 2.0, 2.5, 3.0\}$ 对全局稳定性与区域同步性产生的影响。图 \ref{fig:stability_sync} 将动态路径压缩为二维“总体波动--区域不同步”空间。
 		
 		\begin{figure}[H]
 			\centering
@@ -670,7 +699,7 @@
 		
 		针对上述两难，本文设计并检验了两类反事实宏观政策工具的对冲效果。
 		
-		第一类是“债务限额强化规则”。将内生公共投资选择地方政府目标函数中的债务率惩罚强度或限额超支惩罚项由基准情形提高。图 \ref{fig:debt_limit} 展示了其动态冲击成效。
+		第一类是“债务限额强化规则”。将内生公共投资选择中地方政府预算约束内的债务管理成本系数或限额超支成本由基准情形提高。图 \ref{fig:debt_limit} 展示了其动态冲击成效。
 		
 		\begin{figure}[H]
 			\centering
@@ -896,68 +925,79 @@
 	
 	
 	
-	\subsection{地方国库、内生公共资本与地方政府最优选择系统（对 $j=1,2$）}
-	\begin{align}
-		DS_t^j
-		&=\left(\frac{R_{B,t-1}^j}{\Pi_t^j}-1\right)\frac{B_{t-1}^j}{Y_t^j}, \label{a27}\\
-		FS_t^j
-		&=(1-\theta_T)\tau_Y Y_t^j+Z_t^j
-		-\left(\frac{R_{B,t-1}^j}{\Pi_t^j}-1\right)B_{t-1}^j
-		-G_t^j-\lambda_jTR_{H,t}^j, \label{a28}\\
-		\frac{R_{B,t}^j}{R_t}
-		&=\exp\left[
-		\mu_B\left(
-		\frac{B_t^j/Y_t^j}{\bar B^j/\bar Y^j}-1
-		\right)
-		\right], \label{a29}\\
-		B_t^j
-		&=\frac{R_{B,t-1}^j}{\Pi_t^j}B_{t-1}^j
-		+G_t^j+I_{G,t}^j+\lambda_jTR_{H,t}^j
-		-(1-\theta_T)\tau_Y Y_t^j-Z_t^j, \label{a30}\\
-		K_{G,t+1}^j
-		&=(1-\delta_G)K_{G,t}^j+I_{G,t}^j, \label{a31}\\
-		\Lambda_{G,t}^j
-		&=Q_{G,t}^j
-		-\chi_I\left(\frac{I_{G,t}^j}{I_{G,t-1}^j}-1\right)\frac{1}{I_{G,t-1}^j}
-		+\beta_G E_t\left[
-		\chi_I\left(\frac{I_{G,t+1}^j}{I_{G,t}^j}-1\right)
-		\frac{I_{G,t+1}^j}{(I_{G,t}^j)^2}
-		\right], \label{a32}\\
-		Q_{G,t}^j
-		&=\beta_G E_t\left[
-		MB_{G,t+1}^j+(1-\delta_G)Q_{G,t+1}^j
-		\right], \label{a33}\\
-		MB_{G,t}^j
-		&=\omega_G^j\frac{1}{K_{G,t}^j}
-		+\omega_Y\gamma_G\frac{Y_t^j}{K_{G,t}^j}
-		+\Lambda_{G,t}^j(1-\theta_T)\tau_Y\gamma_G\frac{Y_t^j}{K_{G,t}^j}, \label{a34}\\
-		\Lambda_{G,t}^j
-		&=\beta_G E_t\left[
-		\Lambda_{G,t+1}^j\frac{R_{B,t}^j}{\Pi_{t+1}^j}
-		\right]
-		+\chi_B\left(\frac{B_t^j}{Y_t^j}-\bar b^j\right)\frac{1}{Y_t^j}, \label{a35}\\
-		\log\left(\frac{G_t^j}{\bar G^j}\right)
-		&=\rho_G\log\left(\frac{G_{t-1}^j}{\bar G^j}\right)+\varepsilon_{G,t}^j, \label{a36}\\
-		\log\left(\frac{TR_{H,t}^j}{\bar{TR}_H^j}\right)
-		&=\rho_{TR}\log\left(\frac{TR_{H,t-1}^j}{\bar{TR}_H^j}\right)+\varepsilon_{TR,t}^j, \label{a37}\\
-		\log\left(\frac{Z_t^j}{\bar Z^j}\right)
-		&=\rho_Z\log\left(\frac{Z_{t-1}^j}{\bar Z^j}\right)
-		+\phi_{Z,DS}\left(\frac{DS_t^j}{\bar{DS}^j}-1\right)
-		+\phi_{Z,B}\left(\frac{B_{t-1}^j/Y_{t-1}^j}{\bar B^j/\bar Y^j}-1\right)
-		+\varepsilon_{Z,t}^j. \label{a38}
-	\end{align}
+\subsection{地方国库、内生公共资本与地方政府最优选择系统（对 $j=1,2$）}
+\begin{align}
+	DS_t^j
+	&=\left(\frac{R_{B,t-1}^j}{\Pi_t^j}-1\right)\frac{B_{t-1}^j}{Y_t^j}, \label{a27}\\
+	FS_t^j
+	&=(1-\theta_T)\tau_Y Y_t^j+Z_t^j
+	-\left(\frac{R_{B,t-1}^j}{\Pi_t^j}-1\right)B_{t-1}^j
+	-G_t^j-\lambda_jTR_{H,t}^j, \label{a28}\\
+	\Phi_{I,t}^j
+	&=\frac{\chi_I}{2}
+	\left(\frac{I_{G,t}^j}{I_{G,t-1}^j}-1\right)^2 I_{G,t}^j, \label{a29}\\
+	\Phi_{B,t}^j
+	&=\frac{\varphi_B}{2}
+	\left(\frac{B_t^j}{\bar Y^j}-\bar b^j\right)^2\bar Y^j, \label{a30}\\
+	\frac{R_{B,t}^j}{R_t}
+	&=\exp\left[
+	\mu_B\left(
+	\frac{B_t^j/Y_t^j}{\bar B^j/\bar Y^j}-1
+	\right)
+	\right], \label{a31}\\
+	B_t^j
+	&=\frac{R_{B,t-1}^j}{\Pi_t^j}B_{t-1}^j
+	+G_t^j+I_{G,t}^j+\Phi_{I,t}^j+\Phi_{B,t}^j+\lambda_jTR_{H,t}^j
+	-(1-\theta_T)\tau_Y Y_t^j-Z_t^j, \label{a32}\\
+	K_{G,t+1}^j
+	&=(1-\delta_G)K_{G,t}^j+I_{G,t}^j, \label{a33}\\
+	\Lambda_{G,t}^j
+	&\left[
+	1+\chi_I\left(\frac{I_{G,t}^j}{I_{G,t-1}^j}-1\right)\frac{I_{G,t}^j}{I_{G,t-1}^j}
+	+\frac{\chi_I}{2}\left(\frac{I_{G,t}^j}{I_{G,t-1}^j}-1\right)^2
+	\right]
+	=Q_{G,t}^j
+	+\beta_G E_t\left[
+	\Lambda_{G,t+1}^j\chi_I\left(\frac{I_{G,t+1}^j}{I_{G,t}^j}-1\right)
+	\left(\frac{I_{G,t+1}^j}{I_{G,t}^j}\right)^2
+	\right], \label{a34}\\
+	Q_{G,t}^j
+	&=\beta_G E_t\left[
+	MB_{G,t+1}^j+(1-\delta_G)Q_{G,t+1}^j
+	\right], \label{a35}\\
+	MB_{G,t}^j
+	&=\omega_Y\frac{\gamma_G}{K_{G,t}^j}
+	+\Lambda_{G,t}^j(1-\theta_T)\tau_Y\gamma_G\frac{Y_t^j}{K_{G,t}^j}, \label{a36}\\
+	\Lambda_{G,t}^j
+	&\left[
+	1-\varphi_B\left(\frac{B_t^j}{\bar Y^j}-\bar b^j\right)
+	\right]
+	=\beta_G E_t\left[
+	\Lambda_{G,t+1}^j\frac{R_{B,t}^j}{\Pi_{t+1}^j}
+	\left(1+\mu_B\frac{B_t^j/Y_t^j}{\bar B^j/\bar Y^j}\right)
+	\right], \label{a37}\\
+	\log\left(\frac{G_t^j}{\bar G^j}\right)
+	&=\rho_G\log\left(\frac{G_{t-1}^j}{\bar G^j}\right)+\varepsilon_{G,t}^j, \label{a38}\\
+	\log\left(\frac{TR_{H,t}^j}{\bar{TR}_H^j}\right)
+	&=\rho_{TR}\log\left(\frac{TR_{H,t-1}^j}{\bar{TR}_H^j}\right)+\varepsilon_{TR,t}^j, \label{a39}\\
+	\log\left(\frac{Z_t^j}{\bar Z^j}\right)
+	&=\rho_Z\log\left(\frac{Z_{t-1}^j}{\bar Z^j}\right)
+	+\phi_{Z,DS}\left(\frac{DS_t^j}{\bar{DS}^j}-1\right)
+	+\phi_{Z,B}\left(\frac{B_{t-1}^j/Y_{t-1}^j}{\bar B^j/\bar Y^j}-1\right)
+	+\varepsilon_{Z,t}^j. \label{a40z}
+\end{align}
 	
-	\subsection{总体加权模块、Taylor 货币政策与总体市场资源出清}
+\subsection{总体加权模块、Taylor 货币政策与总体市场资源出清}
 	\begin{align}
 		Y_t &=s_1Y_t^1+s_2Y_t^2 \label{a39y}\\
 		\Pi_t &=(\Pi_t^1)^{s_1}(\Pi_t^2)^{s_2} \label{a39pi}\\
 		MP_t &=\rho_{MP}MP_{t-1}+\varepsilon_{MP,t} \label{a39mp}\\
-		D_t &=\rho_D D_{t-1} - \varepsilon_{D,t} \label{a40}\\
+		D_t &=\rho_D D_{t-1} - \varepsilon_{D,t} \label{a41D}\\
 		\frac{R_t}{\bar R} &=\left(\frac{R_{t-1}}{\bar R}\right)^{\rho_R} \left[ \left(\frac{\Pi_t}{\bar\Pi}\right)^{\phi_\pi} \left(\frac{Y_t}{\bar Y}\right)^{\phi_Y} \right]^{1-\rho_R}\exp(MP_t) \label{a41}
 	\end{align}
 	最终品总体出清资源约束对 $j=1,2$：
 	\begin{equation}
-		Y_t^j=C_t^j+I_t^j+G_t^j+I_{G,t}^j \label{a42}
+		Y_t^j=C_t^j+I_t^j+G_t^j+I_{G,t}^j+\Phi_{I,t}^j+\Phi_{B,t}^j \label{a42}
 	\end{equation}
 	
 \end{document}

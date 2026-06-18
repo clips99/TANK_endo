@@ -3,14 +3,13 @@
 % Scenarios:
 %   1. baseline
 %   2. local risk premium: mu_b > 0
-%   3. central transfer buffer: z responds to debt-service pressure and
-%      enters the public-investment rule
+%   3. central transfer buffer: z responds to debt-service pressure
 %   4. risk premium + transfer buffer
 %   5. stronger interregional input linkages
 %   6. weaker interregional input linkages
 %
 % Scenario .mod files are regenerated from TANK_two_region_baseline.mod on
-% every run. TANK_two_region_baseline_old.mod is only a historical backup.
+% every run.
 % Full-horizon IRF figures are exported for each scenario, using the same
 % low-debt/high-debt panel layout as baseline_irf_comparison.png.
 
@@ -41,12 +40,12 @@ scenarios(end + 1) = make_scenario('scenario_02_risk_premium', ...
 
 scenarios(end + 1) = make_scenario('scenario_03_transfer_buffer', ...
     'Central transfer buffer', ...
-    {'rho_z', 0.50; 'phi_z_ds', 0.20; 'psi_z', 0.20}, ...
-    'central transfers react to DS and support public investment');
+    {'rho_z', 0.50; 'phi_z_ds', 0.20}, ...
+    'central transfers react to DS through the local-government budget');
 
 scenarios(end + 1) = make_scenario('scenario_04_risk_and_transfer', ...
     'Risk premium plus transfer buffer', ...
-    {'mu_b', 0.05; 'rho_z', 0.50; 'phi_z_ds', 0.20; 'psi_z', 0.20}, ...
+    {'mu_b', 0.05; 'rho_z', 0.50; 'phi_z_ds', 0.20}, ...
     'risk premium and central transfer buffer active together');
 
 scenarios(end + 1) = make_scenario('scenario_05_strong_io', ...
@@ -71,6 +70,9 @@ for s = 1:numel(scenarios)
     for r = 1:size(scenario.replacements, 1)
         scenario_text = set_parameter_line( ...
             scenario_text, scenario.replacements{r, 1}, scenario.replacements{r, 2});
+    end
+    if has_replacement(scenario.replacements, 'mu_b')
+        scenario_text = make_steady_state_preserving_risk_premium(scenario_text);
     end
 
     scenario_mod = [scenario.name '.mod'];
@@ -128,6 +130,31 @@ function scenario = make_scenario(name, label, replacements, notes)
     scenario.label = label;
     scenario.replacements = replacements;
     scenario.notes = notes;
+end
+
+function yes = has_replacement(replacements, name)
+    if isempty(replacements)
+        yes = false;
+    else
+        yes = any(strcmp(replacements(:, 1), name));
+    end
+end
+
+function text = make_steady_state_preserving_risk_premium(text)
+    text = replace_exactly_once(text, ...
+        '* (1 + mu_b * ((b1 / y1) / b_y1));', ...
+        '* (1 + mu_b * (((b1 / y1) / b_y1) - 1));');
+    text = replace_exactly_once(text, ...
+        '* (1 + mu_b * ((b2 / y2) / b_y2));', ...
+        '* (1 + mu_b * (((b2 / y2) / b_y2) - 1));');
+end
+
+function text = replace_exactly_once(text, old, new)
+    count = numel(strfind(text, old));
+    text = strrep(text, old, new);
+    if count ~= 1
+        error('Expected to replace text exactly once; replaced %d: %s', count, old);
+    end
 end
 
 function text = set_parameter_line(text, name, value)
