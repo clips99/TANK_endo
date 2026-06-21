@@ -74,7 +74,7 @@ rho_a      = 0.70;
 rho_g      = 0.70;
 rho_tr     = 0.70;
 rho_z      = 0.70;
-rho_mp     = 0.50;
+rho_mp     = 0.00;
 rho_d      = 0.50;
 rho_r      = 0.75;
 phi_pi     = 1.50;
@@ -161,8 +161,8 @@ zbar2      = fsbar2 + (rbar - 1) * bbar2 + gbar2 + lambda2 * trbar2
              - (1 - theta_T) * tau_y * ybar2;
 
 // Smooth debt-limit pressure parameters based on pre-investment financing gaps.
-psi_L      = 6;
-ucrit_L    = 1;
+psi_L      = 20;
+ucrit_L    = 0.995;
 nu_L       = 250;
 ubar_L1    = 0.975;
 ubar_L2    = 0.995;

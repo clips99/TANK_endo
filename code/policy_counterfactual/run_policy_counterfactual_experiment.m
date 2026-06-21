@@ -22,23 +22,24 @@ base_mod = fullfile(script_dir, '..', 'baseline', 'TANK_two_region_baseline.mod'
 base_text = fileread(base_mod);
 
 % Debt-limit pressure is based on the pre-public-investment financing gap:
-% Utilde_j = (B_{j,-1} + FG_j) / Bmax_j.  The high-debt region is
-% calibrated closer to the warning threshold.
+% Utilde_j = (B_{j,-1} + FG_j) / Bmax_j.  For this counterfactual stress test,
+% the high-debt region is calibrated at the warning margin so the rule's
+% macro trade-off is visible relative to the unconstrained baseline.
 limit_settings = struct( ...
-    'ucrit', 1.00, ...
+    'ucrit', 0.995, ...
     'nu', 250.00, ...
     'ubar1', 0.975, ...
     'ubar2', 0.995);
 
 policy_rules = struct( ...
     'name', {'policy_cf_baseline', 'policy_cf_fiscal_discipline'}, ...
-    'label', {'Baseline model (psi_L = 0)', 'Debt-limit constraint (psi_L = 6)'}, ...
-    'psi_L', {0.00, 6.00}, ...
+    'label', {'基准模型', '严格债务限额规则'}, ...
+    'psi_L', {0.00, 20.00}, ...
     'line_style', {'-', '--'});
 
 transfer_rules = struct( ...
     'name', {'policy_cf_no_transfer_stabilizer', 'policy_cf_central_transfer_stabilizer'}, ...
-    'label', {'No central transfer stabilizer', 'Central transfer stabilizer'}, ...
+    'label', {'无中央转移稳定器', '中央转移稳定器'}, ...
     'rho_z', {0.00, 0.70}, ...
     'phi_z_ds', {0.00, 0.05}, ...
     'phi_z_b', {0.00, 0.02}, ...
@@ -46,7 +47,7 @@ transfer_rules = struct( ...
 
 balance_rules = struct( ...
     'name', {'policy_cf_standard_taylor', 'policy_cf_regional_balance_taylor'}, ...
-    'label', {'Standard Taylor rule', 'Regional-balance Taylor rule'}, ...
+    'label', {'标准 Taylor 规则', '地区平衡型 Taylor 规则'}, ...
     'phi_reg', {0.00, 2.00}, ...
     'line_style', {'-', '--'});
 
@@ -141,6 +142,8 @@ disp(summary(:, {'label','max_u2','max_pressure2','max_debt_ratio2', ...
     'max_ds2','min_ig2','min_y2','max_abs_ig_gap','max_abs_y_gap'}));
 
 if ~isempty(results)
+    make_debt_limit_difference_figure(results, shock_suffix, b_y1, b_y2);
+    make_region_irf_figure(results, shock_suffix);
     make_high_debt_figure(results, shock_suffix, b_y1, b_y2);
     make_gap_figure(results, shock_suffix, b_y1, b_y2);
 end
@@ -708,29 +711,85 @@ function delete_stale_result_file(result_file)
     end
 end
 
-function make_high_debt_figure(results, shock_suffix, b_y1, b_y2) %#ok<INUSD>
-    fig = figure('Visible', 'off', 'Color', 'w', 'Position', [100 100 1200 800]);
+function make_debt_limit_difference_figure(results, shock_suffix, b_y1, b_y2)
+    if numel(results) < 2
+        return;
+    end
+
+    fig = figure('Visible', 'off', 'Color', 'w', 'Position', [100 100 1150 720]);
+    tiledlayout(2, 3, 'Padding', 'compact', 'TileSpacing', 'compact');
+
+    plot_limit_difference_panel(results, shock_suffix, 2, ...
+        '限额使用率差异');
+    plot_debt_ratio_difference_panel(results, shock_suffix, b_y2, ...
+        '债务/GDP 差异');
+    plot_policy_difference_panel(results, shock_suffix, 'ds2', '', [], ...
+        '实际付息压力差异');
+    plot_policy_difference_panel(results, shock_suffix, 'ig2', '', [], ...
+        '公共投资差异');
+    plot_policy_difference_panel(results, shock_suffix, 'kg2', '', [], ...
+        '公共资本差异');
+    plot_policy_difference_panel(results, shock_suffix, 'y2', '', [], ...
+        '最终产出差异');
+
+    sgtitle('严格债务限额规则相对基准模型的差异响应', ...
+        'FontWeight', 'bold');
+    exportgraphics(fig, 'figure5_debt_limit_diff_irfs.png', ...
+        'Resolution', 180);
+    close(fig);
+end
+
+function make_region_irf_figure(results, shock_suffix)
+    fig = figure('Visible', 'off', 'Color', 'w', 'Position', [100 100 1250 760]);
     tiledlayout(2, 4, 'Padding', 'compact', 'TileSpacing', 'compact');
     labels = get_labels(results);
 
-    plot_limit_panel(results, shock_suffix, 2, 'High-debt debt-limit pressure Utilde2');
-    plot_pressure_panel(results, shock_suffix, 2, 'High-debt smooth penalty');
-    plot_policy_panel(results, shock_suffix, 'b2', 'y2', b_y2, ...
-        'High-debt debt/GDP');
+    plot_policy_panel(results, shock_suffix, 'ds1', '', [], ...
+        '低债务：实际付息压力');
     plot_policy_panel(results, shock_suffix, 'ds2', '', [], ...
-        'High-debt debt service');
+        '高债务：实际付息压力');
+    plot_policy_panel(results, shock_suffix, 'fs1', '', [], ...
+        '低债务：财政空间');
+    plot_policy_panel(results, shock_suffix, 'fs2', '', [], ...
+        '高债务：财政空间');
+    plot_policy_panel(results, shock_suffix, 'ig1', '', [], ...
+        '低债务：公共投资');
     plot_policy_panel(results, shock_suffix, 'ig2', '', [], ...
-        'High-debt public investment');
-    plot_policy_panel(results, shock_suffix, 'kg2', '', [], ...
-        'High-debt public capital');
+        '高债务：公共投资');
+    plot_policy_panel(results, shock_suffix, 'y1', '', [], ...
+        '低债务：最终产出');
     plot_policy_panel(results, shock_suffix, 'y2', '', [], ...
-        'High-debt output');
-    plot_policy_panel(results, shock_suffix, 'c2', '', [], ...
-        'High-debt consumption');
+        '高债务：最终产出');
 
     legend(labels, 'Location', 'best', 'Interpreter', 'none');
-    sgtitle('Figure 5a. High-debt responses: baseline versus debt-limit constraint', ...
-        'Interpreter', 'none');
+    sgtitle('债务限额规则下各地区核心变量 IRF', ...
+        'FontWeight', 'bold');
+    exportgraphics(fig, 'figure5_debt_limit_region_irfs.png', ...
+        'Resolution', 180);
+    close(fig);
+end
+
+function make_high_debt_figure(results, shock_suffix, b_y1, b_y2) %#ok<INUSD>
+    fig = figure('Visible', 'off', 'Color', 'w', 'Position', [100 100 1150 720]);
+    tiledlayout(2, 3, 'Padding', 'compact', 'TileSpacing', 'compact');
+    labels = get_labels(results);
+
+    plot_limit_panel(results, shock_suffix, 2, ...
+        '高债务：限额使用率');
+    plot_policy_panel(results, shock_suffix, 'b2', 'y2', b_y2, ...
+        '高债务：债务/GDP');
+    plot_policy_panel(results, shock_suffix, 'ds2', '', [], ...
+        '高债务：实际付息压力');
+    plot_policy_panel(results, shock_suffix, 'ig2', '', [], ...
+        '高债务：公共投资');
+    plot_policy_panel(results, shock_suffix, 'kg2', '', [], ...
+        '高债务：公共资本');
+    plot_policy_panel(results, shock_suffix, 'y2', '', [], ...
+        '高债务：最终产出');
+
+    legend(labels, 'Location', 'best', 'Interpreter', 'none');
+    sgtitle('高债务地区在债务限额规则下的 IRF', ...
+        'FontWeight', 'bold');
     exportgraphics(fig, 'figure5_debt_limit_high_debt_irfs.png', ...
         'Resolution', 180);
     close(fig);
@@ -741,50 +800,46 @@ function make_gap_figure(results, shock_suffix, b_y1, b_y2)
     tiledlayout(2, 3, 'Padding', 'compact', 'TileSpacing', 'compact');
     labels = get_labels(results);
 
-    plot_limit_gap_panel(results, shock_suffix, 'Debt-cap utilization gap: high - low');
-    plot_pressure_gap_panel(results, shock_suffix, 'Debt-cap pressure gap: high - low');
+    plot_limit_gap_panel(results, shock_suffix, '限额使用率缺口：高债务 - 低债务');
+    plot_pressure_gap_panel(results, shock_suffix, '限额压力缺口：高债务 - 低债务');
     plot_debt_ratio_gap_panel(results, shock_suffix, b_y1, b_y2, ...
-        'Debt/GDP gap: high - low');
+        '债务/GDP 缺口：高债务 - 低债务');
     plot_policy_panel(results, shock_suffix, 'ig2', 'ig1', [], ...
-        'Public investment gap: high - low');
+        '公共投资缺口：高债务 - 低债务');
     plot_policy_panel(results, shock_suffix, 'kg2', 'kg1', [], ...
-        'Public capital gap: high - low');
+        '公共资本缺口：高债务 - 低债务');
     plot_policy_panel(results, shock_suffix, 'y2', 'y1', [], ...
-        'Output gap: high - low');
+        '最终产出缺口：高债务 - 低债务');
 
     legend(labels, 'Location', 'best', 'Interpreter', 'none');
-    sgtitle('Figure 5b. Regional gaps under stronger debt-limit discipline', ...
-        'Interpreter', 'none');
+    sgtitle('严格债务限额规则下的地区差异响应', ...
+        'FontWeight', 'bold');
     exportgraphics(fig, 'figure5_debt_limit_gap_irfs.png', ...
         'Resolution', 180);
     close(fig);
 end
 
 function make_transfer_high_debt_figure(results, shock_suffix)
-    fig = figure('Visible', 'off', 'Color', 'w', 'Position', [100 100 1200 800]);
-    tiledlayout(2, 4, 'Padding', 'compact', 'TileSpacing', 'compact');
+    fig = figure('Visible', 'off', 'Color', 'w', 'Position', [100 100 1150 720]);
+    tiledlayout(2, 3, 'Padding', 'compact', 'TileSpacing', 'compact');
     labels = get_labels(results);
 
     plot_policy_panel(results, shock_suffix, 'z2', '', [], ...
-        'High-debt central transfers');
+        '高债务：中央转移支付');
     plot_policy_panel(results, shock_suffix, 'ds2', '', [], ...
-        'High-debt debt service');
+        '高债务：实际付息压力');
     plot_policy_panel(results, shock_suffix, 'fs2', '', [], ...
-        'High-debt fiscal space');
+        '高债务：财政空间');
     plot_policy_panel(results, shock_suffix, 'ig2', '', [], ...
-        'High-debt public investment');
+        '高债务：公共投资');
     plot_policy_panel(results, shock_suffix, 'kg2', '', [], ...
-        'High-debt public capital');
+        '高债务：公共资本');
     plot_policy_panel(results, shock_suffix, 'y2', '', [], ...
-        'High-debt output');
-    plot_policy_panel(results, shock_suffix, 'c2', '', [], ...
-        'High-debt consumption');
-    plot_policy_panel(results, shock_suffix, 'pinf2', '', [], ...
-        'High-debt inflation');
+        '高债务：最终产出');
 
     legend(labels, 'Location', 'best', 'Interpreter', 'none');
-    sgtitle('Figure 6a. High-debt responses with central fiscal stabilization', ...
-        'Interpreter', 'none');
+    sgtitle('反周期中央转移支付稳定器：高债务地区 IRF', ...
+        'FontWeight', 'bold');
     exportgraphics(fig, 'figure6_central_transfer_high_debt_irfs.png', ...
         'Resolution', 180);
     close(fig);
@@ -796,21 +851,21 @@ function make_transfer_gap_figure(results, shock_suffix)
     labels = get_labels(results);
 
     plot_policy_panel(results, shock_suffix, 'z2', 'z1', [], ...
-        'Central transfer gap: high - low');
+        '中央转移支付缺口：高债务 - 低债务');
     plot_policy_panel(results, shock_suffix, 'ds2', 'ds1', [], ...
-        'Debt service gap: high - low');
+        '实际付息压力缺口：高债务 - 低债务');
     plot_policy_panel(results, shock_suffix, 'fs2', 'fs1', [], ...
-        'Fiscal space gap: high - low');
+        '财政空间缺口：高债务 - 低债务');
     plot_policy_panel(results, shock_suffix, 'ig2', 'ig1', [], ...
-        'Public investment gap: high - low');
+        '公共投资缺口：高债务 - 低债务');
     plot_policy_panel(results, shock_suffix, 'y2', 'y1', [], ...
-        'Output gap: high - low');
+        '最终产出缺口：高债务 - 低债务');
     plot_policy_panel(results, shock_suffix, 'pinf2', 'pinf1', [], ...
-        'Inflation gap: high - low');
+        '通胀缺口：高债务 - 低债务');
 
     legend(labels, 'Location', 'best', 'Interpreter', 'none');
-    sgtitle('Figure 6b. Regional gaps with central fiscal stabilization', ...
-        'Interpreter', 'none');
+    sgtitle('反周期中央转移支付稳定器下的地区差异响应', ...
+        'FontWeight', 'bold');
     exportgraphics(fig, 'figure6_central_transfer_gap_irfs.png', ...
         'Resolution', 180);
     close(fig);
@@ -822,21 +877,21 @@ function make_balance_aggregate_figure(results, shock_suffix)
     labels = get_labels(results);
 
     plot_policy_panel(results, shock_suffix, 'r', '', [], ...
-        'Policy rate');
+        '政策利率');
     plot_policy_panel(results, shock_suffix, 'yagg', '', [], ...
-        'National output');
+        '全国总产出');
     plot_policy_panel(results, shock_suffix, 'pinfagg', '', [], ...
-        'National inflation');
+        '全国通胀');
     plot_policy_panel(results, shock_suffix, 'y2', 'y1', [], ...
-        'Output gap: high - low');
+        '最终产出缺口：高债务 - 低债务');
     plot_policy_panel(results, shock_suffix, 'pinf2', 'pinf1', [], ...
-        'Inflation gap: high - low');
+        '通胀缺口：高债务 - 低债务');
     plot_policy_panel(results, shock_suffix, 'ds2', 'ds1', [], ...
-        'Debt service gap: high - low');
+        '实际付息压力缺口：高债务 - 低债务');
 
     legend(labels, 'Location', 'best', 'Interpreter', 'none');
-    sgtitle('Figure 7a. Aggregate stability and regional-balance monetary policy', ...
-        'Interpreter', 'none');
+    sgtitle('地区平衡型 Taylor 规则的总量稳定效果', ...
+        'FontWeight', 'bold');
     exportgraphics(fig, 'figure7_regional_balance_aggregate_irfs.png', ...
         'Resolution', 180);
     close(fig);
@@ -848,25 +903,25 @@ function make_balance_high_debt_figure(results, shock_suffix)
     labels = get_labels(results);
 
     plot_policy_panel(results, shock_suffix, 'ds2', '', [], ...
-        'High-debt debt service');
+        '高债务：实际付息压力');
     plot_policy_panel(results, shock_suffix, 'fs2', '', [], ...
-        'High-debt fiscal space');
+        '高债务：财政空间');
     plot_policy_panel(results, shock_suffix, 'ig2', '', [], ...
-        'High-debt public investment');
+        '高债务：公共投资');
     plot_policy_panel(results, shock_suffix, 'kg2', '', [], ...
-        'High-debt public capital');
+        '高债务：公共资本');
     plot_policy_panel(results, shock_suffix, 'y2', '', [], ...
-        'High-debt output');
+        '高债务：最终产出');
     plot_policy_panel(results, shock_suffix, 'c2', '', [], ...
-        'High-debt consumption');
+        '高债务：总消费');
     plot_policy_panel(results, shock_suffix, 'inv2', '', [], ...
-        'High-debt private investment');
+        '高债务：私人投资');
     plot_policy_panel(results, shock_suffix, 'pinf2', '', [], ...
-        'High-debt inflation');
+        '高债务：通胀');
 
     legend(labels, 'Location', 'best', 'Interpreter', 'none');
-    sgtitle('Figure 7b. High-debt responses under regional-balance monetary policy', ...
-        'Interpreter', 'none');
+    sgtitle('地区平衡型 Taylor 规则下高债务地区 IRF', ...
+        'FontWeight', 'bold');
     exportgraphics(fig, 'figure7_regional_balance_high_debt_irfs.png', ...
         'Resolution', 180);
     close(fig);
@@ -878,21 +933,21 @@ function make_balance_gap_figure(results, shock_suffix)
     labels = get_labels(results);
 
     plot_policy_panel(results, shock_suffix, 'ds2', 'ds1', [], ...
-        'Debt service gap: high - low');
+        '实际付息压力缺口：高债务 - 低债务');
     plot_policy_panel(results, shock_suffix, 'fs2', 'fs1', [], ...
-        'Fiscal space gap: high - low');
+        '财政空间缺口：高债务 - 低债务');
     plot_policy_panel(results, shock_suffix, 'ig2', 'ig1', [], ...
-        'Public investment gap: high - low');
+        '公共投资缺口：高债务 - 低债务');
     plot_policy_panel(results, shock_suffix, 'kg2', 'kg1', [], ...
-        'Public capital gap: high - low');
+        '公共资本缺口：高债务 - 低债务');
     plot_policy_panel(results, shock_suffix, 'y2', 'y1', [], ...
-        'Output gap: high - low');
+        '最终产出缺口：高债务 - 低债务');
     plot_policy_panel(results, shock_suffix, 'pinf2', 'pinf1', [], ...
-        'Inflation gap: high - low');
+        '通胀缺口：高债务 - 低债务');
 
     legend(labels, 'Location', 'best', 'Interpreter', 'none');
-    sgtitle('Figure 7c. Regional gaps under regional-balance monetary policy', ...
-        'Interpreter', 'none');
+    sgtitle('地区平衡型 Taylor 规则下的地区差异响应', ...
+        'FontWeight', 'bold');
     exportgraphics(fig, 'figure7_regional_balance_gap_irfs.png', ...
         'Resolution', 180);
     close(fig);
@@ -926,7 +981,67 @@ function plot_policy_panel(results, shock_suffix, var_a, var_b, ratio_base, titl
     end
     yline(0, ':');
     title(title_text, 'Interpreter', 'none');
-    xlabel('period');
+    xlabel('期数');
+    grid on;
+end
+
+function plot_policy_difference_panel(results, shock_suffix, var_a, var_b, ratio_base, title_text)
+    nexttile;
+    baseline = policy_series(results(1).oo, shock_suffix, var_a, var_b, ratio_base);
+    counterfactual = policy_series(results(2).oo, shock_suffix, var_a, var_b, ratio_base);
+    y = counterfactual - baseline;
+    horizon = 1:numel(y);
+    plot(horizon, y, 'LineWidth', 1.8, 'Color', [0.70 0.10 0.10]);
+    hold on;
+    yline(0, ':', 'Color', [0.25 0.25 0.25]);
+    title(title_text, 'Interpreter', 'none');
+    xlabel('季度');
+    ylabel('反事实 - 基准');
+    grid on;
+end
+
+function y = policy_series(oo_, shock_suffix, var_a, var_b, ratio_base)
+    irf_a = get_irf(oo_, var_a, shock_suffix);
+    if isempty(var_b)
+        y = irf_a;
+    elseif isempty(ratio_base)
+        irf_b = get_irf(oo_, var_b, shock_suffix);
+        y = irf_a - irf_b;
+    else
+        irf_b = get_irf(oo_, var_b, shock_suffix);
+        y = irf_a - ratio_base * irf_b;
+    end
+end
+
+function plot_limit_difference_panel(results, shock_suffix, region, title_text)
+    nexttile;
+    [baseline, ~] = debt_limit_series(results(1).oo, results(1).M, ...
+        results(1).limit_settings, shock_suffix, region);
+    [counterfactual, ~] = debt_limit_series(results(2).oo, results(2).M, ...
+        results(2).limit_settings, shock_suffix, region);
+    y = counterfactual - baseline;
+    horizon = 1:numel(y);
+    plot(horizon, y, 'LineWidth', 1.8, 'Color', [0.70 0.10 0.10]);
+    hold on;
+    yline(0, ':', 'Color', [0.25 0.25 0.25]);
+    title(title_text, 'Interpreter', 'none');
+    xlabel('季度');
+    ylabel('反事实 - 基准');
+    grid on;
+end
+
+function plot_debt_ratio_difference_panel(results, shock_suffix, ratio_base, title_text)
+    nexttile;
+    baseline = policy_series(results(1).oo, shock_suffix, 'b2', 'y2', ratio_base);
+    counterfactual = policy_series(results(2).oo, shock_suffix, 'b2', 'y2', ratio_base);
+    y = counterfactual - baseline;
+    horizon = 1:numel(y);
+    plot(horizon, y, 'LineWidth', 1.8, 'Color', [0.70 0.10 0.10]);
+    hold on;
+    yline(0, ':', 'Color', [0.25 0.25 0.25]);
+    title(title_text, 'Interpreter', 'none');
+    xlabel('季度');
+    ylabel('反事实 - 基准');
     grid on;
 end
 
@@ -943,7 +1058,7 @@ function plot_limit_panel(results, shock_suffix, region, title_text)
     end
     yline(results(1).limit_settings.ucrit, ':');
     title(title_text, 'Interpreter', 'none');
-    xlabel('period');
+    xlabel('期数');
     grid on;
 end
 
@@ -960,7 +1075,7 @@ function plot_pressure_panel(results, shock_suffix, region, title_text)
     end
     yline(0, ':');
     title(title_text, 'Interpreter', 'none');
-    xlabel('period');
+    xlabel('期数');
     grid on;
 end
 
@@ -981,7 +1096,7 @@ function plot_limit_gap_panel(results, shock_suffix, title_text)
     end
     yline(0, ':');
     title(title_text, 'Interpreter', 'none');
-    xlabel('period');
+    xlabel('期数');
     grid on;
 end
 
@@ -1001,7 +1116,7 @@ function plot_pressure_gap_panel(results, shock_suffix, title_text)
     end
     yline(0, ':');
     title(title_text, 'Interpreter', 'none');
-    xlabel('period');
+    xlabel('期数');
     grid on;
 end
 
@@ -1023,7 +1138,7 @@ function plot_debt_ratio_gap_panel(results, shock_suffix, b_y1, b_y2, title_text
     end
     yline(0, ':');
     title(title_text, 'Interpreter', 'none');
-    xlabel('period');
+    xlabel('期数');
     grid on;
 end
 

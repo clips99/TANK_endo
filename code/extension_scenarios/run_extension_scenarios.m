@@ -30,31 +30,31 @@ base_mod = fullfile(script_dir, '..', 'baseline', 'TANK_two_region_baseline.mod'
 base_text = fileread(base_mod);
 
 scenarios = make_scenario('scenario_01_baseline', ...
-    'Baseline', {}, ...
+    '基准', {}, ...
     'mu_b=0, no transfer response, omega=0.85, eta=0.90');
 
 scenarios(end + 1) = make_scenario('scenario_02_risk_premium', ...
-    'Local debt risk premium', ...
+    '地方债风险溢价', ...
     {'mu_b', 0.05}, ...
     'mu_b>0 raises local financing costs when debt ratios rise');
 
 scenarios(end + 1) = make_scenario('scenario_03_transfer_buffer', ...
-    'Central transfer buffer', ...
+    '中央转移支付缓冲', ...
     {'rho_z', 0.50; 'phi_z_ds', 0.20}, ...
     'central transfers react to DS through the local-government budget');
 
 scenarios(end + 1) = make_scenario('scenario_04_risk_and_transfer', ...
-    'Risk premium plus transfer buffer', ...
+    '风险溢价+转移支付缓冲', ...
     {'mu_b', 0.05; 'rho_z', 0.50; 'phi_z_ds', 0.20}, ...
     'risk premium and central transfer buffer active together');
 
 scenarios(end + 1) = make_scenario('scenario_05_strong_io', ...
-    'Stronger input-output linkages', ...
+    '强跨地区投入产出联系', ...
     {'omega1', 0.70; 'omega2', 0.70; 'eta', 0.75}, ...
     'lower home bias and lower substitution elasticity');
 
 scenarios(end + 1) = make_scenario('scenario_06_weak_io', ...
-    'Weaker input-output linkages', ...
+    '弱跨地区投入产出联系', ...
     {'omega1', 0.95; 'omega2', 0.95; 'eta', 2.50}, ...
     'higher home bias and higher substitution elasticity');
 
@@ -119,6 +119,7 @@ disp(status);
 
 if any(status.status == "ok")
     figure_files = make_extension_irf_figures(scenarios, status);
+    figure_files = [figure_files; make_extension_gap_summary_figure(scenarios, status)];
     fprintf('\nFull-horizon IRF figures\n');
     fprintf('--------------------------------\n');
     disp(table(figure_files, 'VariableNames', {'file'}));
@@ -217,14 +218,14 @@ end
 function figure_files = make_extension_irf_figures(scenarios, status)
     shock_suffix = '_emp';
     panels = {
-        'Debt service pressure', 'ds1', 'ds2';
-        'Fiscal space',          'fs1', 'fs2';
-        'Public investment',     'ig1', 'ig2';
-        'Public capital',        'kg1', 'kg2';
-        'Private investment',    'inv1','inv2';
-        'Final output',          'y1',  'y2';
-        'Consumption',           'c1',  'c2';
-        'Inflation',             'pinf1','pinf2'
+        '实际付息压力', 'ds1', 'ds2';
+        '财政空间',     'fs1', 'fs2';
+        '公共投资',     'ig1', 'ig2';
+        '公共资本',     'kg1', 'kg2';
+        '私人投资',     'inv1','inv2';
+        '最终产出',     'y1',  'y2';
+        '总消费',       'c1',  'c2';
+        '通胀',         'pinf1','pinf2'
     };
 
     figure_files = strings(0, 1);
@@ -256,14 +257,74 @@ function make_irf_figure(oo_, shock_suffix, panels, label, file_name)
         plot(horizon, high_irf, '--', 'LineWidth', 1.4);
         yline(0, ':');
         title(panels{i, 1}, 'Interpreter', 'none');
-        xlabel('period');
+        xlabel('期数');
         grid on;
         if i == 1
-            legend({'low debt', 'high debt'}, 'Location', 'best');
+            legend({'低债务地区', '高债务地区'}, 'Location', 'best');
         end
     end
 
     sgtitle(label, 'Interpreter', 'none');
     exportgraphics(fig, file_name, 'Resolution', 180);
+    close(fig);
+end
+
+function file_name = make_extension_gap_summary_figure(scenarios, status)
+    shock_suffix = '_emp';
+    panels = {
+        '实际付息压力缺口', 'ds1', 'ds2';
+        '公共投资缺口',     'ig1', 'ig2';
+        '公共资本缺口',     'kg1', 'kg2';
+        '最终产出缺口',     'y1',  'y2'
+    };
+
+    ok_indices = false(numel(scenarios), 1);
+    for s = 1:numel(scenarios)
+        row = status(status.scenario == string(scenarios(s).name), :);
+        ok_indices(s) = height(row) > 0 && row.status(1) == "ok";
+    end
+    ok_scenarios = scenarios(ok_indices);
+
+    file_name = "extension_scenario_diff_irfs.png";
+    if isempty(ok_scenarios)
+        return;
+    end
+
+    loaded_results = cell(numel(ok_scenarios), 1);
+    labels = strings(numel(ok_scenarios), 1);
+    for s = 1:numel(ok_scenarios)
+        result_file = fullfile(ok_scenarios(s).name, 'Output', ...
+            [ok_scenarios(s).name '_results.mat']);
+        loaded = load(result_file, 'oo_');
+        loaded_results{s} = loaded.oo_;
+        labels(s) = string(ok_scenarios(s).label);
+    end
+
+    fig = figure('Visible', 'off', 'Color', 'w', 'Position', [100 100 1150 760]);
+    tiledlayout(2, 2, 'Padding', 'compact', 'TileSpacing', 'compact');
+    colors = lines(numel(ok_scenarios));
+    for p = 1:size(panels, 1)
+        nexttile;
+        for s = 1:numel(ok_scenarios)
+            low_irf = get_irf(loaded_results{s}, panels{p, 2}, shock_suffix);
+            high_irf = get_irf(loaded_results{s}, panels{p, 3}, shock_suffix);
+            gap_irf = high_irf - low_irf;
+            horizon = 1:numel(gap_irf);
+            plot(horizon, gap_irf, 'LineWidth', 1.4, 'Color', colors(s, :));
+            hold on;
+        end
+        zero_line = yline(0, ':');
+        zero_line.HandleVisibility = 'off';
+        title(panels{p, 1}, 'Interpreter', 'none');
+        xlabel('期数');
+        grid on;
+        if p == 1
+            legend(labels, 'Location', 'best', 'Interpreter', 'none');
+        end
+    end
+
+    sgtitle('多维扩展情景下的高低债务地区差异响应', ...
+        'FontWeight', 'bold');
+    exportgraphics(fig, char(file_name), 'Resolution', 180);
     close(fig);
 end

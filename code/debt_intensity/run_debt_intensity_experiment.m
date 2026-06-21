@@ -189,35 +189,38 @@ end
 
 function make_high_region_figure(results, shock_suffix)
     panels = {
-        'Debt service pressure', 'ds2';
-        'Public investment',     'ig2';
-        'Public capital',        'kg2';
-        'Final output',          'y2';
-        'Consumption',           'c2';
-        'Inflation',             'pinf2'
+        '实际付息压力', 'ds2';
+        '公共投资',     'ig2';
+        '公共资本',     'kg2';
+        '最终产出',     'y2';
+        '总消费',       'c2';
+        '通胀',         'pinf2'
     };
     make_debt_figure(results, shock_suffix, panels, 'high', ...
-        'Figure 2. High-debt region IRFs under alternative steady-state debt ratios', ...
+        '', ...
         'figure2_debt_intensity_high_region_irfs.png');
 end
 
 function make_gap_figure(results, shock_suffix)
     panels = {
-        'Debt service pressure', 'ds1',   'ds2';
-        'Public investment',     'ig1',   'ig2';
-        'Public capital',        'kg1',   'kg2';
-        'Final output',          'y1',    'y2';
-        'Consumption',           'c1',    'c2';
-        'Inflation',             'pinf1', 'pinf2'
+        '实际付息压力缺口', 'ds1',   'ds2';
+        '公共投资缺口',     'ig1',   'ig2';
+        '公共资本缺口',     'kg1',   'kg2';
+        '最终产出缺口',     'y1',    'y2'
     };
     make_debt_figure(results, shock_suffix, panels, 'gap', ...
-        'High-debt minus low-debt IRFs under alternative steady-state debt ratios', ...
+        '', ...
         'figure2_debt_intensity_gap_irfs.png');
 end
 
 function make_debt_figure(results, shock_suffix, panels, mode, title_text, file_name)
-    fig = figure('Visible', 'off', 'Color', 'w', 'Position', [100 100 1200 760]);
-    tiledlayout(2, 3, 'Padding', 'compact', 'TileSpacing', 'compact');
+    if size(panels, 1) <= 4
+        fig = figure('Visible', 'off', 'Color', 'w', 'Position', [100 100 1000 740]);
+        tiledlayout(2, 2, 'Padding', 'compact', 'TileSpacing', 'compact');
+    else
+        fig = figure('Visible', 'off', 'Color', 'w', 'Position', [100 100 1200 760]);
+        tiledlayout(2, 3, 'Padding', 'compact', 'TileSpacing', 'compact');
+    end
     colors = lines(numel(results));
     labels = strings(numel(results), 1);
     for s = 1:numel(results)
@@ -238,16 +241,19 @@ function make_debt_figure(results, shock_suffix, panels, mode, title_text, file_
             plot(horizon, irf, 'LineWidth', 1.4, 'Color', colors(s, :));
             hold on;
         end
-        yline(0, ':');
+        zero_line = yline(0, ':');
+        zero_line.HandleVisibility = 'off';
         title(panels{p, 1}, 'Interpreter', 'none');
-        xlabel('period');
+        xlabel('期数');
         grid on;
         if p == 1
             legend(labels, 'Location', 'best', 'Interpreter', 'none');
         end
     end
 
-    sgtitle(title_text, 'Interpreter', 'none');
+    if strlength(string(title_text)) > 0
+        sgtitle(title_text, 'Interpreter', 'none');
+    end
     exportgraphics(fig, file_name, 'Resolution', 180);
     close(fig);
 end

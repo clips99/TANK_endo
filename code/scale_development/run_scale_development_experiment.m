@@ -224,33 +224,33 @@ end
 
 function make_region2_figure(results, shock_suffix)
     panels = {
-        'Policy rate',           'r';
-        'Debt service pressure', 'ds2';
-        'Fiscal space',          'fs2';
-        'Public investment',     'ig2';
-        'Public capital',        'kg2';
-        'Final output',          'y2';
-        'Consumption',           'c2';
-        'Inflation',             'pinf2'
+        '政策利率',     'r';
+        '实际付息压力', 'ds2';
+        '财政空间',     'fs2';
+        '公共投资',     'ig2';
+        '公共资本',     'kg2';
+        '最终产出',     'y2';
+        '总消费',       'c2';
+        '通胀',         'pinf2'
     };
     make_scale_figure(results, shock_suffix, panels, 'region2', ...
-        'Figure 3. Less-developed high-debt region IRFs by Y1/Y2', ...
+        '', ...
         'figure3_scale_development_region2_irfs.png');
 end
 
 function make_gap_figure(results, shock_suffix)
     panels = {
-        'Debt service pressure', 'ds1',   'ds2';
-        'Fiscal space',          'fs1',   'fs2';
-        'Public investment',     'ig1',   'ig2';
-        'Public capital',        'kg1',   'kg2';
-        'Private investment',    'inv1',  'inv2';
-        'Final output',          'y1',    'y2';
-        'Consumption',           'c1',    'c2';
-        'Inflation',             'pinf1', 'pinf2'
+        '实际付息压力缺口', 'ds1',   'ds2';
+        '财政空间缺口',     'fs1',   'fs2';
+        '公共投资缺口',     'ig1',   'ig2';
+        '公共资本缺口',     'kg1',   'kg2';
+        '私人投资缺口',     'inv1',  'inv2';
+        '最终产出缺口',     'y1',    'y2';
+        '总消费缺口',       'c1',    'c2';
+        '通胀缺口',         'pinf1', 'pinf2'
     };
     make_scale_figure(results, shock_suffix, panels, 'gap', ...
-        'Less-developed high-debt minus developed low-debt IRFs by Y1/Y2', ...
+        '', ...
         'figure3_scale_development_gap_irfs.png');
 end
 
@@ -277,16 +277,19 @@ function make_scale_figure(results, shock_suffix, panels, mode, title_text, file
             plot(horizon, irf, 'LineWidth', 1.4, 'Color', colors(s, :));
             hold on;
         end
-        yline(0, ':');
+        zero_line = yline(0, ':');
+        zero_line.HandleVisibility = 'off';
         title(panels{p, 1}, 'Interpreter', 'none');
-        xlabel('period');
+        xlabel('期数');
         grid on;
         if p == 1
             legend(labels, 'Location', 'best', 'Interpreter', 'none');
         end
     end
 
-    sgtitle(title_text, 'Interpreter', 'none');
+    if strlength(string(title_text)) > 0
+        sgtitle(title_text, 'Interpreter', 'none');
+    end
     exportgraphics(fig, file_name, 'Resolution', 180);
     close(fig);
 end

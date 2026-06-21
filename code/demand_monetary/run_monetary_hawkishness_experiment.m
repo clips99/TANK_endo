@@ -623,11 +623,10 @@ function make_stability_sync_map(metrics)
     xlim([min(x) - pad_x, max(x) + pad_x]);
     ylim([min(y) - pad_y, max(y) + pad_y]);
 
-    xlabel('Regional output desynchronization D_Y');
-    ylabel('National inflation volatility V_pi');
-    title({'Figure 4. Inflation stability and regional synchronization by phi_pi', ...
-        'Lower-left means lower inflation volatility and stronger regional synchronization'}, ...
-        'Interpreter', 'none');
+    xlabel('地区产出不同步程度 D_Y');
+    ylabel('全国通胀波动范数 V_\pi');
+    title('稳定性--同步性权衡（点旁数字为 \phi_\pi）', ...
+        'Interpreter', 'tex', 'FontWeight', 'bold');
     grid on;
     exportgraphics(fig, 'figure4_negative_demand_stability_sync_map.png', ...
         'Resolution', 180);

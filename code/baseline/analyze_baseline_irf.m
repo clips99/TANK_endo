@@ -90,32 +90,43 @@ function make_irf_figure(oo_, shock_suffix)
     tiledlayout(2, 4, 'Padding', 'compact', 'TileSpacing', 'compact');
 
     panels = {
-        'Debt service pressure', 'ds1', 'ds2';
-        'Fiscal space',          'fs1', 'fs2';
-        'Public investment',     'ig1', 'ig2';
-        'Public capital',        'kg1', 'kg2';
-        'Private investment',    'inv1','inv2';
-        'Final output',          'y1',  'y2';
-        'Consumption',           'c1',  'c2';
-        'Inflation',             'pinf1','pinf2'
+        '政策利率',       'r',    '';
+        '通胀',           'pinf1','pinf2';
+        '实际付息压力',   'ds1',  'ds2';
+        '财政空间',       'fs1',  'fs2';
+        '公共投资',       'ig1',  'ig2';
+        '公共资本',       'kg1',  'kg2';
+        '最终产出',       'y1',   'y2'
     };
 
     for i = 1:size(panels, 1)
         nexttile;
         low_irf = get_irf(oo_, panels{i, 2}, shock_suffix);
-        high_irf = get_irf(oo_, panels{i, 3}, shock_suffix);
         horizon = 1:numel(low_irf);
-        plot(horizon, low_irf, 'LineWidth', 1.4);
-        hold on;
-        plot(horizon, high_irf, '--', 'LineWidth', 1.4);
-        yline(0, ':');
-        title(panels{i, 1}, 'Interpreter', 'none');
-        xlabel('period');
-        grid on;
-        if i == 1
-            legend({'low debt', 'high debt'}, 'Location', 'best');
+        if isempty(panels{i, 3})
+            plot(horizon, low_irf, 'LineWidth', 1.4);
+            zero_line = yline(0, ':');
+            zero_line.HandleVisibility = 'off';
+        else
+            high_irf = get_irf(oo_, panels{i, 3}, shock_suffix);
+            plot(horizon, low_irf, 'LineWidth', 1.4);
+            hold on;
+            plot(horizon, high_irf, '--', 'LineWidth', 1.4);
+            zero_line = yline(0, ':');
+            zero_line.HandleVisibility = 'off';
         end
+        title(panels{i, 1}, 'Interpreter', 'none');
+        xlabel('期数');
+        grid on;
     end
+
+    nexttile;
+    plot(nan, nan, 'LineWidth', 1.4);
+    hold on;
+    plot(nan, nan, '--', 'LineWidth', 1.4);
+    axis off;
+    title('图例', 'Interpreter', 'none');
+    legend({'低债务地区', '高债务地区'}, 'Location', 'northwest');
 
     exportgraphics(fig, 'baseline_irf_comparison.png', 'Resolution', 180);
     close(fig);
