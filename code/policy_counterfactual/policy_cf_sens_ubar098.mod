@@ -26,6 +26,7 @@ parameters
     rho_a rho_g rho_tr rho_z rho_mp rho_d rho_r
     phi_pi phi_y tau_y theta_T
     mu_b phi_z_ds phi_z_b
+    psi_L ucrit_L nu_L ubar_L1 ubar_L2 bmax1 bmax2 pbar_L1 pbar_L2
     beta_g omega_y chi_ig varphi_b
     s1 s2
     rbar pinfbar ybar ybar1 ybar2 ymbar1 ymbar2 mcbar rkbar
@@ -72,7 +73,7 @@ eta        = 0.90;
 rho_a      = 0.70;
 rho_g      = 0.70;
 rho_tr     = 0.70;
-rho_z      = 0.7;
+rho_z      = 0.70;
 rho_mp     = 0.00;
 rho_d      = 0.50;
 rho_r      = 0.75;
@@ -82,8 +83,9 @@ tau_y      = 0.20;
 theta_T    = 0.60;
 
 mu_b       = 0.00;
-phi_z_ds   = 0.015;
-phi_z_b    = 0.005;
+phi_z_ds   = 0.00;
+phi_z_b    = 0.00;
+
 beta_g     = beta;
 omega_y    = 1.00;
 chi_ig     = 20.00;
@@ -158,6 +160,17 @@ zbar1      = fsbar1 + (rbar - 1) * bbar1 + gbar1 + lambda1 * trbar1
 zbar2      = fsbar2 + (rbar - 1) * bbar2 + gbar2 + lambda2 * trbar2
              - (1 - theta_T) * tau_y * ybar2;
 
+// Smooth debt-limit pressure parameters based on pre-investment financing gaps.
+psi_L      = 20;
+ucrit_L    = 0.995;
+nu_L       = 250;
+ubar_L1    = 0.975;
+ubar_L2    = 0.98;
+bmax1      = (bbar1 + (rbar - 1) * bbar1 + gbar1 + lambda1 * trbar1 - (1 - theta_T) * tau_y * ybar1 - zbar1) / ubar_L1;
+bmax2      = (bbar2 + (rbar - 1) * bbar2 + gbar2 + lambda2 * trbar2 - (1 - theta_T) * tau_y * ybar2 - zbar2) / ubar_L2;
+pbar_L1    = log(1 + exp(nu_L * (ubar_L1 - ucrit_L))) / nu_L;
+pbar_L2    = log(1 + exp(nu_L * (ubar_L2 - ucrit_L))) / nu_L;
+
 model;
     # sinv1  = phi_i / 2 * (inv1 / inv1(-1) - 1)^2;
     # spinv1 = phi_i * (inv1 / inv1(-1) - 1);
@@ -169,6 +182,14 @@ model;
     # rig1p = ig1(+1) / ig1;
     # rig2  = ig2 / ig2(-1);
     # rig2p = ig2(+1) / ig2;
+    # fgL1_now = (rb1(-1) / pinf1 - 1) * b1(-1) + g1 + lambda1 * tr1
+                  - (1 - theta_T) * tau_y * y1 - z1;
+    # uL1_now = (b1(-1) + fgL1_now) / bmax1;
+    # pL1_now = log(1 + exp(nu_L * (uL1_now - ucrit_L))) / nu_L;
+    # fgL2_now = (rb2(-1) / pinf2 - 1) * b2(-1) + g2 + lambda2 * tr2
+                  - (1 - theta_T) * tau_y * y2 - z2;
+    # uL2_now = (b2(-1) + fgL2_now) / bmax2;
+    # pL2_now = log(1 + exp(nu_L * (uL2_now - ucrit_L))) / nu_L;
 
     // Region 1 households and private capital
     lam1 = cr1^(-sigma);
@@ -246,6 +267,7 @@ model;
     rb1 / r = exp(mu_b * ((b1 / y1) / b_y1 - 1));
     lamg1 * (1 + chi_ig * (rig1 - 1) * rig1
               + chi_ig / 2 * (rig1 - 1)^2)
+        + lamg1 * psi_L * (pL1_now - pbar_L1)
         = qg1 + beta_g * lamg1(+1) * chi_ig * (rig1p - 1) * rig1p^2;
     qg1 = beta_g * (mbg1(+1) + (1 - delta_g) * qg1(+1));
     mbg1 = omega_y * gamma_g / kg1
@@ -270,6 +292,7 @@ model;
     rb2 / r = exp(mu_b * ((b2 / y2) / b_y2 - 1));
     lamg2 * (1 + chi_ig * (rig2 - 1) * rig2
               + chi_ig / 2 * (rig2 - 1)^2)
+        + lamg2 * psi_L * (pL2_now - pbar_L2)
         = qg2 + beta_g * lamg2(+1) * chi_ig * (rig2p - 1) * rig2p^2;
     qg2 = beta_g * (mbg2(+1) + (1 - delta_g) * qg2(+1));
     mbg2 = omega_y * gamma_g / kg2
@@ -400,6 +423,7 @@ check;
 
 stoch_simul(order = 1, irf = 40, nograph)
     mp r rb1 rb2 yagg pinfagg
-    z1 z2 b1 b2 ds1 ds2 fs1 fs2
+    z1 z2 g1 g2 tr1 tr2
+    b1 b2 ds1 ds2 fs1 fs2
     ig1 ig2 kg1 kg2
     y1 y2 c1 c2 inv1 inv2 pinf1 pinf2;
