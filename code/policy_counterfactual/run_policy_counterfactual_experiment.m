@@ -2,7 +2,7 @@
 %
 % The script keeps the baseline monetary tightening shock and steady state
 % fixed, then changes one institutional arrangement at a time:
-% 1. local debt-limit discipline;
+% 1. a hard local debt-balance quota solved with OccBin;
 % 2. central fiscal stabilization through transfers to local governments.
 
 clear;
@@ -21,21 +21,25 @@ end
 base_mod = fullfile(script_dir, '..', 'baseline', 'TANK_two_region_baseline.mod');
 base_text = fileread(base_mod);
 
-% Debt-limit pressure is based on the pre-public-investment financing gap:
-% Utilde_j = (B_{j,-1} + FG_j) / Bmax_j.  For this counterfactual stress test,
-% the high-debt region is calibrated below but close to the warning margin so
-% the rule's macro trade-off is visible without mechanically binding at steady
-% state.
+% Hard local-debt quota. The quota is imposed on the debt balance B_j rather
+% than on B_j/Y_j, matching China's local government debt-balance limit system.
+% Region 2 starts below the quota, but the baseline monetary-tightening path
+% pushes B_2 above the threshold and activates the OccBin regime.
 limit_settings = struct( ...
-    'ucrit', 0.995, ...
-    'nu', 250.00, ...
-    'ubar1', 0.975, ...
-    'ubar2', 0.985);
+    'ucrit', 1.000, ...
+    'nu', NaN, ...
+    'ubar1', 0.350 / 0.370, ...
+    'ubar2', 1.000, ...
+    'debt_cap1', 0.370, ...
+    'debt_cap2', 1.000, ...
+    'bind_tol', 1.0e-6, ...
+    'relax_tol', 1.0e-8);
 
 policy_rules = struct( ...
-    'name', {'policy_cf_baseline', 'policy_cf_fiscal_discipline'}, ...
-    'label', {'基准模型', '严格债务限额规则'}, ...
-    'psi_L', {0.00, 20.00}, ...
+    'name', {'policy_cf_baseline', 'policy_cf_strict_debt_cap'}, ...
+    'label', {'基准模型', '严格债务余额限额规则'}, ...
+    'psi_L', {0.00, NaN}, ...
+    'use_occbin', {false, true}, ...
     'line_style', {'-', '--'});
 
 transfer_rules = struct( ...
@@ -60,7 +64,7 @@ b_y2 = 1.00;
 status = table();
 summary = table();
 irf_series = table();
-results = struct('name', {}, 'label', {}, 'psi_L', {}, ...
+results = struct('name', {}, 'label', {}, 'psi_L', {}, 'use_occbin', {}, ...
     'line_style', {}, 'limit_settings', {}, 'oo', {}, 'M', {});
 
 transfer_status = table();
@@ -80,8 +84,12 @@ for i = 1:numel(policy_rules)
     rule = policy_rules(i);
     fprintf('\n=== Running %s: %s ===\n', rule.name, rule.label);
 
-    scenario_text = make_debt_limit_model(base_text, rule.psi_L, limit_settings);
-    scenario_text = set_policy_stoch_simul_list(scenario_text);
+    if rule.use_occbin
+        scenario_text = make_strict_debt_cap_model(base_text, limit_settings);
+        scenario_text = set_policy_occbin_solver_block(scenario_text);
+    else
+        scenario_text = set_policy_stoch_simul_list(base_text);
+    end
 
     scenario_mod = [rule.name '.mod'];
     fid = fopen(scenario_mod, 'w');
@@ -98,9 +106,13 @@ for i = 1:numel(policy_rules)
         delete_stale_result_file(result_file);
         evalc(sprintf('dynare %s noclearall', scenario_mod));
         loaded = load(result_file, 'oo_', 'M_');
+        if rule.use_occbin
+            loaded.oo_ = occbin_to_irfs(loaded.oo_, loaded.M_, 40, shock_suffix);
+        end
 
         scenario = struct('name', rule.name, 'label', rule.label, ...
-            'psi_L', rule.psi_L, 'limit_settings', limit_settings);
+            'psi_L', rule.psi_L, 'use_occbin', rule.use_occbin, ...
+            'limit_settings', limit_settings);
         summary = [summary; collect_summary(loaded.oo_, loaded.M_, scenario, ...
             periods, shock_suffix, b_y1, b_y2)]; %#ok<AGROW>
         irf_series = [irf_series; collect_irf_series(loaded.oo_, loaded.M_, scenario, ...
@@ -109,6 +121,7 @@ for i = 1:numel(policy_rules)
         results(end + 1).name = rule.name; %#ok<SAGROW>
         results(end).label = rule.label;
         results(end).psi_L = rule.psi_L;
+        results(end).use_occbin = rule.use_occbin;
         results(end).line_style = rule.line_style;
         results(end).limit_settings = limit_settings;
         results(end).oo = loaded.oo_;
@@ -288,13 +301,12 @@ if ~isempty(balance_results)
     make_balance_gap_figure(balance_results, shock_suffix);
 end
 
-function text = make_debt_limit_model(text, psi_L, settings)
-    if psi_L == 0
-        return;
-    end
-    text = add_debt_limit_parameters(text);
-    text = add_debt_limit_calibration(text, psi_L, settings);
-    text = add_debt_limit_wedge_to_public_investment_focs(text);
+function text = make_strict_debt_cap_model(text, settings)
+    text = add_strict_debt_cap_variables(text);
+    text = add_strict_debt_cap_parameters(text);
+    text = add_strict_debt_cap_calibration(text, settings);
+    text = add_strict_debt_cap_shadow_terms(text);
+    text = add_occbin_debt_cap_block(text, settings);
 end
 
 function text = make_central_transfer_model(text, rule)
@@ -307,6 +319,66 @@ function text = make_regional_balance_model(text, rule)
     text = add_regional_balance_parameter(text);
     text = add_regional_balance_calibration(text, rule.phi_reg);
     text = replace_taylor_rule_with_balance_target(text);
+end
+
+function text = add_strict_debt_cap_variables(text)
+    old_line = '    yagg pinfagg r mp d;';
+    new_line = '    yagg pinfagg r mp d xicap2;';
+    text = replace_exactly_once(text, old_line, new_line);
+end
+
+function text = add_strict_debt_cap_parameters(text)
+    old_line = 'mu_b phi_z_ds phi_z_b';
+    new_line = ['mu_b phi_z_ds phi_z_b' newline ...
+        '    debt_cap2 cap_bind_tol cap_relax_tol'];
+    text = replace_exactly_once(text, old_line, new_line);
+end
+
+function text = add_strict_debt_cap_calibration(text, settings)
+    insert_after = 'phi_z_b    = 0.00;';
+    calibration = sprintf([insert_after '\n' ...
+        '\n// Hard high-debt-region debt-balance quota for the OccBin counterfactual.\n' ...
+        'debt_cap2  = %.8g;\n' ...
+        'cap_bind_tol  = %.8g;\n' ...
+        'cap_relax_tol = %.8g;'], ...
+        settings.debt_cap2, settings.bind_tol, settings.relax_tol);
+    text = replace_exactly_once(text, insert_after, calibration);
+end
+
+function text = add_strict_debt_cap_shadow_terms(text)
+    old_euler2 = sprintf(['    lamg2 * (1 - varphi_b * (b2 / ybar2 - b_y2))\n' ...
+        '        = beta_g * lamg2(+1) * rb2 / pinf2(+1)\n' ...
+        '          * (1 + mu_b * ((b2 / y2) / b_y2));']);
+    new_euler2 = sprintf(['    lamg2 * (1 - varphi_b * (b2 / ybar2 - b_y2))\n' ...
+        '        = beta_g * lamg2(+1) * rb2 / pinf2(+1)\n' ...
+        '          * (1 + mu_b * ((b2 / y2) / b_y2)) + xicap2;']);
+    text = replace_exactly_once(text, old_euler2, new_euler2);
+
+    old_budget2 = sprintf(['    b2 = rb2(-1) / pinf2 * b2(-1) + g2 + ig2 + phiig2 + phib2 + lambda2 * tr2\n' ...
+        '         - (1 - theta_T) * tau_y * y2 - z2;']);
+    new_budget2 = sprintf([old_budget2 '\n' ...
+        '    [name=''Debt cap slack 2'', relax=''DEBTCAP2'']\n' ...
+        '    xicap2 = 0;\n' ...
+        '    [name=''Debt cap slack 2'', bind=''DEBTCAP2'']\n' ...
+        '    b2 = debt_cap2;']);
+    text = replace_exactly_once(text, old_budget2, new_budget2);
+
+    steady_marker = sprintf(['    r = rbar;\n' ...
+        '    mp = 0;\n' ...
+        '    d = 0;']);
+    steady_replacement = sprintf(['    r = rbar;\n' ...
+        '    mp = 0;\n' ...
+        '    d = 0;\n' ...
+        '    xicap2 = 0;']);
+    text = replace_exactly_once(text, steady_marker, steady_replacement);
+end
+
+function text = add_occbin_debt_cap_block(text, settings) %#ok<INUSD>
+    marker = 'steady_state_model;';
+    occbin_block = sprintf(['occbin_constraints;\n' ...
+        '    name ''DEBTCAP2''; bind b2 - debt_cap2 > cap_bind_tol; relax xicap2 < -cap_relax_tol;\n' ...
+        'end;\n\n' marker]);
+    text = replace_exactly_once(text, marker, occbin_block);
 end
 
 function text = add_debt_limit_parameters(text)
@@ -394,6 +466,7 @@ function text = add_debt_limit_wedge_to_public_investment_focs(text)
 end
 
 function text = set_policy_stoch_simul_list(text)
+    text = set_emp_shock_stderr(text, 0.01);
     simul_block = sprintf(['stoch_simul(order = 1, irf = 40, nograph)\n' ...
         '    mp r rb1 rb2 yagg pinfagg\n' ...
         '    z1 z2 g1 g2 tr1 tr2\n' ...
@@ -403,6 +476,20 @@ function text = set_policy_stoch_simul_list(text)
     text = regex_replace_once(text, ...
         'stoch_simul\(order = 1, irf = 40, nograph\)[\s\S]*?;', ...
         simul_block);
+end
+
+function text = set_policy_occbin_solver_block(text)
+    text = set_emp_shock_stderr(text, 0.01);
+    occbin_solver_block = sprintf(['shocks(surprise);\n' ...
+        '    var emp;\n' ...
+        '    periods 1;\n' ...
+        '    values 0.01;\n' ...
+        'end;\n\n' ...
+        'occbin_setup;\n' ...
+        'occbin_solver(simul_periods = 40, simul_check_ahead_periods = 120, simul_max_check_ahead_periods = 120, simul_maxit = 200);']);
+    text = regex_replace_once(text, ...
+        'stoch_simul\(order = 1, irf = 40, nograph\)[\s\S]*?;', ...
+        occbin_solver_block);
 end
 
 function text = set_transfer_stoch_simul_list(text)
@@ -446,8 +533,8 @@ function summary = collect_summary(oo_, M_, scenario, periods, shock_suffix, b_y
     u1_dev = u1 - limit.ubar1;
     u2_dev = u2 - limit.ubar2;
 
-    debt_ratio1 = b1 - b_y1 * y1;
-    debt_ratio2 = b2 - b_y2 * y2;
+    debt_ratio1 = debt_to_gdp_deviation_series(oo_, M_, shock_suffix, 1);
+    debt_ratio2 = debt_to_gdp_deviation_series(oo_, M_, shock_suffix, 2);
     ig_gap = ig2 - ig1;
     y_gap = y2 - y1;
 
@@ -498,8 +585,8 @@ function series = collect_irf_series(oo_, M_, scenario, shock_suffix, b_y1, b_y2
     [u2, pressure2] = debt_limit_series(oo_, M_, limit, shock_suffix, 2);
     u1_dev = u1 - limit.ubar1;
     u2_dev = u2 - limit.ubar2;
-    debt_ratio1 = b1(:) - b_y1 * y1(:);
-    debt_ratio2 = b2(:) - b_y2 * y2(:);
+    debt_ratio1 = debt_to_gdp_deviation_series(oo_, M_, shock_suffix, 1);
+    debt_ratio2 = debt_to_gdp_deviation_series(oo_, M_, shock_suffix, 2);
 
     series = table(repmat(string(scenario.name), numel(horizon), 1), ...
         repmat(string(scenario.label), numel(horizon), 1), ...
@@ -704,6 +791,34 @@ function irf = get_irf(oo_, var_name, shock_suffix)
         error('IRF field not found: %s', field);
     end
     irf = oo_.irfs.(field);
+    irf = irf(:);
+end
+
+function oo_ = occbin_to_irfs(oo_, M_, horizon, shock_suffix)
+    if ~isfield(oo_, 'occbin') || ~isfield(oo_.occbin, 'simul') ...
+            || ~isfield(oo_.occbin.simul, 'piecewise')
+        error('OccBin piecewise simulation output not found.');
+    end
+
+    piecewise = oo_.occbin.simul.piecewise;
+    if size(piecewise, 2) ~= M_.endo_nbr && size(piecewise, 1) == M_.endo_nbr
+        piecewise = piecewise';
+    end
+    if size(piecewise, 2) ~= M_.endo_nbr
+        error('Unexpected OccBin output size: %d x %d.', ...
+            size(piecewise, 1), size(piecewise, 2));
+    end
+
+    horizon = min(horizon, size(piecewise, 1));
+    steady = oo_.steady_state(:)';
+    names = cellstr(M_.endo_names);
+    if ~isfield(oo_, 'irfs') || isempty(oo_.irfs)
+        oo_.irfs = struct();
+    end
+    for j = 1:M_.endo_nbr
+        field = [names{j} shock_suffix];
+        oo_.irfs.(field) = piecewise(1:horizon, j) - steady(j);
+    end
 end
 
 function delete_stale_result_file(result_file)
@@ -722,7 +837,7 @@ function make_debt_limit_difference_figure(results, shock_suffix, b_y1, b_y2)
 
     plot_limit_difference_panel(results, shock_suffix, 2, ...
         '限额使用率差异');
-    plot_debt_ratio_difference_panel(results, shock_suffix, b_y2, ...
+    plot_debt_ratio_difference_panel(results, shock_suffix, 2, ...
         '债务/GDP 差异');
     plot_policy_difference_panel(results, shock_suffix, 'ds2', '', [], ...
         '实际付息压力差异');
@@ -733,7 +848,7 @@ function make_debt_limit_difference_figure(results, shock_suffix, b_y1, b_y2)
     plot_policy_difference_panel(results, shock_suffix, 'y2', '', [], ...
         '最终产出差异');
 
-    sgtitle('严格债务限额规则相对基准模型的差异响应', ...
+    sgtitle('严格债务余额限额规则相对基准模型的差异响应', ...
         'FontWeight', 'bold');
     exportgraphics(fig, 'figure5_debt_limit_diff_irfs.png', ...
         'Resolution', 180);
@@ -763,7 +878,7 @@ function make_region_irf_figure(results, shock_suffix)
         '高债务：最终产出');
 
     legend(labels, 'Location', 'best', 'Interpreter', 'none');
-    sgtitle('债务限额规则下各地区核心变量 IRF', ...
+    sgtitle('债务余额限额规则下各地区核心变量 IRF', ...
         'FontWeight', 'bold');
     exportgraphics(fig, 'figure5_debt_limit_region_irfs.png', ...
         'Resolution', 180);
@@ -777,7 +892,7 @@ function make_high_debt_figure(results, shock_suffix, b_y1, b_y2) %#ok<INUSD>
 
     plot_limit_panel(results, shock_suffix, 2, ...
         '高债务：限额使用率');
-    plot_policy_panel(results, shock_suffix, 'b2', 'y2', b_y2, ...
+    plot_debt_ratio_panel(results, shock_suffix, 2, ...
         '高债务：债务/GDP');
     plot_policy_panel(results, shock_suffix, 'ds2', '', [], ...
         '高债务：实际付息压力');
@@ -789,7 +904,7 @@ function make_high_debt_figure(results, shock_suffix, b_y1, b_y2) %#ok<INUSD>
         '高债务：最终产出');
 
     legend(labels, 'Location', 'best', 'Interpreter', 'none');
-    sgtitle('高债务地区在债务限额规则下的 IRF', ...
+    sgtitle('高债务地区在债务余额限额规则下的 IRF', ...
         'FontWeight', 'bold');
     exportgraphics(fig, 'figure5_debt_limit_high_debt_irfs.png', ...
         'Resolution', 180);
@@ -813,7 +928,7 @@ function make_gap_figure(results, shock_suffix, b_y1, b_y2)
         '最终产出缺口：高债务 - 低债务');
 
     legend(labels, 'Location', 'best', 'Interpreter', 'none');
-    sgtitle('严格债务限额规则下的地区差异响应', ...
+    sgtitle('严格债务余额限额规则下的地区差异响应', ...
         'FontWeight', 'bold');
     exportgraphics(fig, 'figure5_debt_limit_gap_irfs.png', ...
         'Resolution', 180);
@@ -1031,10 +1146,10 @@ function plot_limit_difference_panel(results, shock_suffix, region, title_text)
     grid on;
 end
 
-function plot_debt_ratio_difference_panel(results, shock_suffix, ratio_base, title_text)
+function plot_debt_ratio_difference_panel(results, shock_suffix, region, title_text)
     nexttile;
-    baseline = policy_series(results(1).oo, shock_suffix, 'b2', 'y2', ratio_base);
-    counterfactual = policy_series(results(2).oo, shock_suffix, 'b2', 'y2', ratio_base);
+    baseline = debt_to_gdp_deviation_series(results(1).oo, results(1).M, shock_suffix, region);
+    counterfactual = debt_to_gdp_deviation_series(results(2).oo, results(2).M, shock_suffix, region);
     y = counterfactual - baseline;
     horizon = 1:numel(y);
     plot(horizon, y, 'LineWidth', 1.8, 'Color', [0.70 0.10 0.10]);
@@ -1043,6 +1158,22 @@ function plot_debt_ratio_difference_panel(results, shock_suffix, ratio_base, tit
     title(title_text, 'Interpreter', 'none');
     xlabel('季度');
     ylabel('反事实 - 基准');
+    grid on;
+end
+
+function plot_debt_ratio_panel(results, shock_suffix, region, title_text)
+    nexttile;
+    color = [0.05 0.20 0.35];
+    for i = 1:numel(results)
+        y = debt_to_gdp_deviation_series(results(i).oo, results(i).M, shock_suffix, region);
+        horizon = 1:numel(y);
+        plot(horizon, y, 'LineWidth', 1.5, 'Color', color, ...
+            'LineStyle', results(i).line_style);
+        hold on;
+    end
+    yline(0, ':');
+    title(title_text, 'Interpreter', 'none');
+    xlabel('期数');
     grid on;
 end
 
@@ -1121,16 +1252,12 @@ function plot_pressure_gap_panel(results, shock_suffix, title_text)
     grid on;
 end
 
-function plot_debt_ratio_gap_panel(results, shock_suffix, b_y1, b_y2, title_text)
+function plot_debt_ratio_gap_panel(results, shock_suffix, b_y1, b_y2, title_text) %#ok<INUSD>
     nexttile;
     color = [0.05 0.20 0.35];
     for i = 1:numel(results)
-        b1 = get_irf(results(i).oo, 'b1', shock_suffix);
-        b2 = get_irf(results(i).oo, 'b2', shock_suffix);
-        y1 = get_irf(results(i).oo, 'y1', shock_suffix);
-        y2 = get_irf(results(i).oo, 'y2', shock_suffix);
-        debt_ratio1 = b1 - b_y1 * y1;
-        debt_ratio2 = b2 - b_y2 * y2;
+        debt_ratio1 = debt_to_gdp_deviation_series(results(i).oo, results(i).M, shock_suffix, 1);
+        debt_ratio2 = debt_to_gdp_deviation_series(results(i).oo, results(i).M, shock_suffix, 2);
         y = debt_ratio2 - debt_ratio1;
         horizon = 1:numel(y);
         plot(horizon, y, 'LineWidth', 1.5, 'Color', color, ...
@@ -1148,11 +1275,19 @@ function [u, pressure_value] = debt_limit_series(oo_, M_, settings, shock_suffix
     ubar = settings.(['ubar' char(suffix)]);
 
     b = level_series(oo_, M_, ['b' char(suffix)], shock_suffix);
+    y = level_series(oo_, M_, ['y' char(suffix)], shock_suffix);
+
+    if isfield(settings, ['debt_cap' char(suffix)])
+        cap = settings.(['debt_cap' char(suffix)]);
+        u = b ./ cap;
+        pressure_value = max(u - settings.ucrit, 0);
+        return;
+    end
+
     rb = level_series(oo_, M_, ['rb' char(suffix)], shock_suffix);
     pinf = level_series(oo_, M_, ['pinf' char(suffix)], shock_suffix);
     g = level_series(oo_, M_, ['g' char(suffix)], shock_suffix);
     tr = level_series(oo_, M_, ['tr' char(suffix)], shock_suffix);
-    y = level_series(oo_, M_, ['y' char(suffix)], shock_suffix);
     z = level_series(oo_, M_, ['z' char(suffix)], shock_suffix);
 
     b_lag = lag_level_series(b, steady_value(oo_, M_, ['b' char(suffix)]));
@@ -1183,6 +1318,15 @@ end
 function x = level_series(oo_, M_, var_name, shock_suffix)
     irf = get_irf(oo_, var_name, shock_suffix);
     x = steady_value(oo_, M_, var_name) + irf(:);
+end
+
+function dev = debt_to_gdp_deviation_series(oo_, M_, shock_suffix, region)
+    suffix = char(string(region));
+    b = level_series(oo_, M_, ['b' suffix], shock_suffix);
+    y = level_series(oo_, M_, ['y' suffix], shock_suffix);
+    steady_ratio = steady_value(oo_, M_, ['b' suffix]) ...
+        / steady_value(oo_, M_, ['y' suffix]);
+    dev = b ./ y - steady_ratio;
 end
 
 function x_lag = lag_level_series(x, steady)
@@ -1218,6 +1362,12 @@ end
 function text = set_parameter_value(text, name, value)
     pattern = ['(?m)^\s*' name '\s*=\s*[-+0-9.eE]+;\s*$'];
     replacement = sprintf('%-11s= %.8g;', name, value);
+    text = regex_replace_once(text, pattern, replacement);
+end
+
+function text = set_emp_shock_stderr(text, value)
+    pattern = 'var emp; stderr [-+0-9.eE]+;';
+    replacement = sprintf('var emp; stderr %.8g;', value);
     text = regex_replace_once(text, pattern, replacement);
 end
 

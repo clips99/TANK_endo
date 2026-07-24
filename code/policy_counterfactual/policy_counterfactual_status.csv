@@ -1,3 +1,3 @@
 scenario,label,psi_L,ucrit,nu,ubar1,ubar2,status,notes
-policy_cf_baseline,基准模型,0,0.995,250,0.975,0.985,ok,
-policy_cf_fiscal_discipline,严格债务限额规则,20,0.995,250,0.975,0.985,ok,
+policy_cf_baseline,基准模型,0,1,NaN,0.945945945945946,1,ok,
+policy_cf_strict_debt_cap,严格债务余额限额规则,NaN,1,NaN,0.945945945945946,1,ok,
