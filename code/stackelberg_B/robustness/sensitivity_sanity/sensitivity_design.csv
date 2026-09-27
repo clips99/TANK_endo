@@ -1,0 +1,10 @@
+scenario_id,varied_parameter,level,is_baseline,gamma_g,alpha,phi_i,chi_ig
+baseline,baseline,baseline,1,0.1,0.45,2.5,20
+gamma_low,gamma_g,low,0,0.05,0.45,2.5,20
+gamma_high,gamma_g,high,0,0.15,0.45,2.5,20
+phiI_low,phi_i,low,0,0.1,0.45,1.25,20
+phiI_high,phi_i,high,0,0.1,0.45,5,20
+chiIG_low,chi_ig,low,0,0.1,0.45,2.5,10
+chiIG_high,chi_ig,high,0,0.1,0.45,2.5,40
+alpha_low,alpha,low,0,0.1,0.4,2.5,20
+alpha_high,alpha,high,0,0.1,0.5,2.5,20

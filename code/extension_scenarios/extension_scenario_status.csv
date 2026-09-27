@@ -1,7 +1,7 @@
 scenario,label,status,notes
 scenario_01_baseline,基准,ok,"mu_b=0, no transfer response, omega=0.85, eta=0.90"
-scenario_02_risk_premium,地方债风险溢价,ok,"mu_b>0 raises local financing costs when debt ratios rise"
+scenario_02_risk_premium,缩约报价中介的地方债风险溢价,ok,"a reduced-form quoting intermediary raises local financing costs when debt ratios rise"
 scenario_03_transfer_buffer,中央转移支付缓冲,ok,"central transfers react to DS through the local-government budget"
-scenario_04_risk_and_transfer,风险溢价+转移支付缓冲,ok,"risk premium and central transfer buffer active together"
+scenario_04_risk_and_transfer,缩约报价中介风险溢价+转移支付缓冲,ok,"reduced-form quoting-intermediary premium and central transfer buffer active together"
 scenario_05_strong_io,强跨地区投入产出联系,ok,"lower home bias and lower substitution elasticity"
 scenario_06_weak_io,弱跨地区投入产出联系,ok,"higher home bias and higher substitution elasticity"

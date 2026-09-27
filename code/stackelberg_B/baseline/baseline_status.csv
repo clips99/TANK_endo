@@ -1,0 +1,9 @@
+check_name,check_variable,statistic,window_start,window_end,expected_sign,threshold,audit_value,signed_absolute_peak,peak_period,status
+policy_rate_impact,r,impact,1,1,positive,1e-12,0.00181226535138879,0.00181226535138879,1,PASS
+aggregate_inflation_impact,pinfagg,impact,1,1,negative,1e-12,-0.00169330309935178,-0.00169330309935178,1,PASS
+debt_service_gap,ds2-ds1,window_sum,1,4,positive,1e-12,0.0172103489019287,0.00698919389274979,2,PASS
+fiscal_space_gap,fs2-fs1,window_sum,1,4,negative,1e-12,-0.0171055137330205,-0.00695812498384218,2,PASS
+public_investment_gap,ig2-ig1,window_sum,1,12,negative,1e-12,-0.0101248132486025,-0.00103285846980507,8,PASS
+public_capital_gap,kg2-kg1,window_sum,1,12,negative,1e-12,-0.0537922159377793,-0.0121678927113882,22,PASS
+local_output_gap,xloc2-xloc1,window_sum,1,12,negative,1e-12,-0.00556543442104063,-0.000548970835614782,7,PASS
+overall,all,all_pass,0,0,all_pass,0,1,NaN,0,PASS

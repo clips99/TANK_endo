@@ -1,0 +1,9 @@
+check_name,value,criterion,status
+equation_count,"86 endogenous / 86 equations",86 endogenous and 86 equations,PASS
+steady_state_residual,"3.1974423109204508e-14",< 1.0e-10,PASS
+static_jacobian_full_rank,"86 / 86",rank 86,PASS
+model_diagnostics,"true",Dynare reports no obvious problem,PASS
+bk_order_condition,"32 unstable / 32 forward-looking",unstable roots equal M_.nsfwrd,PASS
+bk_order_and_rank,"check=1, info=0",Dynare check verifies order and QZ rank,PASS
+required_irf_fields,"43 / 43 present",all first-round mechanism fields present,PASS
+overall,"true",all gates pass,PASS

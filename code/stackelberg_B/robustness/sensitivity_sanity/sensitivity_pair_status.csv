@@ -1,0 +1,73 @@
+batch_run_id,scenario_id,check_name,observed_value,status
+20260927_101616_608,baseline,common_parameters_equal,0,PASS
+20260927_101616_608,baseline,common_nonshadow_steady_states_equal,0,PASS
+20260927_101616_608,baseline,shock_std_equal_and_registered,0.0025000000000000001 / 0.0025000000000000001,PASS
+20260927_101616_608,baseline,order_equal_and_registered,1 / 1,PASS
+20260927_101616_608,baseline,horizon_equal_and_registered,40 / 40,PASS
+20260927_101616_608,baseline,all_core_series_finite,true,PASS
+20260927_101616_608,baseline,regional_DID_identity,8.6736173798840355e-19,PASS
+20260927_101616_608,baseline,overall,true,PASS
+20260927_101616_608,gamma_low,common_parameters_equal,0,PASS
+20260927_101616_608,gamma_low,common_nonshadow_steady_states_equal,0,PASS
+20260927_101616_608,gamma_low,shock_std_equal_and_registered,0.0025000000000000001 / 0.0025000000000000001,PASS
+20260927_101616_608,gamma_low,order_equal_and_registered,1 / 1,PASS
+20260927_101616_608,gamma_low,horizon_equal_and_registered,40 / 40,PASS
+20260927_101616_608,gamma_low,all_core_series_finite,true,PASS
+20260927_101616_608,gamma_low,regional_DID_identity,8.6736173798840355e-19,PASS
+20260927_101616_608,gamma_low,overall,true,PASS
+20260927_101616_608,gamma_high,common_parameters_equal,0,PASS
+20260927_101616_608,gamma_high,common_nonshadow_steady_states_equal,0,PASS
+20260927_101616_608,gamma_high,shock_std_equal_and_registered,0.0025000000000000001 / 0.0025000000000000001,PASS
+20260927_101616_608,gamma_high,order_equal_and_registered,1 / 1,PASS
+20260927_101616_608,gamma_high,horizon_equal_and_registered,40 / 40,PASS
+20260927_101616_608,gamma_high,all_core_series_finite,true,PASS
+20260927_101616_608,gamma_high,regional_DID_identity,8.6736173798840355e-19,PASS
+20260927_101616_608,gamma_high,overall,true,PASS
+20260927_101616_608,phiI_low,common_parameters_equal,0,PASS
+20260927_101616_608,phiI_low,common_nonshadow_steady_states_equal,0,PASS
+20260927_101616_608,phiI_low,shock_std_equal_and_registered,0.0025000000000000001 / 0.0025000000000000001,PASS
+20260927_101616_608,phiI_low,order_equal_and_registered,1 / 1,PASS
+20260927_101616_608,phiI_low,horizon_equal_and_registered,40 / 40,PASS
+20260927_101616_608,phiI_low,all_core_series_finite,true,PASS
+20260927_101616_608,phiI_low,regional_DID_identity,8.6736173798840355e-19,PASS
+20260927_101616_608,phiI_low,overall,true,PASS
+20260927_101616_608,phiI_high,common_parameters_equal,0,PASS
+20260927_101616_608,phiI_high,common_nonshadow_steady_states_equal,0,PASS
+20260927_101616_608,phiI_high,shock_std_equal_and_registered,0.0025000000000000001 / 0.0025000000000000001,PASS
+20260927_101616_608,phiI_high,order_equal_and_registered,1 / 1,PASS
+20260927_101616_608,phiI_high,horizon_equal_and_registered,40 / 40,PASS
+20260927_101616_608,phiI_high,all_core_series_finite,true,PASS
+20260927_101616_608,phiI_high,regional_DID_identity,1.7347234759768071e-18,PASS
+20260927_101616_608,phiI_high,overall,true,PASS
+20260927_101616_608,chiIG_low,common_parameters_equal,0,PASS
+20260927_101616_608,chiIG_low,common_nonshadow_steady_states_equal,0,PASS
+20260927_101616_608,chiIG_low,shock_std_equal_and_registered,0.0025000000000000001 / 0.0025000000000000001,PASS
+20260927_101616_608,chiIG_low,order_equal_and_registered,1 / 1,PASS
+20260927_101616_608,chiIG_low,horizon_equal_and_registered,40 / 40,PASS
+20260927_101616_608,chiIG_low,all_core_series_finite,true,PASS
+20260927_101616_608,chiIG_low,regional_DID_identity,1.7347234759768071e-18,PASS
+20260927_101616_608,chiIG_low,overall,true,PASS
+20260927_101616_608,chiIG_high,common_parameters_equal,0,PASS
+20260927_101616_608,chiIG_high,common_nonshadow_steady_states_equal,0,PASS
+20260927_101616_608,chiIG_high,shock_std_equal_and_registered,0.0025000000000000001 / 0.0025000000000000001,PASS
+20260927_101616_608,chiIG_high,order_equal_and_registered,1 / 1,PASS
+20260927_101616_608,chiIG_high,horizon_equal_and_registered,40 / 40,PASS
+20260927_101616_608,chiIG_high,all_core_series_finite,true,PASS
+20260927_101616_608,chiIG_high,regional_DID_identity,4.3368086899420177e-19,PASS
+20260927_101616_608,chiIG_high,overall,true,PASS
+20260927_101616_608,alpha_low,common_parameters_equal,0,PASS
+20260927_101616_608,alpha_low,common_nonshadow_steady_states_equal,0,PASS
+20260927_101616_608,alpha_low,shock_std_equal_and_registered,0.0025000000000000001 / 0.0025000000000000001,PASS
+20260927_101616_608,alpha_low,order_equal_and_registered,1 / 1,PASS
+20260927_101616_608,alpha_low,horizon_equal_and_registered,40 / 40,PASS
+20260927_101616_608,alpha_low,all_core_series_finite,true,PASS
+20260927_101616_608,alpha_low,regional_DID_identity,8.6736173798840355e-19,PASS
+20260927_101616_608,alpha_low,overall,true,PASS
+20260927_101616_608,alpha_high,common_parameters_equal,0,PASS
+20260927_101616_608,alpha_high,common_nonshadow_steady_states_equal,0,PASS
+20260927_101616_608,alpha_high,shock_std_equal_and_registered,0.0025000000000000001 / 0.0025000000000000001,PASS
+20260927_101616_608,alpha_high,order_equal_and_registered,1 / 1,PASS
+20260927_101616_608,alpha_high,horizon_equal_and_registered,40 / 40,PASS
+20260927_101616_608,alpha_high,all_core_series_finite,true,PASS
+20260927_101616_608,alpha_high,regional_DID_identity,1.7347234759768071e-18,PASS
+20260927_101616_608,alpha_high,overall,true,PASS

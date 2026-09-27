@@ -1,0 +1,5 @@
+metric,value
+jacobian_rank,6
+dimension,6
+max_residual,3.5527136788005e-15
+exitflag,1

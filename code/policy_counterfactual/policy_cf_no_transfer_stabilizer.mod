@@ -1,42 +1,44 @@
-// Two-region TANK DSGE model with endogenous public investment under
-// local-government optimization.
+// Two-region RANK DSGE model: frozen Scheme-A main-text baseline.
+// Each local government internalizes the direct marginal product of public
+// capital and its local tax-base effect, while taking aggregate prices,
+// national policy, and regional financing quotes as given.
 // Experiment files are generated from this model by changing calibration,
-// shock, or policy blocks while preserving the same baseline structure.
+// shock, or policy blocks while preserving the same structural closure.
 // - asset market is closed by common risk-free Euler for region 1 and risk-sharing condition for region 2
+// - yj is final-good absorption; xlocj=qjj*ymj is local production GDP/tax base
+// - one representative household in each region; complete interregional risk sharing
 
 var
-    cr1 ch1 c1 nr1 nh1 n1 inv1 k1 qk1 lam1
+    c1 n1 inv1 k1 qk1 lam1
     y1 ym1 w1 rk1 mc1 pinf1 pim1 pstar1 xone1 xtwo1 v1
-    b1 rb1 ds1 fs1 ig1 kg1 phiig1 phib1 lamg1 qg1 mbg1 a1 g1 tr1 z1
-    cr2 ch2 c2 nr2 nh2 n2 inv2 k2 qk2 lam2
+    b1 rb1 dann1 ds1 fs1 ig1 kg1 phiig1 phib1 lamg1 qg1 a1 g1 z1
+    c2 n2 inv2 k2 qk2 lam2
     y2 ym2 w2 rk2 mc2 pinf2 pim2 pstar2 xone2 xtwo2 v2
-    b2 rb2 ds2 fs2 ig2 kg2 phiig2 phib2 lamg2 qg2 mbg2 a2 g2 tr2 z2
+    b2 rb2 dann2 ds2 fs2 ig2 kg2 phiig2 phib2 lamg2 qg2 a2 g2 z2
     m11 m21 m12 m22
     q11 q21 q12 q22
-    yagg pinfagg r mp d;
+    yagg xloc1 xloc2 xagg pinfagg r mp d;
 
 varexo emp ed;
 
 predetermined_variables k1 k2 kg1 kg2;
 
 parameters
-    beta sigma varphi chi_n lambda1 lambda2
-    delta_k delta_g phi_i alpha gamma_g
+    beta sigma varphi chi_n delta_k delta_g phi_i alpha gamma_g
     theta_p epsilon_p omega1 omega2 eta
-    rho_a rho_g rho_tr rho_z rho_mp rho_d rho_r
-    phi_pi phi_y tau_y theta_T
+    rho_a rho_g rho_z rho_mp rho_d rho_r
+    phi_pi phi_x tau_x theta_T
     mu_b phi_z_ds phi_z_b
-    beta_g omega_y chi_ig varphi_b
+    beta_g omega_x chi_ig varphi_b
     s1 s2
-    rbar pinfbar ybar ybar1 ybar2 ymbar1 ymbar2 mcbar rkbar
-    b_y1 b_y2 bbar1 bbar2
+    rbar pinfbar ybar ybar1 ybar2 ymbar1 ymbar2 xbar xbar1 xbar2 gw1 gw2 mcbar rkbar
+    d_ann1 d_ann2 b_x1 b_x2 bbar1 bbar2
+    abar1 abar2 xi_rs
     kbar1 kbar2 invbar1 invbar2
     kgbar1 kgbar2 igbar1 igbar2
     nbar1 nbar2 wbar1 wbar2
-    cbar1 cbar2 gbar1 gbar2 trbar1 trbar2
-    dsbar1 dsbar2 fsbar1 fsbar2
+    cbar1 cbar2 gbar1 gbar2 dsbar1 dsbar2 fsbar1 fsbar2
     lamgbar1 lamgbar2 qgbar1 qgbar2
-    mbgbar1 mbgbar2
     zbar1 zbar2;
 
 // -------------------------------------------------------------------------
@@ -46,15 +48,13 @@ parameters
 // price stickiness, fiscal-rule coefficients, public-capital externality,
 // and interregional input weights. The only exogenous regional asymmetry in
 // the baseline calibration is the steady-state local-debt ratio:
-//     b_y2 > b_y1.
+//     d_ann2 > d_ann1.
 // This makes regional IRF differences attributable to local debt burdens.
 
 // Common household and production parameters
 beta       = 0.99;
 sigma      = 2.00;
 varphi     = 0.50;
-lambda1    = 0.30;
-lambda2    = 0.30;
 delta_k    = 0.025;
 delta_g    = 0.025;
 phi_i      = 2.50;
@@ -71,26 +71,28 @@ eta        = 0.90;
 // Common policy and fiscal-rule parameters
 rho_a      = 0.70;
 rho_g      = 0.70;
-rho_tr     = 0.70;
 rho_z      = 0;
 rho_mp     = 0.00;
-rho_d      = 0.50;
+rho_d      = 0.80;
 rho_r      = 0.75;
 phi_pi     = 1.50;
-phi_y      = 0.125;
-tau_y      = 0.20;
+phi_x      = 0.125;
+tau_x      = 0.20;
 theta_T    = 0.60;
 
 mu_b       = 0.00;
 phi_z_ds   = 0;
 phi_z_b    = 0;
 beta_g     = beta;
-omega_y    = 1.00;
+omega_x    = 1.00;
 chi_ig     = 20.00;
 varphi_b   = 0.05;
 
 s1         = 0.50;
 s2         = 0.50;
+abar1      = 1.00;
+abar2      = 1.00;
+xi_rs      = 1.00;
 
 // Steady-state targets and internally consistent calibration.
 // The two regions are symmetric except for steady-state local debt ratios.
@@ -104,28 +106,34 @@ mcbar      = (epsilon_p - 1) / epsilon_p;
 rkbar      = rbar - 1 + delta_k;
 ymbar1     = omega1 * ybar1 + (1 - omega2) * ybar2;
 ymbar2     = (1 - omega1) * ybar1 + omega2 * ybar2;
+xbar1      = ymbar1;
+xbar2      = ymbar2;
+xbar       = s1 * xbar1 + s2 * xbar2;
+gw1        = s1 * xbar1 / xbar;
+gw2        = s2 * xbar2 / xbar;
 
 // Only exogenous regional asymmetry in the baseline:
 // region 1 is low-debt, region 2 is high-debt.
-b_y1       = 0.35;
-b_y2       = 1.00;
-bbar1      = b_y1 * ybar1;
-bbar2      = b_y2 * ybar2;
+d_ann1     = 0.40;
+d_ann2     = 1.00;
+b_x1       = 4 * d_ann1;
+b_x2       = 4 * d_ann2;
+bbar1      = b_x1 * xbar1;
+bbar2      = b_x2 * xbar2;
 
-igbar1     = 0.12 * ybar1;
-igbar2     = 0.12 * ybar2;
+igbar1     = 0.12 * xbar1;
+igbar2     = 0.12 * xbar2;
 kgbar1     = igbar1 / delta_g;
 kgbar2     = igbar2 / delta_g;
-lamgbar1   = (omega_y * gamma_g / kgbar1)
-             / (1 / beta_g - 1 + delta_g
-                - (1 - theta_T) * tau_y * gamma_g * ybar1 / kgbar1);
-lamgbar2   = (omega_y * gamma_g / kgbar2)
-             / (1 / beta_g - 1 + delta_g
-                - (1 - theta_T) * tau_y * gamma_g * ybar2 / kgbar2);
+// Scheme-A public-capital FOC and qgbar=lamgbar jointly determine the
+// steady government-budget multiplier. The two regions share this value
+// because their technology and public-investment shares are symmetric.
+lamgbar1   = (beta_g * gamma_g * omega_x / kgbar1)
+             / (1 - beta_g * (1 - delta_g)
+                - beta_g * gamma_g * (1 - theta_T) * tau_x * xbar1 / kgbar1);
+lamgbar2   = lamgbar1;
 qgbar1     = lamgbar1;
 qgbar2     = lamgbar2;
-mbgbar1    = qgbar1 * (1 / beta_g - 1 + delta_g);
-mbgbar2    = qgbar2 * (1 / beta_g - 1 + delta_g);
 
 kbar1      = alpha * mcbar * ymbar1 / rkbar;
 kbar2      = alpha * mcbar * ymbar2 / rkbar;
@@ -137,26 +145,24 @@ nbar2      = (ymbar2 / (kgbar2^gamma_g * kbar2^alpha))^(1 / (1 - alpha));
 wbar1      = (1 - alpha) * mcbar * ymbar1 / nbar1;
 wbar2      = (1 - alpha) * mcbar * ymbar2 / nbar2;
 
-gbar1      = 0.10 * ybar1;
-gbar2      = 0.10 * ybar2;
+gbar1      = 0.10 * xbar1;
+gbar2      = 0.10 * xbar2;
 cbar1      = ybar1 - invbar1 - gbar1 - igbar1;
 cbar2      = ybar2 - invbar2 - gbar2 - igbar2;
 
-trbar1     = cbar1 - wbar1 * nbar1;
-trbar2     = cbar2 - wbar2 * nbar2;
 chi_n      = cbar1^(-sigma) * wbar1 / (nbar1^varphi);
 
-dsbar1     = (rbar - 1) * bbar1 / ybar1;
-dsbar2     = (rbar - 1) * bbar2 / ybar2;
+dsbar1     = (rbar - 1) * bbar1 / xbar1;
+dsbar2     = (rbar - 1) * bbar2 / xbar2;
 fsbar1     = igbar1;
 fsbar2     = igbar2;
 
 // zbar1 and zbar2 are residual steady-state fiscal closures. They differ
 // because debt service differs, not because transfer-policy parameters differ.
-zbar1      = fsbar1 + (rbar - 1) * bbar1 + gbar1 + lambda1 * trbar1
-             - (1 - theta_T) * tau_y * ybar1;
-zbar2      = fsbar2 + (rbar - 1) * bbar2 + gbar2 + lambda2 * trbar2
-             - (1 - theta_T) * tau_y * ybar2;
+zbar1      = fsbar1 + (rbar - 1) * bbar1 + gbar1
+             - (1 - theta_T) * tau_x * xbar1;
+zbar2      = fsbar2 + (rbar - 1) * bbar2 + gbar2
+             - (1 - theta_T) * tau_x * xbar2;
 
 model;
     # sinv1  = phi_i / 2 * (inv1 / inv1(-1) - 1)^2;
@@ -171,26 +177,18 @@ model;
     # rig2p = ig2(+1) / ig2;
 
     // Region 1 households and private capital
-    lam1 = cr1^(-sigma);
+    lam1 = c1^(-sigma);
     lam1 = beta * lam1(+1) * r / pinf1(+1) * exp(-d);
-    chi_n * nr1^varphi = lam1 * w1;
-    ch1 = w1 * nh1 + tr1;
-    chi_n * nh1^varphi = ch1^(-sigma) * w1;
-    c1 = (1 - lambda1) * cr1 + lambda1 * ch1;
-    n1 = (1 - lambda1) * nr1 + lambda1 * nh1;
+    chi_n * n1^varphi = lam1 * w1;
     k1(+1) = (1 - delta_k) * k1 + (1 - sinv1) * inv1;
     qk1 = beta * (lam1(+1) / lam1) * (rk1(+1) + (1 - delta_k) * qk1(+1));
     1 = qk1 * (1 - sinv1 - spinv1 * inv1 / inv1(-1))
         + beta * (lam1(+1) / lam1) * qk1(+1) * spinv1p * (inv1(+1) / inv1)^2;
 
     // Region 2 households and private capital
-    lam2 = cr2^(-sigma);
-    lam2 = lam1 * q11 / q12;
-    chi_n * nr2^varphi = lam2 * w2;
-    ch2 = w2 * nh2 + tr2;
-    chi_n * nh2^varphi = ch2^(-sigma) * w2;
-    c2 = (1 - lambda2) * cr2 + lambda2 * ch2;
-    n2 = (1 - lambda2) * nr2 + lambda2 * nh2;
+    lam2 = c2^(-sigma);
+    lam2 = xi_rs * lam1 * q11 / q12;
+    chi_n * n2^varphi = lam2 * w2;
     k2(+1) = (1 - delta_k) * k2 + (1 - sinv2) * inv2;
     qk2 = beta * (lam2(+1) / lam2) * (rk2(+1) + (1 - delta_k) * qk2(+1));
     1 = qk2 * (1 - sinv2 - spinv2 * inv2 / inv2(-1))
@@ -211,11 +209,11 @@ model;
     q11 * q22 = q12 * q21;
 
     // Intermediate goods production and price setting
-    log(a1) = rho_a * log(a1(-1));
+    log(a1 / abar1) = rho_a * log(a1(-1) / abar1);
     ym1 = a1 * kg1^gamma_g * k1^alpha * n1^(1 - alpha) / v1;
     w1 = (1 - alpha) * q11 * mc1 * ym1 * v1 / n1;
     rk1 = alpha * q11 * mc1 * ym1 * v1 / k1;
-    ym1 = m11 + m12;
+    s1 * ym1 = s1 * m11 + s2 * m12;
     1 = (1 - theta_p) * pstar1^(1 - epsilon_p) + theta_p * pim1^(epsilon_p - 1);
     xone1 = lam1 * q11 * mc1 * ym1
             + beta * theta_p * pim1(+1)^epsilon_p * xone1(+1);
@@ -224,11 +222,11 @@ model;
     pstar1 = epsilon_p / (epsilon_p - 1) * xone1 / xtwo1;
     v1 = (1 - theta_p) * pstar1^(-epsilon_p) + theta_p * pim1^epsilon_p * v1(-1);
 
-    log(a2) = rho_a * log(a2(-1));
+    log(a2 / abar2) = rho_a * log(a2(-1) / abar2);
     ym2 = a2 * kg2^gamma_g * k2^alpha * n2^(1 - alpha) / v2;
     w2 = (1 - alpha) * q22 * mc2 * ym2 * v2 / n2;
     rk2 = alpha * q22 * mc2 * ym2 * v2 / k2;
-    ym2 = m21 + m22;
+    s2 * ym2 = s1 * m21 + s2 * m22;
     1 = (1 - theta_p) * pstar2^(1 - epsilon_p) + theta_p * pim2^(epsilon_p - 1);
     xone2 = lam2 * q22 * mc2 * ym2
             + beta * theta_p * pim2(+1)^epsilon_p * xone2(+1);
@@ -237,62 +235,79 @@ model;
     pstar2 = epsilon_p / (epsilon_p - 1) * xone2 / xtwo2;
     v2 = (1 - theta_p) * pstar2^(-epsilon_p) + theta_p * pim2^epsilon_p * v2(-1);
 
-    // Local governments and endogenous public capital
-    ds1 = (rb1(-1) / pinf1 - 1) * b1(-1) / y1;
-    fs1 = (1 - theta_T) * tau_y * y1 + z1
-          - (rb1(-1) / pinf1 - 1) * b1(-1) - g1 - lambda1 * tr1;
+    // Local production GDP: the value of local intermediate output in the
+    // local final-good numeraire. Final absorption yj is kept separate.
+    xloc1 = q11 * ym1;
+    xloc2 = q22 * ym2;
+
+    // Local governments and endogenous public capital. Under Scheme A the
+    // government internalizes the direct local technology and tax-base
+    // effects of public capital, but not induced private-sector responses. A reduced-form
+    // quoting intermediary sets rbj as a function of leverage; each local
+    // government takes the quoted rate as given when choosing debt (no
+    // drbj/dbj term). No competitive-zero-profit interpretation is imposed.
+    // dannj=Bj/(4*Xj) annualizes the current-quarter GDP flow; it is not a
+    // ratio to an observed rolling four-quarter GDP total.
+    dann1 = b1 / (4 * xloc1);
+    ds1 = (rb1(-1) / pinf1 - 1) * b1(-1) / xloc1;
+    fs1 = (1 - theta_T) * tau_x * xloc1 + z1
+          - (rb1(-1) / pinf1 - 1) * b1(-1) - g1;
     phiig1 = chi_ig / 2 * (rig1 - 1)^2 * ig1;
-    phib1 = varphi_b / 2 * (b1 / ybar1 - b_y1)^2 * ybar1;
-    rb1 / r = exp(mu_b * ((b1 / y1) / b_y1 - 1));
+    phib1 = varphi_b / 2 * (b1 / xbar1 - b_x1)^2 * xbar1;
+    rb1 / r = exp(mu_b * (dann1 / d_ann1 - 1));
     lamg1 * (1 + chi_ig * (rig1 - 1) * rig1
               + chi_ig / 2 * (rig1 - 1)^2)
         = qg1 + beta_g * lamg1(+1) * chi_ig * (rig1p - 1) * rig1p^2;
-    qg1 = beta_g * (mbg1(+1) + (1 - delta_g) * qg1(+1));
-    mbg1 = omega_y * gamma_g / kg1
-           + lamg1 * (1 - theta_T) * tau_y * gamma_g * y1 / kg1;
-    lamg1 * (1 - varphi_b * (b1 / ybar1 - b_y1))
-        = beta_g * lamg1(+1) * rb1 / pinf1(+1)
-          * (1 + mu_b * ((b1 / y1) / b_y1));
+    qg1 = beta_g * ((1 - delta_g) * qg1(+1)
+          + gamma_g / kg1(+1)
+            * (omega_x + lamg1(+1) * (1 - theta_T) * tau_x * xloc1(+1)));
+    lamg1 * (1 - varphi_b * (b1 / xbar1 - b_x1))
+        = beta_g * lamg1(+1) * rb1 / pinf1(+1);
     kg1(+1) = (1 - delta_g) * kg1 + ig1;
-    b1 = rb1(-1) / pinf1 * b1(-1) + g1 + ig1 + phiig1 + phib1 + lambda1 * tr1
-         - (1 - theta_T) * tau_y * y1 - z1;
+    b1 = rb1(-1) / pinf1 * b1(-1) + g1 + ig1 + phiig1 + phib1
+         - (1 - theta_T) * tau_x * xloc1 - z1;
     log(g1 / gbar1) = rho_g * log(g1(-1) / gbar1);
-    log(tr1 / trbar1) = rho_tr * log(tr1(-1) / trbar1);
     log(z1 / zbar1) = rho_z * log(z1(-1) / zbar1)
                       + phi_z_ds * (ds1 / dsbar1 - 1)
-                      + phi_z_b * ((b1(-1) / y1(-1)) / b_y1 - 1);
+                      + phi_z_b * ((b1(-1) / xloc1(-1)) / b_x1 - 1);
 
-    ds2 = (rb2(-1) / pinf2 - 1) * b2(-1) / y2;
-    fs2 = (1 - theta_T) * tau_y * y2 + z2
-          - (rb2(-1) / pinf2 - 1) * b2(-1) - g2 - lambda2 * tr2;
+    dann2 = b2 / (4 * xloc2);
+    ds2 = (rb2(-1) / pinf2 - 1) * b2(-1) / xloc2;
+    fs2 = (1 - theta_T) * tau_x * xloc2 + z2
+          - (rb2(-1) / pinf2 - 1) * b2(-1) - g2;
     phiig2 = chi_ig / 2 * (rig2 - 1)^2 * ig2;
-    phib2 = varphi_b / 2 * (b2 / ybar2 - b_y2)^2 * ybar2;
-    rb2 / r = exp(mu_b * ((b2 / y2) / b_y2 - 1));
+    phib2 = varphi_b / 2 * (b2 / xbar2 - b_x2)^2 * xbar2;
+    rb2 / r = exp(mu_b * (dann2 / d_ann2 - 1));
     lamg2 * (1 + chi_ig * (rig2 - 1) * rig2
               + chi_ig / 2 * (rig2 - 1)^2)
         = qg2 + beta_g * lamg2(+1) * chi_ig * (rig2p - 1) * rig2p^2;
-    qg2 = beta_g * (mbg2(+1) + (1 - delta_g) * qg2(+1));
-    mbg2 = omega_y * gamma_g / kg2
-           + lamg2 * (1 - theta_T) * tau_y * gamma_g * y2 / kg2;
-    lamg2 * (1 - varphi_b * (b2 / ybar2 - b_y2))
-        = beta_g * lamg2(+1) * rb2 / pinf2(+1)
-          * (1 + mu_b * ((b2 / y2) / b_y2));
+    qg2 = beta_g * ((1 - delta_g) * qg2(+1)
+          + gamma_g / kg2(+1)
+            * (omega_x + lamg2(+1) * (1 - theta_T) * tau_x * xloc2(+1)));
+    lamg2 * (1 - varphi_b * (b2 / xbar2 - b_x2))
+        = beta_g * lamg2(+1) * rb2 / pinf2(+1);
     kg2(+1) = (1 - delta_g) * kg2 + ig2;
-    b2 = rb2(-1) / pinf2 * b2(-1) + g2 + ig2 + phiig2 + phib2 + lambda2 * tr2
-         - (1 - theta_T) * tau_y * y2 - z2;
+    b2 = rb2(-1) / pinf2 * b2(-1) + g2 + ig2 + phiig2 + phib2
+         - (1 - theta_T) * tau_x * xloc2 - z2;
     log(g2 / gbar2) = rho_g * log(g2(-1) / gbar2);
-    log(tr2 / trbar2) = rho_tr * log(tr2(-1) / trbar2);
     log(z2 / zbar2) = rho_z * log(z2(-1) / zbar2)
                       + phi_z_ds * (ds2 / dsbar2 - 1)
-                      + phi_z_b * ((b2(-1) / y2(-1)) / b_y2 - 1);
+                      + phi_z_b * ((b2(-1) / xloc2(-1)) / b_x2 - 1);
 
     // Monetary policy, aggregation, and resource constraints
-    yagg = s1 * y1 + s2 * y2;
-    pinfagg = pinf1^s1 * pinf2^s2;
+    // Final absorption is also valued initially in each local final-good
+    // numeraire, so its aggregate requires the same common-price conversion.
+    yagg = s1 * y1 * (q12 / q11)^gw2
+           + s2 * y2 * (q11 / q12)^gw1;
+    // Aggregate nominal GDP deflated by P=P1^gw1*P2^gw2. Since
+    // P1/P2=q12/q11, each local-currency GDP is converted to the common unit.
+    xagg = s1 * xloc1 * (q12 / q11)^gw2
+           + s2 * xloc2 * (q11 / q12)^gw1;
+    pinfagg = pinf1^gw1 * pinf2^gw2;
     mp = rho_mp * mp(-1) + emp;
     d = rho_d * d(-1) - ed;
     r / rbar = (r(-1) / rbar)^rho_r
-        * ((pinfagg / pinfbar)^phi_pi * (yagg / ybar)^phi_y)^(1 - rho_r)
+        * ((pinfagg / pinfbar)^phi_pi * (xagg / xbar)^phi_x)^(1 - rho_r)
         * exp(mp);
 
     y1 = c1 + inv1 + g1 + ig1 + phiig1 + phib1;
@@ -300,11 +315,7 @@ model;
 end;
 
 steady_state_model;
-    cr1 = cbar1;
-    ch1 = cbar1;
     c1 = cbar1;
-    nr1 = nbar1;
-    nh1 = nbar1;
     n1 = nbar1;
     inv1 = invbar1;
     k1 = kbar1;
@@ -312,6 +323,7 @@ steady_state_model;
     lam1 = cbar1^(-sigma);
     y1 = ybar1;
     ym1 = ymbar1;
+    xloc1 = xbar1;
     w1 = wbar1;
     rk1 = rkbar;
     mc1 = mcbar;
@@ -323,6 +335,7 @@ steady_state_model;
     v1 = 1;
     b1 = bbar1;
     rb1 = rbar;
+    dann1 = d_ann1;
     ds1 = dsbar1;
     fs1 = fsbar1;
     ig1 = igbar1;
@@ -331,17 +344,11 @@ steady_state_model;
     phib1 = 0;
     lamg1 = lamgbar1;
     qg1 = qgbar1;
-    mbg1 = mbgbar1;
-    a1 = 1;
+    a1 = abar1;
     g1 = gbar1;
-    tr1 = trbar1;
     z1 = zbar1;
 
-    cr2 = cbar2;
-    ch2 = cbar2;
     c2 = cbar2;
-    nr2 = nbar2;
-    nh2 = nbar2;
     n2 = nbar2;
     inv2 = invbar2;
     k2 = kbar2;
@@ -349,6 +356,7 @@ steady_state_model;
     lam2 = cbar2^(-sigma);
     y2 = ybar2;
     ym2 = ymbar2;
+    xloc2 = xbar2;
     w2 = wbar2;
     rk2 = rkbar;
     mc2 = mcbar;
@@ -360,6 +368,7 @@ steady_state_model;
     v2 = 1;
     b2 = bbar2;
     rb2 = rbar;
+    dann2 = d_ann2;
     ds2 = dsbar2;
     fs2 = fsbar2;
     ig2 = igbar2;
@@ -368,10 +377,8 @@ steady_state_model;
     phib2 = 0;
     lamg2 = lamgbar2;
     qg2 = qgbar2;
-    mbg2 = mbgbar2;
-    a2 = 1;
+    a2 = abar2;
     g2 = gbar2;
-    tr2 = trbar2;
     z2 = zbar2;
 
     m11 = omega1 * ybar1;
@@ -383,6 +390,7 @@ steady_state_model;
     q12 = 1;
     q22 = 1;
     yagg = ybar;
+    xagg = xbar;
     pinfagg = pinfbar;
     r = rbar;
     mp = 0;
@@ -390,7 +398,7 @@ steady_state_model;
 end;
 
 shocks;
-    var emp; stderr 0.01;
+    var emp; stderr 0.0025;
 end;
 
 resid;
@@ -399,7 +407,7 @@ model_diagnostics;
 check;
 
 stoch_simul(order = 1, irf = 40, nograph)
-    mp r rb1 rb2 yagg pinfagg
+    mp r rb1 rb2 xagg pinfagg
     z1 z2 b1 b2 ds1 ds2 fs1 fs2
     ig1 ig2 kg1 kg2
-    y1 y2 c1 c2 inv1 inv2 pinf1 pinf2;
+    xloc1 xloc2 c1 c2 inv1 inv2 pinf1 pinf2;

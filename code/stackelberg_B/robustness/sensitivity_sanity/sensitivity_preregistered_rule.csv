@@ -1,0 +1,10 @@
+rule_id,definition,threshold,interpretation
+fixed_window,"Rcum=abs(sum_1_12(B-A))/abs(sum_1_12(A))",NaN,"Registered 1-12 cumulative contribution"
+full_path,"Rpath=norm_2(B-A)/norm_2(A), periods 1-40",NaN,"No-cancellation whole-path diagnostic"
+cancellation_guard,"If abs(sum(A))<0.1*sum(abs(A)), Rcum is unavailable and Rpath governs",0.1,"Prevents an unstable cumulative denominator"
+small_effect,"effective_ratio<0.05",0.05,"Conservative quantitative-materiality screen, not a statistical test"
+borderline,"0.05<=effective_ratio<0.10",0.1,"Requires substantive review before model freeze"
+material,"effective_ratio>=0.10, or a core sign/order reversal",0.1,"B extension is quantitatively material"
+structural_gate,"All 18 runs and every A/B comparability check must pass",NaN,"A failed or missing case makes the conclusion inconclusive"
+sign_and_order_gate,"Cumulative response signs and high-minus-low ordering must be preserved",NaN,"The qualitative mechanism may not be overturned"
+peak_rule,"Peaks are descriptive only and never determine the decision",NaN,"No ex-post selection based on an attractive peak"

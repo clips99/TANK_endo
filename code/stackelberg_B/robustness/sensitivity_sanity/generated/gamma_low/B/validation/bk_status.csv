@@ -1,0 +1,2 @@
+model,qz_criterium,nstatic,npred,nfwrd,nboth,nspred,nsfwrd,eigenvalue_count,unstable_roots,order_condition,dynare_check_result,dynare_check_info_code,dynare_check_info_text,dynare_check_error,rank_condition_status,bk_status
+RANK_scheme_B_gamma_low,1.000001,30,24,22,10,34,32,66,32,1,1,0,0,,PASS,PASS

@@ -1,0 +1,10 @@
+scenario_id,varied_parameter,level,gamma_g,alpha,phi_i,chi_ig,max_effective_ratio,binding_variable,binding_scope,scenario_classification
+baseline,baseline,baseline,0.1,0.45,2.5,20,0.014034111865852,ig,low_debt,SMALL
+gamma_low,gamma_g,low,0.05,0.45,2.5,20,0.0147882621085334,kg,low_debt,SMALL
+gamma_high,gamma_g,high,0.15,0.45,2.5,20,0.0136695120600795,ig,low_debt,SMALL
+phiI_low,phi_i,low,0.1,0.45,1.25,20,0.0100984630507868,ig,low_debt,SMALL
+phiI_high,phi_i,high,0.1,0.45,5,20,0.0178303730780993,ig,low_debt,SMALL
+chiIG_low,chi_ig,low,0.1,0.45,2.5,10,0.0206337954982484,ig,low_debt,SMALL
+chiIG_high,chi_ig,high,0.1,0.45,2.5,40,0.00904393233171959,kg,low_debt,SMALL
+alpha_low,alpha,low,0.1,0.4,2.5,20,0.0127777444808658,ig,low_debt,SMALL
+alpha_high,alpha,high,0.1,0.5,2.5,20,0.0152859950306677,ig,low_debt,SMALL

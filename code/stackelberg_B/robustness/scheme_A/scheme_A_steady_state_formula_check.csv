@@ -1,0 +1,3 @@
+region,xloc,public_investment,public_capital,local_tax_rate,denominator,analytic_lamg,dynare_lamg,dynare_qg,formula_error,steady_foc_residual,status
+low_debt,1,0.12,4.8,0.08,0.0331000000000001,0.62311178247734,0.62311178247734,0.62311178247734,0,0,PASS
+high_debt,1,0.12,4.8,0.08,0.0331000000000001,0.62311178247734,0.62311178247734,0.62311178247734,0,0,PASS

@@ -1,0 +1,2 @@
+model,n_endogenous,n_equations,difference,expected_endogenous,expected_equations,status
+RANK_scheme_B_phiI_high,86,86,0,86,86,PASS

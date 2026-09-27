@@ -1,0 +1,10 @@
+check_name,observed_value,criterion,status,note,max_ratio_scenario,max_ratio_variable,max_ratio_scope
+all_18_runs_present,true,18,PASS,"Every scenario must have one A and one B run",chiIG_low,ig,low_debt
+all_structural_runs_pass,true,all PASS,PASS,"Residual, Jacobian, diagnostics, BK, IRF, and shadow-target gates",chiIG_low,ig,low_debt
+all_9_pair_checks_present,true,9,PASS,"No failed case may be silently dropped",chiIG_low,ig,low_debt
+all_pair_comparability_checks_pass,true,all PASS,PASS,"Shared parameters, shared steady states, shock, order, horizon, DID",chiIG_low,ig,low_debt
+all_81_registered_summaries_present,true,81,PASS,"9 scenarios x 3 variables x 3 scopes",chiIG_low,ig,low_debt
+all_cumulative_signs_preserved,true,true,PASS,"Within-pair and relative-to-baseline cumulative signs",chiIG_low,ig,low_debt
+all_high_low_orderings_preserved,true,true,PASS,"High-minus-low cumulative sign is the regional ordering",chiIG_low,ig,low_debt
+global_effective_ratio_below_5_percent,0.020633795498248439,<0.05,PASS,"Maximum of registered Rcum and Rpath metrics",chiIG_low,ig,low_debt
+final_decision,FREEZE_A_AS_MAIN_BASELINE,all preceding gates and materiality rule,PASS,"5 percent is an economic-materiality screen, not statistical significance",chiIG_low,ig,low_debt

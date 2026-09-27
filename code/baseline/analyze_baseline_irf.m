@@ -1,12 +1,12 @@
+function analyze_baseline_irf()
 % Baseline monetary tightening IRF analysis.
 % Run after:
-%   dynare TANK_two_region_baseline.mod noclearall
+%   dynare RANK_two_region_baseline.mod noclearall
 
-clear;
-clc;
+script_dir=fileparts(mfilename('fullpath'));
 
-results_file = fullfile(pwd, 'TANK_two_region_baseline', 'Output', ...
-    'TANK_two_region_baseline_results.mat');
+results_file = fullfile(script_dir, 'RANK_two_region_baseline', 'Output', ...
+    'RANK_two_region_baseline_results.mat');
 if ~isfile(results_file)
     error('Results file not found: %s. Run Dynare first.', results_file);
 end
@@ -18,12 +18,12 @@ periods = [1 4 8 12];
 
 pairs = {
     'Local bond rate',       'rb1', 'rb2', 'higher is costlier';
-    'Debt service pressure', 'ds1', 'ds2', 'higher is more pressure';
-    'Fiscal space',          'fs1', 'fs2', 'lower is tighter';
+    'Net real debt-service burden', 'ds1', 'ds2', 'higher is more burdensome';
+    'Pre-financing fiscal resources','fs1','fs2','lower is tighter';
     'Public investment',     'ig1', 'ig2', 'lower is weaker';
     'Public capital',        'kg1', 'kg2', 'lower is weaker';
-    'Intermediate output',   'ym1', 'ym2', 'lower is weaker';
-    'Final output',          'y1',  'y2',  'lower is weaker';
+    'Production GDP',        'xloc1','xloc2','lower is weaker';
+    'Final absorption',      'y1',  'y2',  'lower is weaker';
     'Private investment',    'inv1','inv2','lower is weaker';
     'Labor demand',          'n1',  'n2',  'lower is weaker';
     'Real wage',             'w1',  'w2',  'lower is weaker';
@@ -64,8 +64,8 @@ for name = ["mp", "r"]
     policy = [policy; row]; %#ok<AGROW>
 end
 
-writetable(summary, 'baseline_irf_summary.csv');
-writetable(policy, 'baseline_policy_irf.csv');
+writetable(summary, fullfile(script_dir,'baseline_irf_summary.csv'));
+writetable(policy, fullfile(script_dir,'baseline_policy_irf.csv'));
 
 fprintf('\nPolicy shock IRF\n');
 fprintf('--------------------------------\n');
@@ -75,7 +75,7 @@ fprintf('\nRegional IRF comparison: high-debt minus low-debt\n');
 fprintf('--------------------------------\n');
 disp(summary(:, {'metric','diff_t1','diff_t4','diff_t8','diff_t12'}));
 
-make_irf_figure(oo_, shock_suffix);
+end
 
 function irf = get_irf(oo_, var_name, shock_suffix)
     field = [var_name shock_suffix];
@@ -83,51 +83,4 @@ function irf = get_irf(oo_, var_name, shock_suffix)
         error('IRF field not found: %s', field);
     end
     irf = oo_.irfs.(field);
-end
-
-function make_irf_figure(oo_, shock_suffix)
-    fig = figure('Visible', 'off', 'Color', 'w', 'Position', [100 100 1200 800]);
-    tiledlayout(2, 4, 'Padding', 'compact', 'TileSpacing', 'compact');
-
-    panels = {
-        '政策利率',       'r',    '';
-        '通胀',           'pinf1','pinf2';
-        '实际付息压力',   'ds1',  'ds2';
-        '财政空间',       'fs1',  'fs2';
-        '公共投资',       'ig1',  'ig2';
-        '公共资本',       'kg1',  'kg2';
-        '最终产出',       'y1',   'y2'
-    };
-
-    for i = 1:size(panels, 1)
-        nexttile;
-        low_irf = get_irf(oo_, panels{i, 2}, shock_suffix);
-        horizon = 1:numel(low_irf);
-        if isempty(panels{i, 3})
-            plot(horizon, low_irf, 'LineWidth', 1.4);
-            zero_line = yline(0, ':');
-            zero_line.HandleVisibility = 'off';
-        else
-            high_irf = get_irf(oo_, panels{i, 3}, shock_suffix);
-            plot(horizon, low_irf, 'LineWidth', 1.4);
-            hold on;
-            plot(horizon, high_irf, '--', 'LineWidth', 1.4);
-            zero_line = yline(0, ':');
-            zero_line.HandleVisibility = 'off';
-        end
-        title(panels{i, 1}, 'Interpreter', 'none');
-        xlabel('期数');
-        grid on;
-    end
-
-    nexttile;
-    plot(nan, nan, 'LineWidth', 1.4);
-    hold on;
-    plot(nan, nan, '--', 'LineWidth', 1.4);
-    axis off;
-    title('图例', 'Interpreter', 'none');
-    legend({'低债务地区', '高债务地区'}, 'Location', 'northwest');
-
-    exportgraphics(fig, 'baseline_irf_comparison.png', 'Resolution', 180);
-    close(fig);
 end

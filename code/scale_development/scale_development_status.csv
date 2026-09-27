@@ -1,4 +1,4 @@
-scenario,label,output_ratio,s1,s2,b_y1,b_y2,status,notes
-scale_development_y100,Y1/Y2 = 1.0,1,0.5,0.5,0.4,1,ok,
-scale_development_y150,Y1/Y2 = 1.5,1.5,0.6,0.4,0.4,1,ok,
-scale_development_y200,Y1/Y2 = 2.0,2,0.66666667,0.33333333,0.4,1,ok,
+scenario,label,total_gdp_ratio,realized_total_gdp_ratio,scale_ratio,development_ratio,s1,s2,gw1,gw2,xbar1,xbar2,regional_gdp1,regional_gdp2,omega1,omega2,imports1,imports2,d_ann1,d_ann2,abar1,abar2,xi_rs,status,notes
+scale_development_y100,"R=1.0, scale=1.000, unit GDP=1.000",1,1,1,1,0.5,0.5,0.5,0.5,1,1,0.5,0.5,0.85,0.85,0.075,0.075,0.4,1,1,1,1,ok,
+scale_development_y150,"R=1.5, scale=1.225, unit GDP=1.225",1.5,1.5,1.22474487139159,1.22474487139159,0.550510257216822,0.449489742783178,0.6,0.4,1.08989794855664,0.889897948556636,0.6,0.4,0.875,0.8125,0.075,0.075,0.4,1,1.07283211453816,0.909133863241358,1.5,ok,
+scale_development_y200,"R=2.0, scale=1.414, unit GDP=1.414",2,2,1.4142135623731,1.4142135623731,0.585786437626905,0.414213562373095,0.666666666666667,0.333333333333333,1.1380711874577,0.804737854124365,0.666666666666667,0.333333333333333,0.8875,0.775,0.075,0.075,0.4,1,1.11140334589544,0.837435020005357,2,ok,

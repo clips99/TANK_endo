@@ -1,0 +1,5 @@
+comparison,max_abs_error,bitwise_equal,tolerance,passed
+steady_state,0,1,1e-10,1
+all_covariances,0,1,1e-10,1
+all_demand_irfs,0,1,1e-10,1
+six_reported_moments,0,1,1e-10,1

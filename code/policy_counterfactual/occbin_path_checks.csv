@@ -1,0 +1,2 @@
+solver_error_flag,binding_period_count,finite_real_path,max_piecewise_linear_residual_q1_q39,max_cap_violation,max_binding_debt_residual,max_slack_multiplier,max_negative_binding_multiplier,passed
+0,1,1,6.84174938925253e-15,0,0,1.42440245071565e-16,0,1

@@ -1,0 +1,12 @@
+metric,value
+max_foc_residual,3.5527136788005e-15
+max_budget_residual,0
+multiplier_jacobian_rank,12
+multiplier_jacobian_dimension,12
+B1,1.6
+B2,4
+Z1,0.156161616161616
+Z2,0.180404040404041
+C,0.512913669064749
+N,0.108259193121186
+chiN,48.9097810250405

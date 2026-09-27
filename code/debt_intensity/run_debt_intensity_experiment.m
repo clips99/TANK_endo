@@ -1,23 +1,23 @@
+function run_debt_intensity_experiment()
 % Debt intensity experiment.
 %
-% Keep the low-debt region's steady-state debt-to-GDP ratio fixed at 40%,
-% set the high-debt region's ratio to 40%, 80%, 120%, and 160%, and compare
+% Keep the low-debt region's annualized debt indicator B/(4X) fixed at 40%,
+% where 4X is four times the current-quarter GDP flow (not rolling four-quarter
+% GDP). Set the high-debt indicator to 40%, 80%, 120%, and 160%, and compare
 % monetary-tightening IRFs across debt intensities.
 
-clear;
-clc;
-
 script_dir = fileparts(mfilename('fullpath'));
-if ~isempty(script_dir)
-    cd(script_dir);
-end
+addpath(script_dir, fullfile(script_dir, '..', 'utils'));
+original_dir = pwd;
+restore_dir = onCleanup(@() cd(original_dir));
+cd(script_dir);
 
 dynare_path = 'C:\dynare\7.0\matlab';
 if isfolder(dynare_path)
     addpath(dynare_path);
 end
 
-base_mod = fullfile(script_dir, '..', 'baseline', 'TANK_two_region_baseline.mod');
+base_mod = fullfile(script_dir, '..', 'baseline', 'RANK_two_region_baseline.mod');
 base_text = fileread(base_mod);
 
 debt_ratios = [0.40 0.80 1.20 1.60];
@@ -28,20 +28,19 @@ status = table();
 high_region_summary = table();
 gap_summary = table();
 irf_series = table();
-results = struct('name', {}, 'label', {}, 'debt_ratio', {}, 'oo', {});
 
 for i = 1:numel(debt_ratios)
     debt_ratio = debt_ratios(i);
     scenario_name = sprintf('debt_intensity_b%03d', round(100 * debt_ratio));
-    scenario_label = sprintf('B2/Y2 = %.0f%%', 100 * debt_ratio);
+    scenario_label = sprintf('B2/(4X2) = %.0f%%', 100 * debt_ratio);
     fprintf('\n=== Running %s: %s ===\n', scenario_name, scenario_label);
 
     scenario_text = base_text;
-    scenario_text = set_parameter_line(scenario_text, 'b_y1', 0.40);
-    scenario_text = set_parameter_line(scenario_text, 'b_y2', debt_ratio);
+    scenario_text = set_parameter_line(scenario_text, 'd_ann1', 0.40);
+    scenario_text = set_parameter_line(scenario_text, 'd_ann2', debt_ratio);
 
     scenario_mod = [scenario_name '.mod'];
-    fid = fopen(scenario_mod, 'w');
+    fid = fopen(fullfile(script_dir, scenario_mod), 'w');
     if fid < 0
         error('Could not write scenario file: %s', scenario_mod);
     end
@@ -51,7 +50,7 @@ for i = 1:numel(debt_ratios)
 
     try
         evalc(sprintf('dynare %s noclearall', scenario_mod));
-        result_file = fullfile(scenario_name, 'Output', [scenario_name '_results.mat']);
+        result_file = fullfile(script_dir, scenario_name, 'Output', [scenario_name '_results.mat']);
         loaded = load(result_file, 'oo_');
 
         scenario = struct('name', scenario_name, ...
@@ -63,10 +62,6 @@ for i = 1:numel(debt_ratios)
         irf_series = [irf_series; ...
             collect_irf_series(loaded.oo_, scenario, shock_suffix)]; %#ok<AGROW>
 
-        results(end + 1).name = scenario_name; %#ok<SAGROW>
-        results(end).label = scenario_label;
-        results(end).debt_ratio = debt_ratio;
-        results(end).oo = loaded.oo_;
 
         status = [status; table(string(scenario_name), string(scenario_label), ...
             debt_ratio, "ok", "", ...
@@ -79,18 +74,19 @@ for i = 1:numel(debt_ratios)
     end
 end
 
-writetable(status, 'debt_intensity_status.csv');
-writetable(high_region_summary, 'debt_intensity_high_region_summary.csv');
-writetable(gap_summary, 'debt_intensity_gap_summary.csv');
-writetable(irf_series, 'debt_intensity_irf_series.csv');
+writetable(status, fullfile(script_dir, 'debt_intensity_status.csv'));
+writetable(high_region_summary, fullfile(script_dir, 'debt_intensity_high_region_summary.csv'));
+writetable(gap_summary, fullfile(script_dir, 'debt_intensity_gap_summary.csv'));
+writetable(irf_series, fullfile(script_dir, 'debt_intensity_irf_series.csv'));
 
 fprintf('\nDebt intensity scenario status\n');
 fprintf('--------------------------------\n');
 disp(status);
 
-if ~isempty(results)
-    make_high_region_figure(results, shock_suffix);
-    make_gap_figure(results, shock_suffix);
+if any(status.status == "failed")
+    error('One or more debt-intensity scenarios failed; see debt_intensity_status.csv.');
+end
+plot_debt_intensity();
 end
 
 function text = set_parameter_line(text, name, value)
@@ -105,10 +101,10 @@ end
 
 function summary = collect_high_region_summary(oo_, scenario, periods, shock_suffix)
     metrics = {
-        'Debt service pressure', 'ds2';
+        'Net real debt-service burden', 'ds2';
         'Public investment',     'ig2';
         'Public capital',        'kg2';
-        'Final output',          'y2';
+        'Production GDP',        'xloc2';
         'Consumption',           'c2';
         'Inflation',             'pinf2'
     };
@@ -127,10 +123,10 @@ end
 
 function summary = collect_gap_summary(oo_, scenario, periods, shock_suffix)
     pairs = {
-        'Debt service pressure', 'ds1',   'ds2';
+        'Net real debt-service burden', 'ds1', 'ds2';
         'Public investment',     'ig1',   'ig2';
         'Public capital',        'kg1',   'kg2';
-        'Final output',          'y1',    'y2';
+        'Production GDP',        'xloc1', 'xloc2';
         'Consumption',           'c1',    'c2';
         'Inflation',             'pinf1', 'pinf2'
     };
@@ -153,10 +149,10 @@ end
 
 function series = collect_irf_series(oo_, scenario, shock_suffix)
     pairs = {
-        'Debt service pressure', 'ds1',   'ds2';
+        'Net real debt-service burden', 'ds1', 'ds2';
         'Public investment',     'ig1',   'ig2';
         'Public capital',        'kg1',   'kg2';
-        'Final output',          'y1',    'y2';
+        'Production GDP',        'xloc1', 'xloc2';
         'Consumption',           'c1',    'c2';
         'Inflation',             'pinf1', 'pinf2'
     };
@@ -185,75 +181,4 @@ function irf = get_irf(oo_, var_name, shock_suffix)
         error('IRF field not found: %s', field);
     end
     irf = oo_.irfs.(field);
-end
-
-function make_high_region_figure(results, shock_suffix)
-    panels = {
-        '实际付息压力', 'ds2';
-        '公共投资',     'ig2';
-        '公共资本',     'kg2';
-        '最终产出',     'y2';
-        '总消费',       'c2';
-        '通胀',         'pinf2'
-    };
-    make_debt_figure(results, shock_suffix, panels, 'high', ...
-        '', ...
-        'figure2_debt_intensity_high_region_irfs.png');
-end
-
-function make_gap_figure(results, shock_suffix)
-    panels = {
-        '实际付息压力缺口', 'ds1',   'ds2';
-        '公共投资缺口',     'ig1',   'ig2';
-        '公共资本缺口',     'kg1',   'kg2';
-        '最终产出缺口',     'y1',    'y2'
-    };
-    make_debt_figure(results, shock_suffix, panels, 'gap', ...
-        '', ...
-        'figure2_debt_intensity_gap_irfs.png');
-end
-
-function make_debt_figure(results, shock_suffix, panels, mode, title_text, file_name)
-    if size(panels, 1) <= 4
-        fig = figure('Visible', 'off', 'Color', 'w', 'Position', [100 100 1000 740]);
-        tiledlayout(2, 2, 'Padding', 'compact', 'TileSpacing', 'compact');
-    else
-        fig = figure('Visible', 'off', 'Color', 'w', 'Position', [100 100 1200 760]);
-        tiledlayout(2, 3, 'Padding', 'compact', 'TileSpacing', 'compact');
-    end
-    colors = lines(numel(results));
-    labels = strings(numel(results), 1);
-    for s = 1:numel(results)
-        labels(s) = string(results(s).label);
-    end
-
-    for p = 1:size(panels, 1)
-        nexttile;
-        for s = 1:numel(results)
-            if strcmp(mode, 'high')
-                irf = get_irf(results(s).oo, panels{p, 2}, shock_suffix);
-            else
-                low_irf = get_irf(results(s).oo, panels{p, 2}, shock_suffix);
-                high_irf = get_irf(results(s).oo, panels{p, 3}, shock_suffix);
-                irf = high_irf - low_irf;
-            end
-            horizon = 1:numel(irf);
-            plot(horizon, irf, 'LineWidth', 1.4, 'Color', colors(s, :));
-            hold on;
-        end
-        zero_line = yline(0, ':');
-        zero_line.HandleVisibility = 'off';
-        title(panels{p, 1}, 'Interpreter', 'none');
-        xlabel('期数');
-        grid on;
-        if p == 1
-            legend(labels, 'Location', 'best', 'Interpreter', 'none');
-        end
-    end
-
-    if strlength(string(title_text)) > 0
-        sgtitle(title_text, 'Interpreter', 'none');
-    end
-    exportgraphics(fig, file_name, 'Resolution', 180);
-    close(fig);
 end

@@ -1,0 +1,6 @@
+check_name,observed_value,criterion,status
+all_required_fields,35/35,all catalog fields present,PASS
+horizon_40,40,40 periods,PASS
+all_raw_irfs_finite,true,all finite,PASS
+positive_emp_orientation,0.0025000000000000001,mp response on impact equals +0.0025,PASS
+overall,true,all data-integrity gates pass,PASS

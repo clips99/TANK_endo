@@ -1,0 +1,2 @@
+model,max_absolute_steady_residual,residual_tolerance,jacobian_rows,jacobian_columns,jacobian_rank,rank_tolerance,min_singular_value,max_singular_value,reciprocal_condition_number,condition_number_2,full_rank,model_diagnostics_ok,status
+RANK_scheme_B_gamma_low,3.01980662698043e-14,1e-10,86,86,86,4.88853402202949e-12,0.000120828195576418,371.384954299063,1.5464994268194e-07,3073661.3464047,1,1,PASS

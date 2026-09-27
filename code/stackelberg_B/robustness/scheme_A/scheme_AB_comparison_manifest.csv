@@ -1,0 +1,3 @@
+scheme,run_id,model_file,model_sha256,matlab_release,dynare_release,approximation_order,shock,shock_std,horizon,shared_parameter_hash,validation_status,comparison_status
+A,20260927_101541_661,C:\Users\Chow\Desktop\codex\RANK_endo\code\stackelberg_B\robustness\scheme_A\RANK_two_region_scheme_A.mod,a1b7cf0402edfe3bf7c5b0f22eda20c36b2b750682c30e5056823fc41dc6ff6f,2026a,7,1,emp,0.0025,40,0ca513fd33356708414debaa9d924cd83d61bc4c4d2f5f6f0ef093e38332e2a9,PASS,PASS
+B,20260927_101540_543,C:\Users\Chow\Desktop\codex\RANK_endo\code\stackelberg_B\baseline\RANK_two_region_stackelberg.mod,09613b0c42538c3b2ee4953be3bfc310442c44194165f3f801d817ae599a1ae9,2026a,7,1,emp,0.0025,40,0ca513fd33356708414debaa9d924cd83d61bc4c4d2f5f6f0ef093e38332e2a9,PASS,PASS

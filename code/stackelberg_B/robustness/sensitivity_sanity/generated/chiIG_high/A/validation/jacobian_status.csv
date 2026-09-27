@@ -1,0 +1,2 @@
+model,max_absolute_steady_residual,residual_tolerance,jacobian_rows,jacobian_columns,jacobian_rank,rank_tolerance,min_singular_value,max_singular_value,reciprocal_condition_number,condition_number_2,full_rank,model_diagnostics_ok,status
+RANK_scheme_A_chiIG_high,4.44089209850063e-16,1e-10,78,78,78,1.10844666778576e-12,0.00011250078833979,84.3822397047219,4.94273258374214e-07,750059.096918139,1,1,PASS

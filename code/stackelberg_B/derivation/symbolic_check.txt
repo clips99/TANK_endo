@@ -1,0 +1,62 @@
+Stackelberg-B symbolic differentiation audit
+============================================
+SymPy version: 1.14.0
+Focal date: t=1 in a finite history-contingent Lagrangian node
+Normalization: derivatives are divided by beta_g**t.
+The first block audits algebra along a deterministic node. A separate
+two-successor audit below checks stochastic measurability and conditioning.
+
+[PASS] A_prime: normalization=exact; simplified difference=0
+[PASS] B_prime: normalization=exact; simplified difference=0
+[PASS] dlogX_dlogKG: normalization=exact; simplified difference=0
+[PASS] dlogX_dlogK: normalization=exact; simplified difference=0
+[PASS] dlogX_dlogN: normalization=exact; simplified difference=0
+[PASS] dlogW_dlogKG: normalization=exact; simplified difference=0
+[PASS] dlogW_dlogK: normalization=exact; simplified difference=0
+[PASS] dlogW_dlogN: normalization=exact; simplified difference=0
+[PASS] dlogRK_dlogKG: normalization=exact; simplified difference=0
+[PASS] dlogRK_dlogK: normalization=exact; simplified difference=0
+[PASS] dlogRK_dlogN: normalization=exact; simplified difference=0
+[PASS] FOC_B: normalization=exact; simplified difference=0
+[PASS] FOC_IG: normalization=opposite-sign normalization; simplified difference=0
+[PASS] FOC_KG: normalization=opposite-sign normalization; simplified difference=0
+[PASS] FOC_K_deterministic_lag_identity: normalization=exact; simplified difference=0
+[PASS] FOC_K_corrected_forward: normalization=opposite-sign normalization; simplified difference=0
+[PASS] FOC_N: normalization=exact; simplified difference=0
+[PASS] FOC_QK: normalization=exact; simplified difference=0
+[PASS] FOC_I: normalization=exact; simplified difference=0
+[PASS] steady_FOC_I_implies_muK_zero: normalization=exact; simplified difference=0
+[PASS] steady_FOC_QK_implies_muI_deltaK_muQ: normalization=exact; simplified difference=0
+
+Deterministic algebra passed: 21 / 21
+
+Stochastic timing audit
+-----------------------
+[ACCEPTED CORRECTION] 原实施规范错误—history-tree correction accepted
+K_t is chosen at t-1 and is common across date-t successor states.
+The original specification imposed a pathwise date-t equality instead
+of conditioning date-t marginal terms on information available at t-1.
+Generic pathwise-minus-correct difference: -(G_a - G_b)*(p - 1)
+This is nonzero whenever successor-state marginal values differ.
+Correct lagged form:
+  0 = E_{t-1}[ alpha/K_t*(omega_X + LambdaG_t*tau_L*X_t
+      - Theta_t*W_t) + (1-delta_K)*muK_t
+      + (beta/beta_G)*muQ_{t-1}*m_t*(1-alpha)*RK_t/K_t ]
+      - muK_{t-1}/beta_G.
+Equivalent Dynare forward form:
+  muK_t = beta_G*E_t[ alpha/K_{t+1}*(omega_X
+      + LambdaG_{t+1}*tau_L*X_{t+1} - Theta_{t+1}*W_{t+1})
+      + (1-delta_K)*muK_{t+1} ]
+      + beta*muQ_t*E_t[m_{t+1}*(1-alpha)*RK_{t+1}/K_{t+1}].
+
+The corrected forward FOC-K is now the maintained specification.
+Other previously verified stationarity conditions remain accepted.
+
+Overall status: PASS WITH ACCEPTED HISTORY-TREE CORRECTION
+
+Interpretive restrictions retained from the implementation specification:
+- aggregate prices and Lambda paths are held fixed in the local leader problem;
+- lagged muQ and muI are stationary timeless-commitment states;
+- muK must use the corrected forward conditional-expectation equation;
+- deterministic-node algebra is not by itself a stochastic timing proof;
+- all audited choices are interior.

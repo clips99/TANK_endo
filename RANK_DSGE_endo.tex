@@ -1,0 +1,1688 @@
+\documentclass[12pt,UTF8]{ctexart}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,bm}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{enumitem}
+\usepackage{xurl}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{setspace}
+
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue,hypertexnames=false}
+
+\newtheorem{assumption}{假设}
+\newtheorem{proposition}{命题}
+\newtheorem{remark}{备注}
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\barx}[1]{\overline{#1}}
+\newcommand{\TR}{\mathrm{TR}}
+\newcommand{\DS}{\mathrm{DS}}
+\newcommand{\FS}{\mathrm{FS}}
+\newcommand{\MC}{\mathrm{MC}}
+\newcommand{\MP}{\mathrm{MP}}
+\newcommand{\IRF}{\mathrm{IRF}}
+\newcommand{\capitalplotnote}{模型中公共资本为期初存量，当期公共投资形成下一期资本；图中公共资本曲线保留原始 Dynare 期末输出，对应正文 $K_{G,t+1}$，横轴为投资决策季度，第 1 个响应点不代表冲击当期既定的 $K_{G,t}$。}
+\allowdisplaybreaks[2]
+\setlength{\emergencystretch}{2em}
+
+\title{\textbf{地方政府债务异质性与统一货币政策的区域传导}}
+\author{\quad 周方兴\thanks{上海师范大学商学院，电子邮箱：\texttt{zhoufangxing@shnu.edu.cn}。文责自负。} }
+\date{2026年9月}
+
+\begin{document}
+	\maketitle
+	\begin{spacing}{1.2}
+		
+		\begin{abstract}
+			本文构建包含名义地方债与内生公共投资的两地区新凯恩斯 DSGE 模型，研究地方债务异质性如何影响统一货币政策的区域传导。基准保持主要结构参数对称，以债务负担及相应财政配平安排刻画地区差异。货币紧缩通过名义债务重估与滚动融资成本挤压地方财政资源，使高债务地区的公共投资收缩更深，并通过资本积累形成持续的产出差异。财政流量压力消退后，公共资本的负向偏离仍然存在。但高、低债务地区响应的相对强弱并非固定：风险溢价与较强转移支付反馈共同作用时，响应的相对强弱可以发生逆转。政策比较显示，在所考察的需求冲击与规则网格内，更强的通胀反应降低全国波动，却伴随地区同步性下降；严格债务余额限额加深初期收缩，但随后出现较强恢复；较温和的逆周期转移支付主要缓冲投资和资本的负向偏离，对初期产出的改善有限。因此，总量稳定与地方支出平滑并不等价。
+			
+			\vspace{0.3cm}
+			\noindent\textbf{关键词：} 地方政府债务；统一货币政策；公共投资；区域非对称传导；财政空间约束
+		\end{abstract}
+		
+		\newpage
+		
+		\section{引言}
+		
+		统一货币政策能否在不同地区产生相近的经济效果，取决于共同金融条件如何传递到本地支出。在中国的央地财政体系中，地方政府承担公共服务与基础设施建设等支出职责，同时需要安排债务偿付与滚动融资。因此，货币政策不仅影响家庭和企业的支出，也可能通过地方政府的预算约束改变公共投资。当地区间债务负担不同时，即使面对相同的政策利率，地方财政承受的调整压力也可能不同。本文研究这一财政传导渠道：地方债务异质性如何影响统一货币政策的区域效应，短期偿债压力为何可能形成持续的产出差异，以及货币与财政规则如何改变这一过程？
+		
+		为回答这些问题，本文构建包含两地区、每地区一个地方政府内生公共投资的新凯恩斯 DSGE 模型。地方政府发行一期名义债务，在央地税收分成和中央转移支付安排下选择公共投资，所形成的公共资本提高本地生产率。价格粘性和跨地区商品交易将地方财政调整与全国货币条件相联系；两地代表性家庭参与资产市场、持有私人资本和企业利润，并通过全国共同基金实现完全风险分担。两地区分别代表低债务与高债务两类原子化辖区。基准保持偏好、私人技术、价格粘性及贸易参数对称，以稳态债务率差异作为原始区域异质性，并由地方预算确定相应的稳态转移支付。
+		
+		模型的关键机制是名义债务偿付与公共资本积累之间的跨期联系。货币紧缩引致的通胀回落提高既有名义债务的实际偿付负担，而当期融资利率变化影响下一期债务服务。地方政府在这一预算变化下调整举债与投资，公共投资因而不是外生给定的财政冲击，而是货币政策传导中的内生支出。校准模型的基准结果表明，高债务地区面临更强的初期财政资源收缩，公共投资下降更深，随后形成更大的公共资本与产出的负向偏离。债务服务压力较早消退，资本的负向偏离却持续更久：即使当期财政资源逐渐恢复，此前投资不足仍通过资本存量影响后续生产。由此，短期财政流量冲击能够转化为持续的地区差异。
+		
+		这一高、低债务地区响应的相对强弱并非由债务规模单独决定。债务率实验中，两地债务率相同时响应重合，债务率差距扩大则加深前中期公共投资收缩及后续资本、产出差异。地区规模、发展水平与贸易配平的联合变动，以及地方政府决策内生化范围的局部比较，没有明显改变基准特征。然而，当风险溢价与较强转移支付反馈共同作用时，投资、资本与产出的高、低债务地区响应的相对强弱发生逆转。因此，高债务既意味着对偿债成本变化的更大暴露，也可能伴随不同的财政支持；其净影响取决于融资条件和财政反馈，不能概括为高债务地区在所有政策环境下均受到更大冲击。
+		
+		本文进一步利用这一框架比较全国稳定与区域调整。面对全国性需求扰动，增强货币规则的通胀反应在所考察的参数网格内降低全国通胀和产出波动，却提高地区产出差异的波动并降低两地相关性。地区平衡型规则则降低地区产出分化、提高两地相关性，同时增加全国通胀和产出波动。这说明，全国总量稳定与区域协调是不同的配置评价维度，地区同步性的变化本身也不足以判断哪个地区的产出收缩更深。
+		
+		财政反事实则揭示融资约束与支出平滑之间的时序差异。严格债务余额限额限制初期融资扩张，加深公共投资和产出收缩，但随后出现较强恢复；较温和的逆周期转移支付主要缓冲公共投资和资本的负向偏离，对初期产出的改善有限。因此，债务余额控制、投资平滑和产出稳定可能给出不同的政策评价。
+		
+		本文将货币政策传导、公共投资和地方债务研究联系起来。与侧重家庭消费平滑差异的研究相比，本文考察在地区间偏好和私人部门结构对称的情况下，地方资产负债表如何成为区域非对称传导的来源；与从外生政府支出变化出发的财政乘数分析相比，本文解释公共投资为何随货币条件内生调整，以及这一调整如何延续到资本积累；与地方债务的融资约束和资源配置研究相比，本文侧重名义债务重估、滚动融资与公共投资选择之间的动态联系，并考察其对政策规则比较的含义。本文的贡献因而是提供一套分析地方财政如何传递共同货币冲击的机制框架。
+		
+		下文安排如下：第二节梳理相关文献；第三节介绍模型与传导机制；第四节说明参数校准和稳态配平；第五节报告数值结果与政策反事实；第六节总结研究结论。附录提供最优条件推导、稳态求解、模型扩展及完整非线性方程组。
+		
+		\section{文献综述}
+		
+		本文与地方政府债务和货币政策传导的研究最为直接相关。已有文献考察地方举债与货币扩张效果、货币政策传导效率及财政金融风险分担之间的关系（刘蓉和李娜，2022；吴文锋和胡悦，2022；陈舒悦等，2024）。本文沿着这一研究方向，将分析集中于名义地方债与公共投资选择之间的联系：通胀和融资利率变化改变实际债务服务，地方政府据此调整投资，进而影响公共资本积累与地区产出。相应的研究重点不是地方债务是否影响货币政策效果这一一般问题，而是债务负担差异如何通过内生财政支出形成区域非对称传导，以及这一机制如何随融资条件和财政反馈而改变。
+		
+		地方财政行为的制度基础来自财政分权与财政金融联动研究。财政分权理论讨论地方公共品供给的激励与约束（Oates，1972）；中国情境下的研究进一步从预算软约束、土地财政和土地供给解释地方财政行为（姜子叶和胡育蓉，2016；赵扶扬等，2017；赵扶扬等，2021），并考察财政扩张与地方融资、金融活动及信贷配置的联系（Bai et al.，2016；Cong et al.，2019；Chen et al.，2020）。地方债务的宏观效应研究还涉及信贷错配、投资挤出、房地产价格和土地抵押等渠道（熊琛和金昊，2021；刘蓉和李娜，2021；梅冬州等，2021；高然等，2022；赵扶扬，2022）。本文保留地方举债与支出共同受预算约束的特征，但不同时引入土地市场、融资平台和全部债务风险渠道，而以一期名义债务和生产性公共投资刻画偿债压力向资本积累的传递。因此，本文提供的是对上述渠道的补充，而非地方债务宏观影响的完整描述。
+		
+		本文也与家庭异质性下的货币政策传导研究相关。标准新凯恩斯主义框架强调名义刚性与实际利率的作用（Galí，2015），两类家庭模型进一步刻画消费平滑能力的差异（Galí et al.，2007；Bilbiie，2025），HANK 模型和再分配渠道研究则将收入、财富配置与资产负债表纳入分析（Kaplan et al.，2018；Auclert，2019）。中国情境下的相关研究考察收入不确定性、资产配置、消费品结构和金融摩擦对政策传导及分配效应的影响（许志伟和刘建丰，2019；王曦等，2024；周上尧和骆哲翀，2025）。本文采用每地区一个代表性家庭的新凯恩斯框架，保留两地之间的完全风险分担。地区间偏好、私人技术、价格粘性和贸易参数保持对称，以地方政府稳态债务负担及相应财政配平作为区域异质性的原始来源；家庭异质性文献提供比较背景，不构成本文模型的家庭结构。
+		
+		公共投资与财政乘数文献为本文的资本积累机制提供了基础。一般均衡研究通过公共支出、资本积累与私人部门调整的联系，分析财政政策的短期和跨期影响（Baxter and King，1993；Leeper et al.，2010）。财政乘数研究强调经济周期、货币政策环境和地区间经济联系的重要性（Nakamura and Steinsson，2014；Farhi and Werning，2016；Ramey and Zubairy，2018；Chodorow-Reich，2019；Auerbach et al.，2020），国内研究则从政府投资外部性、财政支出结构和地方支出乘数等角度讨论财政资源配置（王国静和田国强，2014；马光荣等，2019；刘磊和王辉，2025）。与从给定政府支出变化出发考察产出效应的分析不同，本文将公共投资本身作为需要解释的变量。统一货币冲击通过实际偿债负担和滚动融资条件改变投资决策，公共资本再将当期支出调整延续到后续生产。由此，本文关注的不是单一财政乘数，而是财政资源、投资流量和资本存量之间的动态联系。
+		
+		中央转移支付和区域财政研究进一步说明了这一传导机制的政策条件。相关文献通过财政分权、地区竞争和中央转移支付，分析地方支出选择与区域调整及福利分配的关系（邢曙光和黄梅波，2015；朱军和许志伟，2018；王文甫等，2020）。本文将央地税收分成和转移支付纳入地方预算，并通过跨地区商品交易连接两地经济。与这些研究相联系，本文考察财政反馈如何缓冲或改变共同货币冲击引致的地区差异。由于稳态转移支付随地方预算配平，且动态反馈能够改变高、低债务地区响应的相对强弱，债务异质性的作用需要与财政安排一并解释，不能视为独立于央地关系的固定效应。
+		
+		最后，地方债务测算和区域分化研究为刻画债务负担异质性提供了参考（李稻葵和张鹤，2024；赵扶扬和刘睿智，2024）；财政压力、支出效率和预算结构研究关注约束条件下的资源配置（徐超等，2020；冯晨等，2026）；债务置换、限额管理与政策协调研究则讨论治理工具的宏观影响及适用条件（樊成杰等，2025；张鹏等，2025；吉富星等，2025）。本文与这类研究的联系在于比较不同财政约束下的调整路径，具体考察债务余额限额和逆周期转移支付如何改变投资、资本与产出响应。本文不直接模拟债务置换，也不将地方端的支出缓冲等同于政策净收益；在中央融资采用一次性净税费余项、跨期融资和税收成本未被完整刻画的设定下，政策实验仅用于配置比较，旨在揭示总量稳定、区域同步与地方财政调整之间的差异。
+		
+		\section{模型设定}
+		
+		本文构建一个两地区的新凯恩斯主义模型。每个地区均包含家庭、最终品企业、中间品企业和地方政府。每地代表性家庭参与资产市场、积累私人资本并持有企业利润，两地通过状态依赖证券实现完全风险分担。最终品企业将本地与外地中间品组装为不可贸易的地区最终品；中间品企业在垄断竞争和价格粘性下生产。地方政府发行一期名义债务并选择公共投资，公共资本进入本地生产函数。中央政府分享地方财政收入并提供转移支付，中央银行依据全国通胀和产出制定统一利率。
+		
+		地区 $j=1,2$ 分别代表低债务和高债务辖区。每类地区由测度为 $s_j>0$ 的连续统同质辖区组成，且 $s_1+s_2=1$。单个辖区规模足够小，因而将地区价格、全国政策和同类地区融资报价视为给定；同类辖区内部取对称均衡。基准模型保持偏好、私人生产技术、价格粘性和贸易参数对称，地区差异仅来自稳态债务率及其对应的财政配平安排。这样的设定使地区响应差异可以集中反映地方资产负债表渠道。
+		
+		模型频率为季度，上横线表示确定性稳态。家庭与地区变量均按单位地区计量；全国流量先换算为共同价格单位，再按地区测度加总。地区实际变量以本地最终品价格 $P_t^j$ 平减，$\Pi_t^j=P_t^j/P_{t-1}^j$ 表示地区总通胀。每期期初，私人资本、公共资本、既有债务及其合同利率已经确定；冲击实现后，各主体作出当期决策。当期私人投资和公共投资分别形成下一期资本，当期发行的地方债在下一期偿付。
+		
+		为区分生产地与使用地，本文以 $Y_t^j$ 表示地区实际 GDP，以 $D_t^j$ 表示地区最终吸收，以 $Y_{M,t}^j$ 表示中间品物量产出；全国 GDP 和最终吸收分别记为 $Y_t$ 与 $D_t$。$Q_{k,t}^j$ 是来源于地区 $k$、用于地区 $j$ 的中间品相对价格，$q_{K,t}^j$ 和 $q_{G,t}^j$ 分别为私人资本与公共资本的影子价格。下文依次描述家庭、企业、地方政府、中央政策和均衡条件。
+		
+		\subsection{家庭与资产市场}
+		
+		地区 $j=1,2$ 各有一个代表性家庭，其消费和劳动直接记为 $C_t^j$ 与 $N_t^j$。两地区家庭分别优化，完全风险分担不将两地合并为一个全国家庭。
+
+		代表性家庭选择消费、劳动和私人投资，并通过全国性共同基金参与跨地区风险分担。其按单位地区加总的期望效用为
+		\begin{equation}
+			\E_0\sum_{t=0}^{\infty}\beta^t
+			\left[
+			\frac{(C_{t}^j)^{1-\sigma}}{1-\sigma}
+			-\chi_N\frac{(N_{t}^j)^{1+\varphi}}{1+\varphi}
+			\right],
+		\end{equation}
+		其中，$\beta\in(0,1)$ 为贴现因子，$\sigma$ 为相对风险厌恶系数，$\varphi$ 为 Frisch 劳动供给弹性的倒数，$\chi_N$ 为劳动负效用权重。家庭获得工资 $W_t^j$、资本租金 $R_{K,t}^j$、企业利润和共同基金收益。工资与资本租金均以本地最终品计价。中央财政余额、金融中介净流量和其他合并账户项目通过一次性净税费 $\mathcal T_{t}^j$ 结算；该变量由账户平衡反推，而非一条独立的税收规则。
+		
+		为突出地方财政渠道，基准假设两地代表性家庭可以交易完备的状态依赖索取权。用全国性共同基金表示这一资产市场安排。令 $\mathcal A_t^j$ 为以共同价格计量的单位家庭期末保险净头寸，$\mathcal M_{0,T}^{C}$ 为相同计价单位下的状态价格密度，则基金清算和终端条件为
+		\begin{equation}
+			\sum_{j=1}^2s_j\mathcal A_t^j=0,
+			\qquad
+			\lim_{T\to\infty}\E_0\left[\mathcal M_{0,T}^{C}\mathcal A_T^j\right]=0,
+			\label{eq:fund_clearing_tvc}
+		\end{equation}
+		其中，第一项按地区测度清算基金头寸，第二项排除不可持续的终端资产。基金不持有报价中介账上的地方债，因此家庭风险分担并不直接分担地方政府的偿债责任。定义边际效用 $\Lambda_{t}^j=(C_{t}^j)^{-\sigma}$，令 $R_t$ 为统一总名义利率因子，并定义 $Q_{k,t}^j=P_{M,t}^k/P_t^j$。以地区 1 最终品为共同资产的计价基准，最优消费选择和完全风险分担给出
+		\begin{align}
+			\Lambda_{t}^1 &=\beta \E_t\left[\Lambda_{t+1}^1\frac{R_t}{\Pi_{t+1}^1}\right]\exp(-\zeta_t), \label{eq:euler_rf} \\
+			\Lambda_{t}^2 &=\xi_{12}\Lambda_{t}^1\frac{Q_{1,t}^1}{Q_{1,t}^2},
+			\label{eq:risk_sharing}\\
+			\zeta_t&=\rho_\zeta\zeta_{t-1}-\varepsilon_{\zeta,t}.
+			\label{eq:demand_process}
+		\end{align}
+		其中，$\xi_{12}>0$ 由相对效用权重和初始财富决定，对称稳态下取 1。由于 $Q_{1,t}^1/Q_{1,t}^2=P_t^2/P_t^1$，式 \eqref{eq:risk_sharing} 比较的是按相对价格换算后的边际效用，并不要求两地实物消费相等。$\zeta_t$ 为只直接进入无风险消费 Euler 方程的全国需求楔子，可理解为流动资产便利收益或金融摩擦的缩约表示，而不直接进入资本投资条件和企业定价核。按照式 \eqref{eq:demand_process} 的符号约定，$\varepsilon_{\zeta,t}>0$ 对应负向需求创新。家庭的劳动供给条件为
+		\begin{equation}
+			\chi_N(N_{t}^j)^{\varphi}=\Lambda_{t}^j W_t^j.
+			\label{eq:labor_R}
+		\end{equation}
+		私人资本按下式积累：
+		\begin{equation}
+			K_{t+1}^j=(1-\delta_K)K_t^j+
+			\left[1-S\left(\frac{I_t^j}{I_{t-1}^j}\right)\right]I_t^j,
+			\label{eq:K_law}
+		\end{equation}
+		其中，$K_t^j$ 和 $I_t^j$ 分别为私人资本与投资，$\delta_K$ 为折旧率，$S(x)=\frac{\phi_I}{2}(x-1)^2$ 为投资增长率调整成本。令 $q_{K,t}^j$ 为资本的影子价格，资本持有和投资的一阶条件为
+		\begin{align}
+			q_{K,t}^j &=\beta\E_t\left[
+			\frac{\Lambda_{t+1}^j}{\Lambda_{t}^j}
+			\left(R_{K,t+1}^j+(1-\delta_K)q_{K,t+1}^j\right)
+			\right], \label{eq:euler_capital}\\
+			1 &=q_{K,t}^j
+			\left[
+			1-S\left(\frac{I_t^j}{I_{t-1}^j}\right)
+			-S'\left(\frac{I_t^j}{I_{t-1}^j}\right)\frac{I_t^j}{I_{t-1}^j}
+			\right] \notag \\
+			&\quad +\beta\E_t\left[
+			\frac{\Lambda_{t+1}^j}{\Lambda_{t}^j}
+			q_{K,t+1}^j
+			S'\left(\frac{I_{t+1}^j}{I_t^j}\right)
+			\left(\frac{I_{t+1}^j}{I_t^j}\right)^2
+			\right].
+			\label{eq:inv_foc}
+		\end{align}
+		式 \eqref{eq:euler_capital} 将资本价值与未来租金及未折旧资本价值联系起来；式 \eqref{eq:inv_foc} 同时计入当期投资对本期和下一期调整成本的影响。资本路径还满足横截条件
+		\begin{equation}
+			\lim_{T\to\infty}\beta^{T-t}\E_t\left[
+			\Lambda_{T}^j q_{K,T}^jK_{T+1}^j
+			\right]=0.
+			\label{eq:private_capital_tvc}
+		\end{equation}
+		
+		\subsection{最终品生产与地区间贸易}
+		
+		地区 $j$ 的竞争性最终品企业购买本地和外地中间品，并利用 CES 技术生产不可贸易的地区最终品：
+		\begin{equation}
+			D_t^j=
+			\left[
+			\omega_j^{\frac{1}{\eta}}(M_{j,t}^j)^{\frac{\eta-1}{\eta}}
+			+(1-\omega_j)^{\frac{1}{\eta}}(M_{-j,t}^j)^{\frac{\eta-1}{\eta}}
+			\right]^{\frac{\eta}{\eta-1}},
+			\label{eq:final_production}
+		\end{equation}
+		其中，$-j$ 表示另一地区，$M_{j,t}^j$ 和 $M_{-j,t}^j$ 分别为本地与外地中间品投入，$\omega_j\in(0,1)$ 衡量本地投入偏向，$\eta>0$ 为两类投入之间的替代弹性。由于最终品不跨地区交易，企业产出在均衡中等于本地最终吸收 $D_t^j$，而不等于按生产地统计的 GDP。令 $Q_{k,t}^j=P_{M,t}^k/P_t^j$ 表示地区 $k$ 中间品相对于地区 $j$ 最终品的价格。成本最小化和零利润条件给出
+		
+		\begin{align}
+			1 &=\left[
+			\omega_j(Q_{j,t}^j)^{1-\eta}
+			+(1-\omega_j)(Q_{-j,t}^j)^{1-\eta}
+			\right]^{\frac{1}{1-\eta}}, \label{eq:final_price_index}\\
+			M_{j,t}^j &=\omega_j(Q_{j,t}^j)^{-\eta}D_t^j, \label{eq:demand_local}\\
+			M_{-j,t}^j &=(1-\omega_j)(Q_{-j,t}^j)^{-\eta}D_t^j.
+			\label{eq:demand_foreign}
+		\end{align}
+		
+		式 \eqref{eq:demand_local}--\eqref{eq:demand_foreign} 表明，地区间商品需求随相对价格变化。令 $\Pi_{M,t}^j=P_{M,t}^j/P_{M,t-1}^j$ 为地区中间品通胀，则相对价格满足三条独立的动态关系
+		\begin{equation}
+			\frac{Q_{1,t}^1}{Q_{1,t-1}^1}=\frac{\Pi_{M,t}^1}{\Pi_t^1},\qquad
+			\frac{Q_{2,t}^1}{Q_{2,t-1}^1}=\frac{\Pi_{M,t}^2}{\Pi_t^1},\qquad
+			\frac{Q_{1,t}^2}{Q_{1,t-1}^2}=\frac{\Pi_{M,t}^1}{\Pi_t^2},
+			\label{eq:q_dynamics_independent}
+		\end{equation}
+		并满足交叉价格恒等式
+		\begin{equation}
+			Q_{1,t}^1Q_{2,t}^2=Q_{1,t}^2Q_{2,t}^1
+			\label{eq:q_identity}
+		\end{equation}
+		因此，四个相对价格中只有三个具有独立动态方程。
+		
+		\subsection{中间品生产与价格设定}
+		
+		每个地区存在连续统的垄断竞争中间品企业。企业租用私人资本和劳动，并将地方政府提供的公共资本视为给定的生产条件。对企业产出进行聚合后，地区中间品产量为
+		\begin{equation}
+			Y_{M,t}^j=\frac{A_t^j(K_{G,t}^j)^{\gamma_G}(K_t^j)^{\alpha}(N_t^j)^{1-\alpha}}{V_t^j},
+			\label{eq:intermediate_production}
+		\end{equation}
+		其中，$\alpha\in(0,1)$ 为私人资本产出弹性，$\gamma_G\geq0$ 为公共资本产出弹性，$V_t^j$ 表示价格离散造成的资源损失。公共资本由地方政府提供，企业无需为其支付租金。全要素生产率满足
+		\begin{equation}
+			\log\frac{A_t^j}{\bar A^j}=\rho_A\log\frac{A_{t-1}^j}{\bar A^j},
+			\label{eq:tfp_process}
+		\end{equation}
+		基准不加入地区生产率冲击，因而从稳态出发时 $A_t^j=\bar A^j$；后文的扩展实验通过改变 $\bar A^j$ 考察地区发展水平差异。令 $\MC_t^j$ 为以本地中间品计价的实际边际成本。企业对私人资本和劳动的成本最小化给出
+		\begin{align}
+			W_t^j &=(1-\alpha)Q_{j,t}^j\MC_t^j\frac{Y_{M,t}^jV_t^j}{N_t^j}, \label{eq:wage_demand}\\
+			R_{K,t}^j &=\alpha Q_{j,t}^j\MC_t^j\frac{Y_{M,t}^jV_t^j}{K_t^j}.
+			\label{eq:rk_demand}
+		\end{align}
+		工资和资本租金以本地最终品计价，因此要素边际收益需乘以相对价格 $Q_{j,t}^j$。最终品组装不使用额外的原始要素，故本文将以本地最终品平减的中间品销售价值定义为生产地实际 GDP：
+		\begin{equation}
+			Y_t^j\equiv Q_{j,t}^jY_{M,t}^j.
+			\label{eq:local_gdp}
+		\end{equation}
+		$Y_t^j$ 同时是地方财政收入的计征基数。它按生产地记录，而 $D_t^j$ 按最终品使用地记录，两者在一般均衡中不必相等。中间品企业的单位地区总利润为
+		\begin{equation}
+			\Omega_{M,t}^j=Q_{j,t}^jY_{M,t}^j-Q_{j,t}^j\MC_t^jY_{M,t}^jV_t^j.
+			\label{eq:firm_profit}
+		\end{equation}
+		利润由代表性家庭持有，并进入其合并账户。
+		
+		\paragraph{价格设定。}
+		
+		中间品企业按照 Calvo 机制调整价格。每期有 $1-\theta_p$ 的企业可以重新定价，其余企业保持原有名义价格。能够调价的企业选择 $P_{*,t}^j$，以代表性家庭的边际效用为贴现核，最大化该价格存续期间的预期利润。令 $\epsilon_p>1$ 为地区内品种替代弹性，$p_{*,t}^j=P_{*,t}^j/P_{M,t}^j$ 为相对重置价格，则最优定价条件可以递归表示为
+		\begin{align}
+			\mathcal P_{1,t}^j &=\Lambda_{t}^jQ_{j,t}^j\MC_t^jY_{M,t}^j
+			+\beta\theta_p\E_t\left[(\Pi_{M,t+1}^j)^{\epsilon_p}\mathcal P_{1,t+1}^j\right], \label{eq:x1}\\
+			\mathcal P_{2,t}^j &=\Lambda_{t}^jQ_{j,t}^jY_{M,t}^j
+			+\beta\theta_p\E_t\left[(\Pi_{M,t+1}^j)^{\epsilon_p-1}\mathcal P_{2,t+1}^j\right], \label{eq:x2}\\
+			p_{*,t}^j &=\frac{\epsilon_p}{\epsilon_p-1}\frac{\mathcal P_{1,t}^j}{\mathcal P_{2,t}^j}.
+			\label{eq:pstar}
+		\end{align}
+		其中，$\mathcal P_{1,t}^j$ 和 $\mathcal P_{2,t}^j$ 分别汇总价格存续期间的贴现边际成本和销售收入；二者之比决定最优重置价格。中间品价格指数和价格离散度分别满足
+		\begin{align}
+			1 &=(1-\theta_p)(p_{*,t}^j)^{1-\epsilon_p} +\theta_p(\Pi_{M,t}^j)^{\epsilon_p-1}, \label{eq:calvo_index}\\
+			V_t^j &=(1-\theta_p)(p_{*,t}^j)^{-\epsilon_p} +\theta_p(\Pi_{M,t}^j)^{\epsilon_p}V_{t-1}^j.
+			\label{eq:dispersion}
+		\end{align}
+		
+		
+		\subsection{地方政府与公共投资}
+		
+		地方政府以税收留成、中央转移支付和债务融资支付政府消费与公共投资。公共投资形成生产性公共资本，地方政府同时承担既有名义债务的偿付责任。参照小型辖区的财政决策设定\cite{zodrow1986,keen1997}，单个地方政府将地区价格、全国利率和同类地区融资报价视为给定。价格与总量仍由一般均衡决定，但地方政府不内生化自身选择对这些总量的影响。
+		
+		\paragraph{债务融资与预算约束。}
+		
+		地方政府发行一期名义债券。以发行当期的本地最终品价格平减后，期末债务本金记为 $B_t^j$；新债的总名义利率因子为 $R_{B,t}^j$。因此，上期债务在本期的实际偿付额为 $R_{B,t-1}^jB_{t-1}^j/\Pi_t^j$。该时序使当期通胀立即改变既有名义债务的实际负担，而当期融资利率从下一期开始影响偿付。模型中的一期债务代表需要滚动续作的有效融资部分。定义季度 GDP 口径和年化 GDP 口径的债务率为
+		\begin{equation}
+			d_t^{j,\mathrm{ann}}\equiv\frac{B_t^j}{4Y_t^j},\qquad
+			b_t^j\equiv\frac{B_t^j}{Y_t^j}=4d_t^{j,\mathrm{ann}},
+			\label{eq:debt_ratio_frequency}
+		\end{equation}
+		其中，年化分母为当季 GDP 的四倍。基准校准满足 $\bar d^{2,\mathrm{ann}}>\bar d^{1,\mathrm{ann}}$，即地区 2 的稳态债务负担高于地区 1。
+		
+		地方债由报价中介持有。中介以统一无风险利率为基准，并根据同类地区总体债务率 $\widetilde b_t^j$ 确定融资利率：
+		\begin{equation}
+			\frac{R_{B,t}^j}{R_t}=\exp\left[\mu_B\left(\frac{\widetilde b_t^j}{\bar b^j}-1\right)\right],
+			\qquad \widetilde b_t^j=\frac{B_t^j}{Y_t^j}\quad\text{（对称均衡）}.
+			\label{eq:local_rate}
+		\end{equation}
+		其中，$\mu_B$ 衡量融资利差对债务率偏离的敏感程度，$\bar b^j=\bar B^j/\bar Y^j$ 为地区债务率目标。单个政府接受报价；在同类对称均衡中，$\widetilde b_t^j=B_t^j/Y_t^j$，且 $\widetilde b_t^j/\bar b^j=d_t^{j,\mathrm{ann}}/\bar d^{j,\mathrm{ann}}$。由于报价按各地区自身的债务目标标准化，稳态满足 $\bar R_B^j=\bar R$；地区间稳态债务率差异本身不产生稳态利差，利差只响应债务率相对目标的动态偏离。式 \eqref{eq:local_rate} 是融资条件的缩约表示，不显式刻画违约概率和损失率。
+		
+		地方财政从与 GDP 联动的收入 $\tau_Y Y_t^j$ 中保留 $1-\theta_T$ 的份额，并获得中央转移支付 $Z_t^j$。记地方收入留成率为 $\tau_Y^{\mathrm{loc}}=(1-\theta_T)\tau_Y$。地方支出包括政府消费 $G_t^j$和公共投资 $I_{G,t}^j$。该收入项是财政账户中的缩约收入，不作为企业的边际产出税。公共投资增长和债务余额偏离目标分别产生调整成本
+		\begin{align}
+			\Phi_{I,t}^j&=\frac{\chi_I}{2}\left(\frac{I_{G,t}^j}{I_{G,t-1}^j}-1\right)^2I_{G,t}^j,
+			\label{eq:PhiI}\\
+			\Phi_{B,t}^j&=\frac{\varphi_B}{2}
+			\left(\frac{B_t^j}{\bar Y^j}-\bar b^j\right)^2\bar Y^j,
+			\qquad \bar b^j\equiv\frac{\bar B^j}{\bar Y^j}=4\bar d^{j,\mathrm{ann}}.
+			\label{eq:PhiB}
+		\end{align}
+		其中，$\chi_I$ 和 $\varphi_B$ 分别控制投资调整成本和债务管理成本。后者以稳态 GDP 为尺度，惩罚债务余额相对于目标的偏离。两项调整成本均消耗最终品。地方政府的逐期预算约束为
+		\begin{equation}
+			B_t^j=\frac{R_{B,t-1}^j}{\Pi_t^j}B_{t-1}^j+G_t^j+I_{G,t}^j+\Phi_{I,t}^j+\Phi_{B,t}^j
+			-(1-\theta_T)\tau_Y Y_t^j-Z_t^j.
+			\label{eq:gov_budget}
+		\end{equation}
+		政府消费和中央转移支付遵循
+		\begin{align}
+			\log\frac{G_t^j}{\bar G^j}
+			&=\rho_G\log\frac{G_{t-1}^j}{\bar G^j}, \notag\\
+			\log\frac{Z_t^j}{\bar Z^j}
+			&=\rho_Z\log\frac{Z_{t-1}^j}{\bar Z^j}
+			+\phi_{Z,\DS}\left(\frac{\DS_t^j}{\overline{\DS}^j}-1\right)
+			+\phi_{Z,B}\left(\frac{B_{t-1}^j/Y_{t-1}^j}{\bar b^j}-1\right).
+			\label{eq:fiscal_rules}
+		\end{align}
+		其中，$\DS_t^j$ 为下文定义的净实际债务服务率。基准取 $\phi_{Z,\DS}=\phi_{Z,B}=0$，且不加入独立的财政支出冲击，因此 $G_t^j$ 和 $Z_t^j$ 从稳态出发保持不变，地方预算的边际调整主要通过公共投资和新增债务完成。政策反事实再允许中央转移支付对债务服务或债务率作出反馈。地方政府将式 \eqref{eq:fiscal_rules} 视为给定，不考虑自身选择对中央拨付规则的边际影响。
+		
+		\paragraph{公共投资与债务选择。}
+		
+		地方政府选择公共投资、下一期公共资本和期末债务的状态依赖序列，在预算约束与公共资本积累约束下最大化本地产出目标：
+		\begin{equation}
+			\max_{\{I_{G,t}^j,K_{G,t+1}^j,B_t^j\}_{t=0}^{\infty}}
+			\E_0\sum_{t=0}^{\infty}\beta_G^t\omega_Y\log Y_t^j,
+			\qquad \omega_Y=1.
+			\label{eq:gov_objective}
+		\end{equation}
+		其中，$\beta_G$ 为地方政府贴现因子，$\omega_Y=1$ 用于归一化目标尺度。该目标以地方基础设施建设和发展激励为背景\cite{songxiong2026}，用于刻画地方政府在既定发展目标下的跨期配置，而不等同于居民效用或全国社会福利。公共资本按照
+		\begin{equation}
+			K_{G,t+1}^j=(1-\delta_G)K_{G,t}^j+I_{G,t}^j
+			\label{eq:KG_law}
+		\end{equation}
+		积累，其中 $\delta_G\in(0,1)$ 为公共资本折旧率。由于当期投资进入 $K_{G,t+1}^j$，其生产效应从下一期开始体现。
+		
+		基准模型采用局部决策设定：地方政府计算公共资本收益时，将私人资本、劳动和价格视为给定，仅内生化公共资本对本地产出和税基的直接技术效应。由式 \eqref{eq:intermediate_production} 和 \eqref{eq:local_gdp} 可得
+		\begin{equation}
+			\left.
+			\frac{\partial Y_t^j}{\partial K_{G,t}^j}
+			\right|_{Q_{j,t}^j,A_t^j,K_t^j,N_t^j,V_t^j}
+			=\gamma_G\frac{Y_t^j}{K_{G,t}^j}.
+			\label{eq:local_gdp_derivative}
+		\end{equation}
+		因此，地方政府以技术参数 $\gamma_G$ 衡量公共资本的直接边际产出。式 \eqref{eq:local_gdp_derivative} 是保持私人要素和价格不变的偏导数；在最终均衡中，私人资本、劳动和价格仍会内生调整。附录进一步构建 Stackelberg 扩展，将本地私人部门的资本、投资、劳动和消费条件纳入地方政府的可实施性约束，以检验这一局部决策假设。该扩展仍描述分散的地方政府，而不是全国 Ramsey 规划者。
+		
+		令 $\Lambda_{G,t}^j$ 和 $q_{G,t}^j$ 分别表示预算资源与公共资本的影子价值。给定价格、融资报价和财政过程，公共投资的内点条件为
+		\begin{align}
+			&\Lambda_{G,t}^j
+			\left[
+			1+\chi_I
+			\left(
+			\frac{I_{G,t}^j}{I_{G,t-1}^j}-1
+			\right)
+			\frac{I_{G,t}^j}{I_{G,t-1}^j}
+			+\frac{\chi_I}{2}
+			\left(
+			\frac{I_{G,t}^j}{I_{G,t-1}^j}-1
+			\right)^2
+			\right] \notag\\
+			&\quad =
+			q_{G,t}^j
+			+\beta_G \E_t
+			\left[
+			\Lambda_{G,t+1}^j\chi_I
+			\left(
+			\frac{I_{G,t+1}^j}{I_{G,t}^j}-1
+			\right)
+			\left(
+			\frac{I_{G,t+1}^j}{I_{G,t}^j}
+			\right)^2
+			\right].
+			\label{eq:IG_FOC}
+		\end{align}
+		式 \eqref{eq:IG_FOC} 左侧是增加公共投资的当期边际财政成本，右侧包括新增公共资本的价值以及当期投资对下一期调整成本的影响。公共资本的影子价值满足
+		\begin{equation}
+			q_{G,t}^j
+			=
+			\beta_G \E_t\left[
+			(1-\delta_G)q_{G,t+1}^j
+			+
+			\frac{\gamma_G}{K_{G,t+1}^j}
+			\left(
+			\omega_Y+\Lambda_{G,t+1}^j\tau_Y^{\mathrm{loc}} Y_{t+1}^j
+			\right)
+			\right].
+			\label{eq:QG_euler}
+		\end{equation}
+		新增公共资本的价值来自三部分：未折旧资本的延续价值、地方发展目标中的产出收益，以及税基扩大带来的地方留成收入。后一项以未来预算资源的影子价值加权，因此财政资源越紧张，税基收益对投资决策越重要。
+		
+		期末债务的内点条件为
+		\begin{equation}
+			\Lambda_{G,t}^j
+			\left[
+			1
+			-\varphi_B
+			\left(
+			\frac{B_t^j}{\bar Y^j}-\bar b^j
+			\right)
+			\right]
+			=
+			\beta_G \E_t
+			\left[
+			\Lambda_{G,t+1}^j
+			\frac{R_{B,t}^j}{\Pi_{t+1}^j}
+			\right].
+			\label{eq:B_FOC}
+		\end{equation}
+		增加债务所释放的当期资源价值，在扣除边际债务管理成本后，等于下一期实际偿付成本的贴现值。由于单个政府接受同类地区融资报价，式 \eqref{eq:B_FOC} 不包含报价对本辖区债务的导数。式 \eqref{eq:IG_FOC}--\eqref{eq:B_FOC} 共同决定公共投资和融资路径。
+		
+		可行的跨期路径还满足债务终端限制和公共资本横截条件
+		\begin{align}
+			\lim_{T\to\infty}\E_t\left[
+			\left(\prod_{\ell=t}^{T-1}\frac{\Pi_{\ell+1}^j}{R_{B,\ell}^j}\right)B_T^j
+			\right]&=0,
+			\label{eq:gov_noponzi}\\
+			\lim_{T\to\infty}\beta_G^{T-t}\E_t\left[q_{G,T}^jK_{G,T+1}^j\right]&=0.
+			\label{eq:gov_tvc}
+		\end{align}
+		本文考察满足式 \eqref{eq:gov_noponzi}--\eqref{eq:gov_tvc} 的局部有界路径。地方政府问题的拉格朗日函数和一阶条件推导见附录 \ref{app:gov_derivation}。
+		
+		\paragraph{债务服务与可用财政资源。}
+		
+		为刻画货币条件对地方预算的直接影响，定义净实际债务服务率 $\DS_t^j$ 和新增融资前的可用财政资源 $\FS_t^j$：
+		\begin{align}
+			\DS_t^j&\equiv\left(\frac{R_{B,t-1}^j}{\Pi_t^j}-1\right)\frac{B_{t-1}^j}{Y_t^j},
+			\label{eq:DS}\\
+			\FS_t^j&\equiv(1-\theta_T)\tau_Y Y_t^j+Z_t^j-G_t^j
+			-\left(\frac{R_{B,t-1}^j}{\Pi_t^j}-1\right)B_{t-1}^j.
+			\label{eq:FS}
+		\end{align}
+		净实际债务服务等于实际偿付额扣除上期实际本金，因而可分解为实际票息和本金的实际重估：
+		\begin{equation}
+			\left(\frac{R_{B,t-1}^j}{\Pi_t^j}-1\right)B_{t-1}^j
+			=\underbrace{\frac{R_{B,t-1}^j-1}{\Pi_t^j}B_{t-1}^j}_{\text{实际票息}}
+			+\underbrace{\left(\frac{1}{\Pi_t^j}-1\right)B_{t-1}^j}_{\text{本金实际重估}}.
+			\label{eq:debt_service_decomposition}
+		\end{equation}
+		因此，$\DS_t^j$ 不仅包含利息支出，也反映通胀变化对名义本金实际价值的影响。$\FS_t^j$ 是在维持本金滚动的口径下，地方收入和中央转移支付扣除政府消费及净债务服务后的余额。利用式 \eqref{eq:gov_budget}，地方预算可以改写为
+		\begin{equation}
+			B_t^j-B_{t-1}^j=I_{G,t}^j+\Phi_{I,t}^j+\Phi_{B,t}^j-\FS_t^j.
+			\label{eq:financing_identity}
+		\end{equation}
+		式 \eqref{eq:financing_identity} 直接连接公共投资、财政资源与新增融资。本文将 $\FS_t^j$ 称为狭义财政空间；它只衡量维持本金滚动条件下的当期可用资源，并非地方政府整体或跨期偿债能力的充分统计量。
+		
+		\subsection{中央财政与货币政策}
+		
+		中央财政和货币政策均以全国经济为对象。由于两地实际变量分别以本地最终品价格平减，首先定义共同价格指数
+		\begin{equation*}
+			P_t=(P_t^1)^{\upsilon_1}(P_t^2)^{\upsilon_2}
+		\end{equation*}
+		其中，$\upsilon_j$ 为固定的稳态 GDP 权重。以 $P_t$ 平减地区名义 GDP 后，全国实际 GDP 与通胀定义为
+		\begin{align}
+			Y_t&=s_1Y_t^1
+			\left(\frac{Q_{1,t}^2}{Q_{1,t}^1}\right)^{\upsilon_2}
+			+s_2Y_t^2
+			\left(\frac{Q_{1,t}^1}{Q_{1,t}^2}\right)^{\upsilon_1},
+			\qquad \bar Y=s_1\bar Y^1+s_2\bar Y^2,
+			\label{eq:gdp_aggregate}\\
+			\upsilon_j&\equiv\frac{s_j\bar Y^j}{\bar Y},
+			\qquad \Pi_t=(\Pi_t^1)^{\upsilon_1}(\Pi_t^2)^{\upsilon_2},
+			\qquad \upsilon_1+\upsilon_2=1.
+			\label{eq:inflation_aggregate}
+		\end{align}
+		相同计价单位下的全国最终吸收为
+		\begin{equation}
+			D_t=s_1D_t^1
+			\left(\frac{Q_{1,t}^2}{Q_{1,t}^1}\right)^{\upsilon_2}
+			+s_2D_t^2
+			\left(\frac{Q_{1,t}^1}{Q_{1,t}^2}\right)^{\upsilon_1}.
+			\label{eq:absorption_aggregate}
+		\end{equation}
+		上述价格换算使用恒等式 $P_t^1/P_t^2=Q_{1,t}^2/Q_{1,t}^1$。地区测度 $s_j$ 决定数量加总，稳态 GDP 份额 $\upsilon_j$ 决定共同价格指数；二者在一般情形下并不相同。
+		
+		中央财政取得地区 GDP 联动收入的 $\theta_T$ 份额，并向地方支付转移 $Z_t^j$。以共同价格计量的中央当期净余额为
+		\begin{equation}
+			\mathcal S_t^C\equiv
+			s_1\bigl[\theta_T\tau_Y Y_t^1-Z_t^1\bigr]
+			\left(\frac{Q_{1,t}^2}{Q_{1,t}^1}\right)^{\upsilon_2}
+			+s_2\bigl[\theta_T\tau_Y Y_t^2-Z_t^2\bigr]
+			\left(\frac{Q_{1,t}^1}{Q_{1,t}^2}\right)^{\upsilon_1}.
+			\label{eq:central_residual}
+		\end{equation}
+		$\mathcal S_t^C>0$ 表示中央收入超过转移支出，$\mathcal S_t^C<0$ 表示当期资金缺口。中央净余额和金融中介净利差进入代表性家庭的合并账户，一次性净税费作为残差保证账户平衡。模型不另设中央政府债务和税收反馈规则，因此这一闭合只刻画转移支付对地方配置的影响，不包含中央融资工具、未来偿债和扭曲性税收的成本。中央与地方之间的资金划转属于收入转移，不在资源约束中重复计为最终品需求。
+		
+		中央银行按照含利率平滑的 Taylor 规则设定统一名义利率：
+		\begin{equation}
+			\frac{R_t}{\bar R}
+			=\left(\frac{R_{t-1}}{\bar R}\right)^{\rho_R}
+			\left[
+			\left(\frac{\Pi_t}{\bar\Pi}\right)^{\phi_\pi}
+			\left(\frac{Y_t}{\bar Y}\right)^{\phi_y}
+			\right]^{1-\rho_R}
+			\exp(\MP_t),
+			\label{eq:Taylor}
+		\end{equation}
+		其中，$\rho_R$ 为利率平滑系数，$\phi_\pi$ 和 $\phi_y$ 分别衡量利率对全国通胀和实际 GDP 的反应。这里的产出项是实际 GDP 相对确定性稳态的偏离，而非相对于灵活价格自然产出的缺口。货币政策扰动满足 $\MP_t=\rho_{\MP}\MP_{t-1}+\varepsilon_{\MP,t}$；在其他条件不变时，$\varepsilon_{\MP,t}>0$ 提高政策利率，代表货币紧缩。货币创新与式 \eqref{eq:demand_process} 中的需求创新在基准下相互独立。
+		
+		\subsection{市场出清与均衡}
+		
+		在均衡中，各地区代表性家庭的劳动供给满足本地企业的劳动需求，私人资本用于本地生产，两地区通过中间品贸易相互联系。对每一个中间品来源地区 $j$，市场出清要求
+		\begin{equation}
+			s_jY_{M,t}^j=s_1M_{j,t}^1+s_2M_{j,t}^2.
+			\label{eq:intermediate_clearing}
+		\end{equation}
+		地区最终品用于私人消费与投资、政府消费、公共投资以及财政调整成本。因此，地区资源约束为
+		\begin{equation}
+			D_t^j=C_t^j+I_t^j+G_t^j+I_{G,t}^j+\Phi_{I,t}^j+\Phi_{B,t}^j.
+			\label{eq:resource}
+		\end{equation}
+		式 \eqref{eq:resource} 左侧是使用地最终吸收，而不是生产地 GDP。跨地区贸易已由式 \eqref{eq:demand_local}--\eqref{eq:demand_foreign} 和 \eqref{eq:intermediate_clearing} 记录，故不在最终品资源约束中另加净出口。共同基金按照式 \eqref{eq:fund_clearing_tvc} 清算；企业利润、金融中介净利差和中央净余额均为合并账户中的收入流量，不形成额外的最终品需求。
+		
+		给定期初私人资本、公共资本、既有地方债及其合同利率、滞后投资、价格离散度和滞后政策利率，以及外生冲击过程，分散均衡是一组家庭与企业配置、地方财政选择、价格、政策变量和影子价值的适应性随机过程。这些过程同时满足家庭和企业的最优条件、私人及公共资本积累方程、地方政府预算约束和跨期最优条件、中央政策规则、市场出清条件与终端条件。融资报价和全国政策所使用的地区及全国变量由个体配置一致加总得到。
+		
+		本文在确定性稳态附近求解局部有界的理性预期均衡。无偶尔绑定约束的模型采用一阶扰动方法，债务余额限额反事实采用分段线性方法。完整非线性方程组、数值诊断和复现说明见附录。
+		
+		\subsection{债务异质性与区域传导}
+		
+		模型的区域传导机制可以概括为“名义债务负担---地方财政调整---公共资本积累”。统一货币条件首先改变既有名义债务的实际偿付和新债融资成本；地方政府随后在新增债务与公共投资之间重新配置资源；公共投资的变化再通过公共资本影响后续生产和要素收入。
+		
+		令 $\Delta$ 和帽号分别表示变量相对稳态的水平偏离和对数偏离。在零通胀稳态附近，净实际债务服务率的一阶变化可以写为
+		\begin{equation}
+			\Delta \DS_t^j
+			\simeq
+			\bar b^j\Delta\left(\frac{R_{B,t-1}^j}{\Pi_t^j}-1\right)
+			+
+			(\bar R_B-1)\bar b^j\left(\widehat B_{t-1}^j-\widehat Y_t^j\right),
+			\qquad
+			\bar b^j\equiv\frac{\bar B^j}{\bar Y^j}=4\bar d^{j,\mathrm{ann}}.
+			\label{eq:ds_local_decomposition}
+		\end{equation}
+		第一项是实际净偿付因子的变化。冲击发生时，既有债务和上期合同利率已经给定，因此通胀下降会立即提高旧债的实际偿付；当期利率变化对新债偿付的影响则从下一期开始出现。第二项反映债务余额相对于产出的变化：在债务本金给定时，产出下降会抬高债务服务率，后续债务调整还会进一步改变这一比率。两项均由稳态债务率 $\bar b^j$ 缩放，因而高债务地区对相同价格和数量变化具有更大的直接财政暴露。由于通胀、产出和债务路径在均衡中共同决定，式 \eqref{eq:ds_local_decomposition} 描述的是局部暴露，而不是地区响应的无条件排序。
+		
+		债务服务上升与税基收缩共同压低 $\FS_t^j$。根据式 \eqref{eq:financing_identity}，地方政府可以增加债务、减少公共投资，或同时调整二者。债务管理成本和融资利差限制跨期融资平滑，投资调整成本抑制公共投资的剧烈变化；式 \eqref{eq:IG_FOC}--\eqref{eq:B_FOC} 则决定政府如何权衡当期财政资源与未来公共资本收益。中央转移支付反馈也会改变这一权衡。因此，更高的稳态债务率意味着更大的条件性偿债暴露，但不保证公共投资在所有政策环境下都收缩更多。
+		
+		当期公共投资形成下一期公共资本，因此短期财政压力会转化为滞后且更持久的供给效应。投资下降首先压低 $K_{G,t+1}^j$，随后通过未折旧资本延续。给定相对价格、边际成本和私人要素投入，工资与私人资本租金对公共资本的直接技术弹性为
+		\begin{equation}
+			\frac{\partial \log W_t^j}{\partial \log K_{G,t}^j}=\gamma_G,
+			\qquad
+			\frac{\partial \log R_{K,t}^j}{\partial \log K_{G,t}^j}=\gamma_G.
+			\label{eq:factor_return_public_capital_elasticity}
+		\end{equation}
+		式 \eqref{eq:factor_return_public_capital_elasticity} 只表示保持其他变量不变时的技术效应。均衡中，公共资本还会引起相对价格、边际成本、劳动供给和私人资本投入的共同调整，并通过中间品贸易传递到另一地区。每地代表性家庭通过劳动、私人投资与资产交易调整消费，并参与地区间完全风险分担。由此，暂时的偿债压力可以沿着“财政空间---公共投资---公共资本---要素收入与消费”的链条形成持续的地区差异；其最终方向和幅度取决于债务暴露、融资条件、财政反馈及一般均衡调整。
+		
+		\section{参数校准}
+		
+		模型频率为季度。表 \ref{tab:calibration} 区分三类对象：Panel A 为外生给定或校准的结构与政策参数（calibration inputs），Panel B 为债务和政府支出比率的稳态目标（steady-state targets），Panel C 为给定这些输入与目标后，由地方政府稳态预算内生确定的财政配平结果（endogenous fiscal balancing outcomes）。偏好、技术和名义刚性参数主要参照相关文献，债务与政府支出比率用于刻画代表性的财政状态。基准保持两地偏好、私人技术、家庭结构、价格粘性和贸易参数相同，只允许稳态债务率及其财政配平安排存在差异。本节为机制分析提供数量尺度，不对全部参数进行联合结构估计。
+		
+		居民贴现因子设为 $\beta=0.99$。在零稳态通胀和零需求楔子下，稳态名义利率满足 $\bar R=1/\beta$，对应约 4\% 的年化净实际利率。相对风险厌恶系数取 $\sigma=2.00$，劳动供给弹性倒数取 $\varphi=0.50$，对应 Frisch 弹性为 2。每地仅设一个代表性家庭，消费和劳动直接进入地区资源约束与生产函数。劳动负效用权重 $\chi_N$ 由稳态劳动供给条件反推，精确值见附录 \ref{app:steady_state}。生产方面，私人资本产出弹性设为 $\alpha=0.45$，与中国宏观模型中常用的要素份额一致\cite{zhu2018}；公共资本产出弹性取 $\gamma_G=0.10$，该参数既进入生产函数，也决定基准局部决策设定下地方政府计算的公共资本边际收益。私人资本和公共资本的季度折旧率均为 $\delta_K=\delta_G=0.025$，简单年化折旧率约为 10\%。私人投资调整成本沿用中型 DSGE 模型的函数形式\cite{christiano2005,smetswouters2007}，并取 $\phi_I=2.50$。Calvo 不调价概率设为 $\theta_p=0.75$，对应平均价格持续期为 4 个季度；地区内品种替代弹性设为 $\epsilon_p=6.00$，对应 20\% 的稳态净加成率。跨地区中间品替代弹性取 $\eta=0.90$，本地中间品权重取 $\omega_1=\omega_2=0.85$。这些参数在两地区保持一致，因此基准中的生产和贸易结构本身不会产生区域非对称性。
+		
+		GDP 联动财政收入率设为 $\tau_Y=0.20$，中央分享比例设为 $\theta_T=0.60$，由此得到地方收入留成率 $\tau_Y^{\mathrm{loc}}=(1-\theta_T)\tau_Y=0.08$。这两个参数是央地收入划分的缩约表示，不对应某一税种的法定分成比例，也不作为企业面对的边际产出税。地方政府贴现因子取 $\beta_G=\beta=0.99$，使目标债务率处的条件 $1=\beta_G\bar R_B^j$ 与家庭的稳态 Euler 方程相容。公共投资调整成本和债务管理成本参数分别设为 $\chi_I=20.00$ 和 $\varphi_B=0.05$，地方政府目标尺度归一化为 $\omega_Y=1$。基准关闭债务率风险溢价和中央转移支付的动态反馈，即取 $\mu_B=0$ 以及 $\phi_{Z,\DS}=\phi_{Z,B}=0$；风险溢价和逆周期转移支付在扩展实验与政策反事实中启用。在没有独立财政冲击且经济从稳态出发时，政府消费和中央转移支付保持在稳态，地方预算变化主要由公共投资与新增债务吸收。稳健性分析令 $\chi_I\in\{10,20,40\}$，考察公共投资平滑程度变化；由于债务管理成本参数尚未进行同样的逐点检验，本文不将响应峰值和持续期视为精确预测。低债务和高债务地区的稳态债务率分别设为 0.40 和 1.00，分母均为年化 GDP。根据式 \eqref{eq:debt_ratio_frequency}，季度预算中的债务余额相应满足 $\bar B^1/\bar Y^1=1.60$ 和 $\bar B^2/\bar Y^2=4.00$。两地区使用相同的债务定义、期限和偿付方程，区别仅在于稳态债务规模。这组目标用于表示两类财政状态，而不是匹配某两个具体省份；高债务目标也不应理解为不同口径债务项目的机械加总。两地公共投资和政府消费占生产 GDP 的稳态比率分别设为 0.12 和 0.10。前者确定稳态公共资本，后者确定地方政府消费规模；二者均为稳态目标，而非动态固定支出规则。
+		
+		Taylor 规则的利率平滑、通胀反馈和产出反馈系数分别取 $\rho_R=0.75$、$\phi_\pi=1.50$ 和 $\phi_y=0.125$。货币政策创新不含额外的外生持续性，即 $\rho_{\MP}=0$，其标准差设为 $\sigma_{\MP}=0.0025$。在规则中的其他变量给定时，一个标准差创新使季度总名义利率因子直接上升约 25 个基点，简单年化约为 100 个基点；均衡利率还会通过通胀、产出和滞后利率内生调整。需求楔子的持续性和创新标准差分别设为 $\rho_\zeta=0.80$ 和 $\sigma_\zeta=0.0025$。按照式 \eqref{eq:demand_process}，$\varepsilon_{\zeta,t}>0$ 表示负向需求创新。两类创新均为零均值且在基准中相互独立；相同的标准差只统一数值尺度，并不意味着两类冲击具有相同的经济强度。模型的局部确定性由完整系统的 Blanchard--Kahn 条件判断。
+		
+		基准稳态取 $\bar\Pi=\bar\Pi^j=\bar\Pi_M^j=1$、$\bar Q_k^j=1$ 和 $s_1=s_2=0.5$。两地稳态生产 GDP 相同，因而全国价格指数中的 GDP 权重为 $\upsilon_1=\upsilon_2=0.5$。给定上述结构参数和财政目标后，利用资本 Euler 方程、要素需求、资本积累方程、地方政府最优条件和资源约束，联合求解资本、消费、劳动与财政乘子等稳态变量。稳态劳动依赖模型的计量单位，不直接对应现实工时占比。代表性家庭稳态消费直接由最终品资源约束确定。中央转移支付 $\bar Z^j$ 由地方政府稳态预算内生配平，其地区差异用于配平不同的稳态债务服务负担；表中仅以占各地区生产 GDP 的百分比报告这一财政配平结果，不将其视为独立校准输入。中央净余额按照式 \eqref{eq:central_residual} 进入代表性家庭合并账户，并由一次性净税费残差结算。本文报告的投资、资本和财政比率均以生产 GDP 为分母；只有在基准对称稳态下，该口径才与最终吸收口径一致。稳态推导见附录 \ref{app:steady_state}，所有稳态结果均代回完整非线性系统检验方程残差。
+		
+		\begin{table}[H]
+			\centering
+			\caption{结构与政策参数、稳态财政目标及内生配平结果}
+			\label{tab:calibration}
+			\footnotesize
+			\setstretch{1.0}
+			\setlength{\tabcolsep}{3pt}
+			\begin{tabular}{p{0.16\textwidth}p{0.25\textwidth}cp{0.39\textwidth}}
+				\toprule
+				\textbf{参数或变量} & \textbf{经济含义} & \textbf{基准取值} & \textbf{依据与说明} \\
+				\midrule
+				\multicolumn{4}{l}{\textbf{Panel A. 结构参数与政策参数}} \\
+				$\beta$ & 居民跨期贴现因子 & $0.99$ & 季度模型设定\cite{xu2019uncertainty} \\
+				$\sigma$ & 相对风险厌恶系数 & $2.00$ & 新凯恩斯偏好设定\cite{wangxi2017} \\
+				$\varphi$ & 劳动供给弹性倒数 & $0.50$ & Frisch 弹性为 2 \\
+				$\alpha$ & 私人资本产出弹性 & $0.45$ & 中国宏观模型要素份额\cite{zhu2018} \\
+				$\gamma_G$ & 公共资本产出弹性 & $0.10$ & 机制校准\cite{baxter1993,leeper2010} \\
+				$\delta_K,\delta_G$ & 两类资本季度折旧率 & $2.50\%$ & 两类资本取相同值\cite{christiano2005,smetswouters2007} \\
+				$\phi_I$ & 私人投资调整成本 & $2.50$ & 中型 DSGE 函数形式；机制校准 \\
+				$\theta_p$ & Calvo 不调价概率 & $0.75$ & 平均价格持续期为 4 个季度 \\
+				$\epsilon_p$ & 品种间替代弹性 & $6.00$ & 稳态净加成率为 20\%\cite{gali2015} \\
+				$\eta$ & 跨地区投入替代弹性 & $0.90$ & 两地区共同贸易参数 \\
+				$\omega_1,\omega_2$ & 本地中间投入权重 & $0.85$ & 对称的本地投入偏向 \\
+				$\tau_Y$ & GDP 财政收入率 & $0.20$ & 缩约收入率；不进入企业边际成本 \\
+				$\theta_T$ & 中央税收分享比例 & $0.60$ & 央地收入划分的制度化设定 \\
+				$\beta_G$ & 地方政府贴现因子 & $0.99$ & 与家庭贴现及稳态债务条件相容 \\
+				$\chi_I$ & 公共投资调整成本 & $20.00$ & 投资平滑的机制参数 \\
+				$\varphi_B$ & 债务管理成本 & $0.05$ & 债务调整成本；非硬性债务上限 \\
+				$\omega_Y$ & 地方政府目标尺度 & $1.00$ & 正比例归一化 \\
+				$\mu_B$ & 债务率风险溢价系数 & $0.00$ & 基准关闭，扩展中启用 \\
+				$\phi_{Z,\DS},\phi_{Z,B}$ & 中央转移支付反馈 & $0.00,\ 0.00$ & 基准关闭，政策反事实中启用 \\
+				$\rho_R$ & Taylor 利率平滑系数 & $0.75$ & 含平滑项的规则校准\cite{wangxi2017} \\
+				$\phi_\pi$ & Taylor 通胀反馈系数 & $1.50$ & 确定性由完整系统另行检验 \\
+				$\phi_y$ & Taylor GDP 反馈系数 & $0.13$ & 对稳态 GDP 偏离作出反应 \\
+				$\rho_{\MP}$ & 货币冲击外生持续性 & $0.00$ & 不施加额外外生持续性 \\
+				$\sigma_{\MP}$ & 货币创新标准差 & $0.0025$ & 直接规则项约 25bp（季度） \\
+				$\rho_\zeta$ & 需求楔子持续性 & $0.80$ & 全国需求冲击过程设定 \\
+				$\sigma_\zeta$ & 需求创新标准差 & $0.0025$ & 图 \ref{fig:stability_sync} 使用的冲击尺度 \\
+				\midrule
+				\multicolumn{4}{l}{\textbf{Panel B. 稳态财政目标}} \\
+				$\bar B^1/(4\bar Y^1)$ & 低债务地区年化债务率 & $0.40$ & 季度债务与 GDP 之比为 $1.60$ \\
+				$\bar B^2/(4\bar Y^2)$ & 高债务地区年化债务率 & $1.00$ & 季度债务与 GDP 之比为 $4.00$ \\
+				$\bar I_G^j/\bar Y^j$ & 公共投资占 GDP 比率 & $0.12$ & 两地共同目标；非动态固定支出规则 \\
+				$\bar G^j/\bar Y^j$ & 政府消费占 GDP 比率 & $0.10$ & 两地共同目标；动态遵循财政规则 \\
+				\midrule
+				\multicolumn{4}{l}{\textbf{Panel C. 关键稳态财政配平结果}} \\
+				$\bar Z^1/\bar Y^1$ & 低债务地区转移支付率 & $15.6\%$ & 由地方政府稳态预算内生配平 \\
+				$\bar Z^2/\bar Y^2$ & 高债务地区转移支付率 & $18.0\%$ & 由地方政府稳态预算内生配平 \\
+				\bottomrule
+			\end{tabular}
+			\par\smallskip
+			\begin{minipage}{\textwidth}
+				\footnotesize 注：一般参数与财政目标按两位小数展示，冲击标准差保留四位小数；转移支付率按百分比保留一位小数。表中舍入仅用于展示，计算取值不变；$\phi_y$ 的精确取值已在正文给出。Panel C 为内生配平结果，不是独立校准目标。精确稳态结果与推导见附录 \ref{app:steady_state}。
+			\end{minipage}
+		\end{table}
+		
+		\section{数值结果与政策反事实}
+		
+		本节利用校准模型考察地方债务异质性对统一货币政策区域传导的数量含义。首先分析货币紧缩如何通过实际债务服务、地方融资和公共投资影响两地经济，并通过改变稳态债务率、地区结构和地方政府决策范围检验这一机制。随后考察全国需求冲击下标准及地区平衡型货币规则对总量波动、区域分化和地区同步性的影响。最后比较债务余额限额与逆周期转移支付对地方财政、公共投资和公共资本调整的作用。
+		
+		除另有说明外，脉冲响应均为变量相对确定性稳态的水平偏离，横轴单位为季度。规模与发展水平实验以及地方政府决策范围比较按各情景、各地区自身的稳态进行标准化。货币紧缩由一个标准差的正向政策创新 $\varepsilon_{\MP,t}>0$ 触发，并设 $\rho_{\MP}=0$；需求实验采用持续性为 $\rho_\zeta=0.80$ 的需求楔子。同类冲击在不同地区和政策情景中保持相同规模，不同类型冲击的响应幅度不直接比较。公共资本曲线采用 Dynare 的期末输出，对应正文中的 $K_{G,t+1}$，因而图中第 $t$ 个响应点表示当期公共投资形成的下一期资本，而不是冲击发生时已经给定的期初资本 $K_{G,t}$。正文对峰谷幅度和转折季度作近似描述，精确数值以归档响应序列为准；无条件矩及其他配置指标的计算口径见相应图表和附录 \ref{app:computation}。
+		
+		\subsection{货币紧缩下的基准区域响应}
+		
+		图 \ref{fig:baseline} 报告一个标准差货币紧缩冲击下的基准响应。政策利率在冲击当期上升，此后较快回落；两地通胀同步下降，并在约第 8 个季度回到稳态附近。由于两地的偏好、私人生产技术和价格粘性相同，通胀响应几乎重合，地区差异主要出现在地方财政变量上。净实际债务服务负担 $\DS$ 在第 2 个季度达到峰值，新增融资前财政资源 $\FS$ 同期降至谷值，高债务地区的变动幅度均接近低债务地区的三倍。冲击发生时，既有债务本金和上期合同利率已经确定，通胀下降直接提高旧债的实际偿付额；当期政策利率上升则通过新债合同利率影响下一期偿付。较大的债务存量放大了高债务地区对这两项变化的暴露。与此同时，产出下降压低地方留成收入，并通过 GDP 分母进一步抬高债务服务率。随着利率和通胀恢复，$\DS$ 与 $\FS$ 在数个季度内回到稳态附近。
+		
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.90\textwidth]{code/baseline/baseline_irf_comparison.pdf}
+			\caption{基准货币紧缩下的两地区脉冲响应}
+			\label{fig:baseline}
+			\par\smallskip
+			\begin{minipage}{0.90\textwidth}
+				\footnotesize 注：蓝色实线和橙色虚线分别表示低债务与高债务地区，政策利率为全国共同变量。横轴为季度，纵轴为各变量相对确定性稳态的水平偏离，并非相对稳态的百分比变化；科学计数法仅为坐标缩放。\capitalplotnote
+			\end{minipage}
+		\end{figure}
+		
+		财政流量的恢复快于公共投资和公共资本。两地公共投资均在约第 8 个季度触底，高债务地区的谷值幅度接近低债务地区的三倍。尽管债务服务压力已经明显减弱，投资调整成本以及未来公共资本收益仍使公共投资持续低于稳态。投资不足随后累积为公共资本缺口，两地公共资本约在第 22 个季度达到最大负向偏离，高债务地区的降幅更大。模拟后期，高债务地区的公共投资回升更快并略高于低债务地区，但截至第 40 个季度，两地公共资本仍未回到稳态。由此，短期财政压力通过投资流量转化为持续时间更长的资本存量差异。
+		
+		生产 GDP 在冲击当期降至谷值，此后逐步恢复，但高债务地区在整个考察期内始终低于低债务地区。由于冲击当期的公共资本已经给定，产出的即时下降主要来自需求、劳动投入和相对价格等一般均衡调整，而不能归因于当期公共资本收缩。公共投资下降从下一期开始压低资本存量，并与随后更持久的产出差异相对应。基准结果因而揭示了清晰的时序：货币紧缩先提高实际债务服务并压缩财政资源，地方政府继而削减公共投资，投资不足最终通过公共资本积累延长地区产出差异。
+		
+		\subsection{区域异质性与政府决策范围}
+		
+		本小节考察基准结果是否随债务暴露、经济结构和地方政府决策范围而改变。首先固定地区 1 的年化债务率为 40\%，将地区 2 的债务率依次设为 40\%、80\%、120\% 和 160\%。图 \ref{fig:debt_intensity} 报告地区 2 减地区 1 的响应差。两地债务率相同时，所有曲线均与零轴重合；债务率差距扩大后，净实际债务服务负担差在第 2 个季度达到峰值，公共投资差约在第 8 个季度触底，公共资本差则在第 22 个季度附近达到最大负向偏离。较高债务暴露因而放大初期财政压力及投资、资本和产出的负向差异。后期债务服务差逐渐消退，公共投资开始回补，但资本和产出差在图示期内仍为负，表明流量压力缓解不会立即消除前期投资不足形成的资本缺口。各债务目标均由相应的稳态财政安排配平，因此这一比较反映债务负担及其财政配平的共同作用。
+		
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.90\textwidth]{code/debt_intensity/figure2_debt_intensity_gap_irfs.pdf}
+			\caption{不同稳态债务率下的地区响应差异}
+			\label{fig:debt_intensity}
+			\par\smallskip
+			\begin{minipage}{0.90\textwidth}
+				\footnotesize 注：横轴为季度，纵轴为地区 2 响应减地区 1 响应，各地区响应均为相对自身稳态的水平偏离；正值仅表示地区 2 的响应更高，不表示变量高于自身稳态。地区 1 的稳态年化债务率固定为 40\%，图例列示地区 2 的稳态年化债务率；科学计数法仅为坐标缩放。\capitalplotnote
+			\end{minipage}
+		\end{figure}
+		
+		其次，本文令低债务地区与高债务地区的稳态总 GDP 比取 $r\in\{1,1.5,2\}$，在地区测度、单位 GDP、永久 TFP 和贸易权重之间联合配平，同时保持两地年化债务率为 40\% 和 100\%。图 \ref{fig:scale_development} 显示，三种情景下高债务地区的标准化响应几乎重合：财政压力较早消退，公共投资先于公共资本达到谷值，而资本和产出在第 40 个季度仍低于稳态。规模、发展水平和贸易结构的联合变化只带来很小的幅度差异，没有改变主要调整过程。由于各曲线均以相应情景自身稳态标准化，这一结果并不意味着绝对损失或地区差异完全相同；具体配平方法见附录 \ref{app:scale_development} 和表 \ref{tab:scale_development_robustness}。
+		
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.90\textwidth]{code/scale_development/figure3_scale_development_region2_irfs.pdf}
+			\caption{规模与发展水平联合情景下高债务地区的标准化响应}
+			\label{fig:scale_development}
+			\par\smallskip
+			\begin{minipage}{0.90\textwidth}
+				\footnotesize 注：横轴为季度，各曲线对应一种规模、发展水平与贸易配平的联合情景。除全国政策利率外，各面板报告高债务地区的响应；纵轴为水平偏离除以相应情景自身稳态的比值，未乘以 100，不表示两地区之差。图例仅列总 GDP 比 $r$；地区测度、单位 GDP、GDP 权重和贸易权重见表 \ref{tab:scale_development_robustness}。科学计数法仅为坐标缩放。\capitalplotnote
+			\end{minipage}
+		\end{figure}
+		
+		附录图 \ref{fig:AB_irf_compare} 显示，两种设定下公共投资、公共资本和生产 GDP 的地区响应差路径几乎重合；表 \ref{tab:AB_baseline_gap} 的前 12 期累计地区差方向一致且数值差异较小，因此主要结论不依赖于地方政府内生化私人部门响应范围的具体设定。
+		
+		进一步实验表明，融资与财政规则比上述结构变化更可能改变地区响应的相对强弱。债务率风险报价单独作用时会扩大投资、资本和产出的负向地区差，较强的中央转移反馈则缩小差距；二者共同作用时，高、低债务地区的响应排序可以逆转。跨地区投入联系主要影响差异的幅度和持续时间，较强联系使产出差回归更快。总体而言，稳态债务率差异在对称参照下放大区域分化，规模、发展水平和地方政府决策范围的局部变化未改变这一特征，但融资条件与财政反馈能够改变其净方向。响应排序逆转并不等同于地区差异缩小、同步性提高或全国福利改善，下文将分别考察这些评价维度。
+
+		\subsection{需求冲击下的总量稳定与区域同步}
+		
+		本小节仅激活全国需求冲击，保持 $\rho_\zeta=0.80$、$\sigma_\zeta=0.0025$。图 \ref{fig:stability_sync} 保持全国通胀波动与地区产出差波动这两个指标不变，仅增加高债务地区债务率维度，将单条关系扩展为一族权衡曲线：固定地区 1 年化债务率为 $0.40$，地区 2 年化债务率取 $\{0.80,1.00,1.20,1.40,1.60\}$；每条曲线连接 $\phi_\pi\in\{1.1,1.3,1.5,2.0,2.5,3.0\}$ 的六个真实节点。横轴为地区生产 GDP 差的标准差 $100\times\operatorname{sd}(Y_t^2-Y_t^1)$，向右表示地区产出分化波动增大；纵轴为全国通胀标准差 $100\times\operatorname{sd}(\Pi_t)$，向下表示全国通胀更稳定。加粗的菱形节点曲线对应正文基准债务率 $1.00$，其六个节点标注 $\phi_\pi$，沿连线顺序移动表示通胀反应系数提高。
+
+		表 \ref{tab:policy_eval} 仍报告基准债务情景下原有五个规则点的结果。$\phi_\pi$ 从 1.1 提高至 3.0 时，全国通胀标准差的展示值由 0.365 降至 0.171，降幅为 53.1\%；全国生产 GDP 标准差由 0.490 降至 0.232。同时，地区生产 GDP 差标准差由 0.071 升至 0.214，两地产出相关系数由 0.991 降至 0.682。图 \ref{fig:stability_sync} 补充了 $\phi_\pi=1.3$ 节点及其他债务率情景。
+		
+		\begin{table}[H]
+\centering
+\caption{不同通胀反馈下的理论无条件波动与地区产出相关性}
+\label{tab:policy_eval}
+\small
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{cccccc}
+\toprule
+$\phi_\pi$ & $100\,\operatorname{sd}(\Pi)$ & $100\,\operatorname{sd}(Y)$ & $100\,\operatorname{sd}(Y^2-Y^1)$ & $\operatorname{Corr}(Y^1,Y^2)$ & $100\,\operatorname{sd}(\DS^2-\DS^1)$ \\
+\midrule
+1.1  &  0.365  &  0.490  &  0.071  &  0.991  &  0.863 \\
+1.5  &  0.300  &  0.370  &  0.121  &  0.952  &  0.776 \\
+2.0  &  0.239  &  0.285  &  0.164  &  0.847  &  0.727 \\
+2.5  &  0.199  &  0.247  &  0.193  &  0.741  &  0.717 \\
+3.0  &  0.171  &  0.232  &  0.214  &  0.682  &  0.722 \\
+\bottomrule
+\end{tabular}}
+\begin{flushleft}\footnotesize 注：两地年化债务率固定为 $0.40$ 和 $1.00$，仅激活全国需求冲击。标准差来自一阶理论无条件矩，乘以 100 展示；相关系数不缩放。五个原有通胀反应系数节点及其数值保持不变。各指标用于配置比较，不构成完整福利排序。\end{flushleft}
+\end{table}
+
+\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.80\textwidth]{code/demand_monetary/figure4_negative_demand_stability_sync_map.pdf}
+			\caption{负需求冲击下全国通胀稳定与地区产出分化的权衡。横轴为地区产出差波动 $100\times\operatorname{sd}(Y_t^2-Y_t^1)$，纵轴为全国通胀波动 $100\times\operatorname{sd}(\Pi_t)$。低债务地区年化债务率固定为 $0.40$，五条曲线分别对应高债务地区年化债务率 $0.80,1.00,1.20,1.40,1.60$，$d_{2,\mathrm{ann}}=1.00$ 为正文基准。Markers connect increasing values of $\phi_\pi$ from 1.1 to 3.0.}
+			\label{fig:stability_sync}
+			\par\smallskip
+			\begin{minipage}{0.90\textwidth}
+				\footnotesize 注：高债务地区年化债务率依次为 $0.80,1.00,1.20,1.40,1.60$，每条线连接 $\phi_\pi=1.1,1.3,1.5,2.0,2.5,3.0$。地区产出沿用生产 GDP 口径；两个标准差均为仅激活全国需求冲击的一阶理论无条件矩，乘以 100 仅为展示缩放。连线连接真实离散节点，不作平滑拟合，也不构成连续效率前沿。
+			\end{minipage}
+		\end{figure}
+		
+		地方债务的名义重估与滚动融资渠道有助于理解这一权衡。以负向需求创新为例，通胀和产出下降引致政策利率内生调整；当期通胀影响既有名义债务的实际偿付负担，当期融资利率则影响新债的后续偿付。两项作用的方向和时点并不相同，而稳态债务基数的差异使其对两地财政资源、公共投资和资本积累产生不同影响。提高 $\phi_\pi$ 改变了通胀、利率和财政调整的动态组合，因而可能在压低全国通胀波动的同时放大地区产出差波动。这里的负向创新仅用于说明传导机制；图中指标是零均值需求过程的一阶理论无条件矩，并不提供各渠道的数量分解。
+		
+		在相同的 $\phi_\pi$ 节点，高债务地区债务率越高，地区产出差波动越大，全国通胀波动也略有上升，因而权衡曲线向右上方移动。这表明债务异质性越强，在给定货币规则下维持全国通胀稳定所伴随的地区产出分化越明显。沿五条非对称债务曲线提高 $\phi_\pi$ 时，六个节点均依次向右下方移动：全国通胀波动下降，但地区产出差波动上升，各段均无局部反向。图中连线仅描述这些离散规则点，不能据此作出完整福利排序。下一小节进一步考察地区平衡项如何改变全国稳定与区域协调之间的配置权衡。
+		
+		\subsection{地区平衡型货币规则：区域协调与总量稳定的再权衡}
+		\label{sec:demand_regional_balance}
+
+		上一小节通过改变通胀反应系数考察全国通胀稳定与地区产出分化的权衡。本小节固定该系数，在式 \eqref{eq:Taylor} 的标准规则中直接加入地区相对产出项，考察货币政策配置向区域协调倾斜时的总量代价。地区平衡型规则为
+		\begin{equation}
+			\frac{R_t}{\bar R}
+			=\left(\frac{R_{t-1}}{\bar R}\right)^{\rho_R}
+			\left[
+			\left(\frac{\Pi_t}{\bar\Pi}\right)^{\phi_\pi}
+			\left(\frac{Y_t}{\bar Y}\right)^{\phi_y}
+			\left(\frac{Y_t^2/\bar Y^2}{Y_t^1/\bar Y^1}\right)^{\phi_{\mathrm{reg}}}
+			\right]^{1-\rho_R}\exp(\MP_t).
+			\label{eq:Taylor_regional_balance_demand}
+		\end{equation}
+		其中，$\phi_{\mathrm{reg}}\geq0$ 衡量统一货币规则对地区相对产出偏离的反应，$Y_t^j$ 沿用地区生产 GDP 口径。当高债务地区相对于低债务地区收缩更深时，括号中的相对产出比值低于 1，因而在其他规则变量给定时，正的 $\phi_{\mathrm{reg}}$ 会降低统一政策利率。该项与通胀和全国产出项一同进入利率平滑目标，未另行构造线性规则；$\phi_{\mathrm{reg}}=0$ 时精确退化为式 \eqref{eq:Taylor}。这一设定只是探索性政策反事实，不预设中央银行应承担地方债务协调职责。
+
+		实验固定两地年化债务率为 $0.40$ 和 $1.00$，保持 $\phi_\pi=1.50$、$\phi_y=0.125$、$\rho_R=0.75$ 及其余参数为正文基准，仅比较 $\phi_{\mathrm{reg}}\in\{0,0.5,1.0,1.5,2.0\}$。与图 \ref{fig:stability_sync} 一样，仅激活全国需求冲击，取 $\rho_\zeta=0.80$、$\sigma_\zeta=0.0025$，其他随机创新均关闭。各点均重新求解一阶模型，并通过稳态、确定性与模型诊断；$\phi_{\mathrm{reg}}=0$ 的稳态、全部理论协方差及需求冲击响应与当前标准规则基准逐位一致。以下比较使用理论无条件矩，所有标准差乘以 100，相关系数不作缩放。
+
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.95\textwidth]{code/extension_scenarios/demand_regional_balance_configuration.pdf}
+			\caption{需求冲击下地区平衡型货币规则的配置比较。(a) 全国通胀波动与地区产出差波动；(b) 地区净实际债务服务率差的波动；(c) 地区公共投资差的波动。}
+			\label{fig:demand_regional_balance}
+			\par\smallskip
+			\begin{minipage}{0.90\textwidth}
+				\footnotesize 注：低、高债务地区年化债务率分别为 $0.40$、$1.00$，$\phi_\pi=1.50$。(a) 的横轴为 $100\times\operatorname{sd}(Y_t^2-Y_t^1)$，纵轴为 $100\times\operatorname{sd}(\Pi_t)$，节点标注 $\phi_{\mathrm{reg}}$；(b)、(c) 的横轴均为 $\phi_{\mathrm{reg}}$，纵轴分别为 $100\times\operatorname{sd}(\DS_t^2-\DS_t^1)$ 与 $100\times\operatorname{sd}(I_{G,t}^2-I_{G,t}^1)$。五个节点按 $\phi_{\mathrm{reg}}=0,0.5,1.0,1.5,2.0$ 连接，均来自仅激活全国需求冲击的一阶理论无条件矩，不作拟合。该图为配置比较，不提供福利排序。
+			\end{minipage}
+		\end{figure}
+
+		图 \ref{fig:demand_regional_balance}(a) 显示，随着 $\phi_{\mathrm{reg}}$ 提高，地区产出差波动单调下降，但全国通胀波动上升。从 0 提高至 2.0，地区产出差标准差的展示值由 0.120532 降至 0.079566，下降 33.99\%；两地产出相关系数由 0.9517 升至 0.9888。与此同时，全国通胀标准差由 0.300092 升至 0.489678，增加 63.18\%；全国生产 GDP 标准差由 0.369573 升至 0.453271，增加 22.65\%。即使取网格中的最小正值 $\phi_{\mathrm{reg}}=0.5$，地区产出差波动下降 12.16\% 也伴随着全国通胀和产出波动分别增加 18.11\% 和 6.81\%。因此，当前参数网格没有显示显著缓解区域分化且总量稳定代价很小的情景。
+
+		这一规则能够降低地区产出分化并提高两地产出的同步性，但代价是更高的全国通胀和产出波动。它没有消除政策目标之间的权衡，而是使政策配置从全国总量稳定方向转向区域协调方向。这里仅进行给定系数下的配置比较，不计算 CEV，不新增二阶福利分析，也不搜索最优 $\phi_{\mathrm{reg}}$；这些结果不用于判断哪个地区反应系数更优，不构成完整福利排序。
+
+		机制结果还表明，公共投资与生产 GDP 的地区差异缩小，并不是因为地方债务服务差异先行收敛。图 \ref{fig:demand_regional_balance}(b)--(c) 中，$\phi_{\mathrm{reg}}$ 从 0 提高至 2.0 时，净实际债务服务率差标准差的展示值由 0.775609 升至 0.939834，增加约 21.17\%；公共投资差标准差则由 0.199597 降至 0.134221，下降约 32.75\%。债务服务差异扩大而公共投资差异缩小，不支持债务服务差、财政资源差和公共投资差依次下降的简单机制链。
+
+		地区平衡项改变了统一利率、地区收入、价格、财政资源与地方融资选择的一般均衡组合。尽管债务服务差异扩大，公共投资差异反而缩小，说明区域协调效应并非来自债务偿付压力本身趋同，而应从财政资源配置与地方政府跨期调整的综合变化理解。当前实验尚未单独识别债务服务、财政资源、债务融资和财政影子价值各自的数量贡献，因而不能将这一综合结果归因于某一中间渠道。
+
+		直接在统一货币规则中赋予区域失衡权重能够缓解区域分化，却需要牺牲一定的全国通胀和产出稳定，而且未使地方债务服务压力趋同。区域协调因此未必适合完全由统一货币政策承担。下一小节转向地方债务限额和中央转移支付，考察更直接作用于地方财政约束的政策工具；冲击环境也相应回到既有的货币紧缩实验。
+
+		\subsection{债务余额限额与中央转移支付}
+		
+		本小节回到相同规模的货币紧缩冲击，比较严格债务余额限额与逆周期中央转移支付。两项工具在各自反事实中单独启用：前者限制高债务地区利用新增融资平滑支出，后者通过补充地方收入缓冲财政压力。比较重点是公共投资、资本和产出调整的幅度与时序。
+		
+		严格限额只施加于高债务地区，约束及其使用率定义为
+		\begin{equation}
+			B_t^2\leq \bar B_{\max}^2,\qquad
+			\mathcal U_t^2\equiv \frac{B_t^2}{\bar B_{\max}^2}\leq 1.
+			\label{eq:strict_debt_cap}
+		\end{equation}
+		其中，$B_t^2$ 是以本地最终品计价的实际本金。限额设为
+		\begin{equation}
+			\bar B_{\max}^2=1.002\,\bar B^2=1.002\times4\bar Y^2=4.008\bar Y^2.
+			\label{eq:strict_debt_cap_value}
+		\end{equation}
+		该上限比稳态余额高 $0.2\%$，在稳态松弛，并使用 OccBin 联合求解约束切换与均衡路径。由于使用率以固定余额上限为分母，而债务率 $d_t^{2,\mathrm{ann}}=B_t^2/(4Y_t^2)$ 还取决于当期产出，余额受到控制并不保证债务率同步下降。
+		
+		转移支付反事实不改变地方预算约束 \eqref{eq:gov_budget}，而是在既定稳态配平基础上加入财政压力反馈：
+		\begin{equation}
+			\log\left(\frac{Z_t^j}{\bar Z^j}\right)
+			=\rho_Z\log\left(\frac{Z_{t-1}^j}{\bar Z^j}\right)
+			+\phi_{Z,\DS}\left(\frac{\DS_t^j}{\overline{\DS}^j}-1\right)
+			+\phi_{Z,B}\left(\frac{B_{t-1}^j/Y_{t-1}^j}{\bar B^j/\bar Y^j}-1\right).
+			\label{eq:Z_rule_ext}
+		\end{equation}
+		取 $\rho_Z=0.70$、$\phi_{Z,\DS}=0.015$、$\phi_{Z,B}=0.005$，不加入独立转移支付创新。该规则通过新增融资前财政资源 $\FS_t^j$ 影响公共投资，但不直接改变债务合同或融资报价。
+		
+		相应的全国增量转移支出按共同价格口径定义为
+		\begin{equation}
+			\Delta Z_t^{C}
+			\equiv
+			s_1\left[Z_t^1\left(\frac{Q_{1,t}^2}{Q_{1,t}^1}\right)^{\upsilon_2}-\bar Z^1\right]
+			+s_2\left[Z_t^2\left(\frac{Q_{1,t}^1}{Q_{1,t}^2}\right)^{\upsilon_1}-\bar Z^2\right].
+			\label{eq:central_transfer_cost}
+		\end{equation}
+		该指标只度量转移支出的增量，中央净融资需求还取决于分享税收和式 \eqref{eq:central_residual} 的中央净余额。由于模型未显式刻画中央债务、扭曲性税收和跨期偿付成本，以下结果是地方配置比较，而不是净福利排序。
+		
+		图 \ref{fig:debt_limit_high_debt} 报告高债务地区的政策路径及“严格限额减基准”的政策差。后者直接显示限额如何改变调整时序：负值表示严格限额下的响应低于基准，转正只表示政策排序发生变化，并不意味着变量已经恢复至稳态。完整两地区响应见附录图 \ref{fig:debt_limit_regions}。
+		
+		\begin{figure}[H]
+			\centering
+			{\small (a) 高债务地区政策路径\par}
+			\includegraphics[width=0.82\textwidth]{code/policy_counterfactual/figure5_debt_limit_high_debt_irfs.pdf}\\[0.4em]
+			{\small (b) 严格限额减基准的政策差\par}
+			\includegraphics[width=0.82\textwidth]{code/policy_counterfactual/figure5_debt_limit_diff_irfs.pdf}
+			\caption{严格债务余额限额下的高债务地区政策路径与政策差}
+			\label{fig:debt_limit_high_debt}
+			\label{fig:debt_limit_diff}
+			\par\smallskip
+			\begin{minipage}{0.90\textwidth}
+				\footnotesize 注：横轴为季度。(a) 实线为基准，虚线为严格限额；限额使用率 $B_t^2/\bar B_{\max}^2$ 为水平值，按同一上限计算，边界为 1；其余变量为相对稳态的水平偏离。(b) 政策差为严格限额情景减基准情景，不是地区差；正值不一定表示变量高于自身稳态。阴影为 OccBin 记录确认的实际绑定期（由求解状态确定，见正文），不以基准路径超过上限的时期替代。科学计数法仅为坐标缩放。\capitalplotnote
+			\end{minipage}
+		\end{figure}
+		
+		OccBin 状态记录确认限额在第 2 季度实际绑定。严格限额减基准的公共投资和产出差分别在第 2、2 季度达到谷值，公共资本政策差在第 7 季度达到最低点。随后，产出差第 7 季度转正，公共投资差第 9 季度转正，公共资本差第 20 季度转正。短暂绑定通过投资调整与资本积累影响后续配置，政策差转正只表示相对排序变化，不等于变量恢复稳态或累计损失已获补偿。
+		
+		限额使用率的政策差在中期仍为负，接近考察期末才回到零附近，说明短暂绑定可以改变更长时期的债务路径。但政策差转正并不能说明后期反弹已经补偿初期损失，也不能据此判断累计配置收益。附录图 \ref{fig:debt_limit_fiscal} 进一步表明，余额减少与债务率或实际债务服务负担下降并不等价：产出分母和通胀重估可能改变两者的排序。
+		
+		图 \ref{fig:central_transfer} 比较启用转移反馈前后高债务地区的响应。两种情景均不施加硬限额，因而保留地方融资的调整空间。
+		
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.90\textwidth]{code/policy_counterfactual/figure6_central_transfer_high_debt_irfs.pdf}
+			\caption{逆周期中央转移支付下高债务地区的响应}
+			\label{fig:central_transfer}
+			\par\smallskip
+			\begin{minipage}{0.90\textwidth}
+				\footnotesize 注：横轴为季度，实线与虚线分别表示“无逆周期转移反馈”和“有逆周期转移反馈”，两条路径均未实施严格债务余额限额。各面板为高债务地区相对稳态的水平偏离，不是地区差或稳态百分比；科学计数法仅为坐标缩放。地方投资和资本谷值改善不等于中央支出的净福利收益。\capitalplotnote
+			\end{minipage}
+		\end{figure}
+		
+		新增拨付在第 3 季度达到峰值。启用温和转移反馈后，高债务地区公共投资和资本分别在第 8、22 个响应点触底，谷值绝对幅度相对于无反馈情景分别缩小 21.8\% 和 21.9\%。第 40 个响应点的资本偏离仍为 -0.011478。转移支付通过收入端缓冲财政资源与公共投资，不直接改变地方债合同；初期产出的相对改善则须与后续资本效果区分。
+		
+		初期产出对转移反馈的反应较小，两条路径的首期降幅几乎相同，此后有转移反馈的产出才逐渐高于无反馈情景。与债务限额相比，转移支付并未显著改变初期融资空间，而是通过收入端缓冲支出调整。因此，严格限额表现为初期收缩更深、随后恢复更强，逆周期转移支付则主要平滑公共投资并减轻资本的中期负向偏离。控制债务余额与平滑地方支出并非同一政策目标。
+		
+		两项工具分别单独实施，且模型未计入中央完整融资成本，因此本文仅比较地方配置路径，不评价联合实施效果或净福利排序。
+		
+		\section{研究结论与政策启示}
+		
+		本文在两地区代表性家庭（RANK）新凯恩斯 DSGE 模型中引入名义地方债与公共投资最优选择，说明地方资产负债表如何将共同货币冲击转化为持续的区域差异。在主要结构参数对称、稳态债务率及相应财政配平不同的基准中，货币紧缩通过旧债实际重估和滚动融资成本压缩地方财政资源，高债务地区因而削减更多公共投资，并形成更深的公共资本与产出的负向偏离。财政压力消退并不意味着实体影响结束：此前投资不足仍通过资本积累影响后续生产。公共投资由此不仅是财政政策的工具，也是货币政策区域传导中的内生调整环节。
+		
+		这一机制的作用强度与方向取决于财政金融安排。对称债务率下两地响应重合，债务差距扩大则加深前中期投资收缩和后续资本、产出差异；规模、发展水平与贸易配平的联合变动，以及政府内生化范围的局部比较，未明显改变基准特征。但风险溢价与较强转移支付反馈共同作用时，高、低债务地区响应的相对强弱发生逆转。因此，债务负担不能脱离融资条件和财政支持单独解释，局部敏感性结果也不支持高债务地区在所有政策环境下承受更大损失的判断。
+		
+		配置比较表明，全国稳定、区域同步和地方财政调整是不同的评价维度。面对全国性需求扰动，更强的通胀反馈在所考察网格内降低全国波动，却提高地区产出差波动、降低两地相关性；地区平衡项则降低区域分化、提高同步性，同时增加全国通胀和产出波动，体现了区域协调与总量稳定之间的再权衡。某项政策改善其中一个维度并不意味着整体福利改善，本文不进行完整福利排序。评估统一货币政策时，应将债务服务差异、财政资源及公共投资和公共资本调整作为总量指标的补充，并区分冲击来源与调整阶段，而非要求货币政策替代地方债务管理。
+		
+		财政工具的比较进一步揭示了调整时序的重要性。严格债务余额限额压缩初期融资平滑空间，加深投资和产出收缩，随后却伴随较强恢复；较温和的逆周期转移支付主要减轻投资与资本的负向偏离，对初期产出降幅的改善有限。债务治理因此需要同时评价余额控制、支出平滑与累计配置变化，不能将后期反弹视为初期损失已获补偿的证据。转移支付的地方缓冲效果也必须与中央税收、增量支出及融资成本一并核算，不能视为无成本补偿。这些结果支持在明确目标和预算约束的基础上讨论货币财政协调，但尚不足以确定整体占优的政策组合。
+		
+		上述结论属于校准模型的机制分析，而非现实地区因果效应的直接估计。两类代表性地区、完全风险分担、一期名义债务和简化的政府目标限制了对金融分割、期限结构及多重政策目标的刻画；一阶和分段一阶近似也不能完整反映大幅冲击的非线性。尤其是，中央当期差额由一次性净税费余项吸收，中央融资、扭曲性税收及其跨期成本尚未被完整刻画，因此政策实验只作配置比较，不构成净社会福利排序。后续研究可将不完全风险分担、多期限债务、中央融资和税收反馈纳入框架，进一步评价债务管理与转移规则的联合效果；结合省级与公共投资项目数据识别关键参数、分解各渠道贡献，则有助于检验这一财政传导机制的定量解释力。
+		
+	\end{spacing}
+	
+	\begin{thebibliography}{99}
+		\addtolength{\itemsep}{-0.3em}
+		\setstretch{1.1}
+		
+		\bibitem{auerbach2020}
+		Auerbach, A. J., Gorodnichenko, Y., and Murphy, D. (2020). Local fiscal multipliers and fiscal spillovers in the USA. \textit{IMF Economic Review}, 68(1), 195--229.
+		
+		\bibitem{auclert2019}
+		Auclert, A. (2019). Monetary policy and the redistribution channel. \textit{American Economic Review}, 109(6), 2333--2367.
+		
+		\bibitem{bai2016}
+		Bai, C.-E., Hsieh, C.-T., and Song, Z. (2016). The long shadow of China's fiscal expansion. \textit{Brookings Papers on Economic Activity}, 2016(2), 129--181.
+		
+		\bibitem{baxter1993}
+		Baxter, M., and King, R. G. (1993). Fiscal policy in general equilibrium. \textit{American Economic Review}, 83(3), 315--334.
+		
+		\bibitem{bilbiie2025}
+		Bilbiie, F. O. (2025). Monetary policy and heterogeneity: An analytical framework. \textit{Review of Economic Studies}, 92(4), 2398--2436.
+		
+		\bibitem{chen2020}
+		Chen, Z., He, Z., and Liu, C. (2020). The financing of local government in China: Stimulus loan wanes and shadow banking waxes. \textit{Journal of Financial Economics}, 137(1), 42--71.
+		
+		\bibitem{chodorowreich2019}
+		Chodorow-Reich, G. (2019). Geographic cross-sectional fiscal spending multipliers: What have we learned? \textit{American Economic Journal: Economic Policy}, 11(2), 1--34.
+		
+		\bibitem{christiano2005}
+		Christiano, L. J., Eichenbaum, M., and Evans, C. L. (2005). Nominal rigidities and the dynamic effects of a shock to monetary policy. \textit{Journal of Political Economy}, 113(1), 1--45.
+		
+		\bibitem{cong2019}
+		Cong, L. W., Gao, H., Ponticelli, J., and Yang, X. (2019). Credit allocation under economic stimulus: Evidence from China. \textit{Review of Financial Studies}, 32(9), 3412--3460.
+		
+		\bibitem{farhi2016}
+		Farhi, E., and Werning, I. (2016). Fiscal multipliers: Liquidity traps and currency unions. \textit{Handbook of Macroeconomics}, 2, 2417--2492.
+		
+		\bibitem{gali2007}
+		Galí, J., López-Salido, J. D., and Vallés, J. (2007). Understanding the effects of government spending on consumption. \textit{Journal of the European Economic Association}, 5(1), 227--270.
+		
+		\bibitem{gali2015}
+		Galí, J. (2015). \textit{Monetary Policy, Inflation, and the Business Cycle}. Princeton University Press.
+		
+		\bibitem{kaplan2018}
+		Kaplan, G., Moll, B., and Violante, G. L. (2018). Monetary policy according to HANK. \textit{American Economic Review}, 108(3), 697--743.
+		
+		\bibitem{keen1997}
+		Keen, M., and Marchand, M. (1997). Fiscal competition and the pattern of public spending. \textit{Journal of Public Economics}, 66(1), 33--53.
+		
+		\bibitem{leeper2010}
+		Leeper, E. M., Walker, T. B., and Yang, S.-C. S. (2010). Government investment and fiscal stimulus. \textit{Journal of Monetary Economics}, 57(8), 1000--1012.
+		
+		\bibitem{nakamura2014}
+		Nakamura, E., and Steinsson, J. (2014). Fiscal stimulus in a monetary union: Evidence from US regions. \textit{American Economic Review}, 104(3), 753--792.
+		
+		\bibitem{oates1972}
+		Oates, W. E. (1972). \textit{Fiscal Federalism}. Harcourt Brace Jovanovich.
+		
+		\bibitem{ramey2018}
+		Ramey, V. A., and Zubairy, S. (2018). Government spending multipliers in good times and in bad: Evidence from U.S. historical data. \textit{Journal of Political Economy}, 126(2), 850--901.
+		
+		\bibitem{songxiong2026}
+		Song, Z. (M.), and Xiong, W. (2026). The Mandarin Model of Growth. Forthcoming in \textit{American Economic Review}, January 2026 manuscript.
+		
+		\bibitem{smetswouters2007}
+		Smets, F., and Wouters, R. (2007). Shocks and frictions in US business cycles: A Bayesian DSGE approach. \textit{American Economic Review}, 97(3), 586--606.
+		
+		\bibitem{chenshuyue2024}
+		陈舒悦, 刘悦, 张际 (2024). 基于上市企业微观杠杆率的货币政策传导效率的研究——地方政府隐性债务视角. \textit{经济学（季刊）}, 24(1), 237--253.
+		
+		\bibitem{fan2025}
+		樊成杰, 张屹山, 赵子英 (2025). 地方债务置换的宏观经济效应与财政政策选择. \textit{数量经济技术经济研究}, 42(7), 25--46.
+		
+		\bibitem{fengchen2026}
+		冯晨, 王照进, 刘冲, 罗添元 (2026). 地方政府债务压力下的预算结构调整与非税扩张. \textit{金融研究}, (3), 57--74.
+		
+		\bibitem{gaoran2022}
+		高然, 祝梓翔, 陈忱 (2022). 地方债与中国经济波动：金融加速器机制的分析. \textit{经济研究}, 57(6), 83--100.
+		
+		\bibitem{jiang2016}
+		姜子叶, 胡育蓉 (2016). 财政分权、预算软约束与地方政府债务. \textit{金融研究}, (2), 198--206.
+		
+		\bibitem{jifuxing2025}
+		吉富星, 杨小科, 张可萦, 武威 (2025). 地方政府债务限额管理与融资平台市场化转型——基于政府行为与企业运营视角. \textit{中国工业经济}, (11), 56--73.
+		
+		\bibitem{lidaokui2024}
+		李稻葵, 张鹤 (2024). 中国地方政府债务规模研究. \textit{财贸经济}, 45(12), 5--21.
+		
+		\bibitem{liudebt2022}
+		刘蓉, 李娜 (2022). 地方政府举债的货币扩张效应及其政策协同. \textit{财贸经济}, 43(1), 27--43.
+		
+		\bibitem{liulei2025}
+		刘磊, 王辉 (2025). 中国地方财政支出乘数研究. \textit{经济学动态}, (3), 188--206.
+		
+		\bibitem{liurong2021}
+		刘蓉, 李娜 (2021). 地方债务密集度攀升的乘数和双重挤出效应研究. \textit{管理世界}, 37(3), 51--66+160+5.
+		
+		\bibitem{ma2019}
+		马光荣, 张凯强, 吕冰洋 (2019). 分税与地方财政支出结构. \textit{金融研究}, (8), 20--37.
+		
+		\bibitem{mei2021}
+		梅冬州, 温兴春, 王思卿 (2021). 房价调控、地方政府债务与宏观经济波动. \textit{金融研究}, (1), 31--50.
+		
+		\bibitem{zhu2018}
+		朱军, 许志伟 (2018). 财政分权、地区间竞争与中国经济波动. \textit{经济研究}, 53(1), 21--34.
+		
+		\bibitem{wangtian2014}
+		王国静, 田国强 (2014). 政府支出乘数. \textit{经济研究}, 49(9), 4--19.
+		
+		\bibitem{wangwenfu2020}
+		王文甫, 王召卿, 郭柃沂 (2020). 财政分权与经济结构失衡. \textit{经济研究}, 55(5), 49--65.
+		
+		\bibitem{wangxi2017}
+		王曦, 汪玲, 彭玉磊, 宋晓飞 (2017). 中国货币政策规则的比较分析——基于DSGE模型的三规则视角. \textit{经济研究}, 52(9), 24--38.
+		
+		\bibitem{wangxi2024}
+		王曦, 温瑞昌, 汪玲 (2024). 异质性家庭、消费品结构与消费刺激政策效果. \textit{中国工业经济}, (10), 5--23.
+		
+		\bibitem{wuhu2022}
+		吴文锋, 胡悦 (2022). 财政金融协同视角下的地方政府债务治理——来自金融市场的证据. \textit{中国社会科学}, (8), 143--162+207.
+		
+		\bibitem{xing2015}
+		邢曙光, 黄梅波 (2015). 最优区域间转移支付规则. \textit{金融研究}, (11), 98--114.
+		
+		\bibitem{xiong2021}
+		熊琛, 金昊 (2021). 地方政府债务的宏观经济效应——基于信贷错配视角的研究. \textit{经济学（季刊）}, 21(5), 1545--1570.
+		
+		\bibitem{xuchao2020}
+		徐超, 庞雨蒙, 刘迪 (2020). 地方财政压力与政府支出效率——基于所得税分享改革的准自然实验分析. \textit{经济研究}, 55(6), 138--154.
+		
+		\bibitem{xu2019uncertainty}
+		许志伟, 刘建丰 (2019). 收入不确定性、资产配置与货币政策选择. \textit{经济研究}, 54(5), 30--46.
+		
+		\bibitem{zhangpeng2025}
+		张鹏, 张明, 张冲 (2025). 如何应对地方债务风险：基于宏观政策取向一致性的视角. \textit{中国工业经济}, (6), 24--42.
+		
+		\bibitem{zhao2017land}
+		赵扶扬, 王忏, 龚六堂 (2017). 土地财政与中国经济波动. \textit{经济研究}, 52(12), 46--61.
+		
+		\bibitem{zhaomacro2021}
+		赵扶扬, 陈斌开, 刘守英 (2021). 宏观调控、地方政府与中国经济发展模式转型：土地供给的视角. \textit{经济研究}, 56(7), 4--23.
+		
+		\bibitem{zhao2022landprice}
+		赵扶扬 (2022). 地价高估、公共投资与资源错配. \textit{经济研究}, 57(3), 155--172.
+		
+		\bibitem{zhao2024space}
+		赵扶扬, 刘睿智 (2024). 土地空间配置、地方政府债务分化与区域协调发展. \textit{数量经济技术经济研究}, 41(4), 26--47.
+		
+		\bibitem{zodrow1986}
+		Zodrow, G. R., and Mieszkowski, P. (1986). Pigou, Tiebout, property taxation, and the underprovision of local public goods. \textit{Journal of Urban Economics}, 19(3), 356--370.
+		
+		\bibitem{zhou2025}
+		周上尧, 骆哲翀 (2025). 异质性家庭视角下的中国货币政策传导与不平等效应——基于具有金融摩擦异质性的HANK模型. \textit{管理世界}, 41(8), 73--111.
+		
+	\end{thebibliography}
+	
+	\newpage
+	\appendix
+	\section{地方政府最优条件的推导}
+	\label{app:gov_derivation}
+	
+	本附录推导基准局部决策设定下的公共投资、公共资本与债务选择条件。政府最大化发展目标 \eqref{eq:gov_objective}，受预算约束 \eqref{eq:gov_budget} 和资本积累方程 \eqref{eq:KG_law} 约束。以下考虑不施加硬性债务上限、公共投资和资本均为正的局部内点解，并沿用 $\tau_Y^{\mathrm{loc}}\equiv(1-\theta_T)\tau_Y$ 表示地方留成收入率。
+	
+	\paragraph{优化问题。}
+	给定初始公共资本 $K_{G,0}^j$、滞后投资 $I_{G,-1}^j$、既有债务 $B_{-1}^j$ 及其合同利率，政府选择状态依赖序列 $\{I_{G,t}^j,K_{G,t+1}^j,B_t^j\}_{t=0}^{\infty}$，并接受价格、通胀、融资报价和财政政策过程。在基准局部决策设定中，政府还将私人资本、劳动、生产率和价格离散度视为给定，仅内生化式 \eqref{eq:local_gdp_derivative} 所示的公共资本直接生产效应及其税基收益。这是政府决策范围的附加限制，不意味着这些变量在一般均衡中保持不变。
+	
+	以 $\Lambda_{G,t}^j$ 和 $q_{G,t}^j$ 分别表示预算资源和公共资本的当期价值乘子，拉格朗日函数为
+	\begin{align}
+		\mathcal L_G^j=\E_0\sum_{t=0}^{\infty}\beta_G^t\Bigg\{&\omega_Y\log Y_t^j
+		+\Lambda_{G,t}^j\Big[B_t^j-\frac{R_{B,t-1}^j}{\Pi_t^j}B_{t-1}^j-G_t^j-I_{G,t}^j \notag\\[-0.2em]
+		&\qquad-\Phi_{I,t}^j-\Phi_{B,t}^j
+		+(1-\theta_T)\tau_Y Y_t^j+Z_t^j\Big] \notag\\[-0.2em]
+		&+q_{G,t}^j\big[(1-\delta_G)K_{G,t}^j+I_{G,t}^j-K_{G,t+1}^j\big]\Bigg\}.
+		\label{eq:gov_lagrangian}
+	\end{align}
+	两个乘子均置于贴现权重 $\beta_G^t$ 内，目标与税收收入均以实际生产 GDP $Y_t^j$ 为基础。以下对各期选择变量求偏导，除去当期贴现权重，并将未来边际价值按时点 $t$ 的信息取条件期望。
+	
+	\paragraph{公共投资。}
+	增加 $I_{G,t}^j$ 占用当期财政资源并形成下一期资本，同时改变本期与下一期的投资调整成本。由式 \eqref{eq:PhiI}，保持其他期投资不变时，两个成本导数分别为
+	\begin{align*}
+		\frac{\partial\Phi_{I,t}^j}{\partial I_{G,t}^j}
+		&=\chi_I\left(\frac{I_{G,t}^j}{I_{G,t-1}^j}-1\right)
+		\frac{I_{G,t}^j}{I_{G,t-1}^j}
+		+\frac{\chi_I}{2}\left(\frac{I_{G,t}^j}{I_{G,t-1}^j}-1\right)^2,\\
+		\frac{\partial\Phi_{I,t+1}^j}{\partial I_{G,t}^j}
+		&=-\chi_I\left(\frac{I_{G,t+1}^j}{I_{G,t}^j}-1\right)
+		\left(\frac{I_{G,t+1}^j}{I_{G,t}^j}\right)^2.
+	\end{align*}
+	第二项来自 $I_{G,t}^j$ 进入下一期投资增长率的分母，而非下一期最优投资的行为响应。因此，公共投资的驻点条件为
+	\begin{equation*}
+		0=-\Lambda_{G,t}^j\left(1+\frac{\partial\Phi_{I,t}^j}{\partial I_{G,t}^j}\right)
+		+q_{G,t}^j
+		-\beta_G \E_t\left[\Lambda_{G,t+1}^j
+		\frac{\partial\Phi_{I,t+1}^j}{\partial I_{G,t}^j}\right].
+	\end{equation*}
+	代入上述导数即得正文式 \eqref{eq:IG_FOC}：含调整成本的边际财政支出，等于新增资本的影子价值与未来调整成本效应之和。未来成本效应的符号取决于下一期投资增长率。由于本期生产使用既定公共资本，当期投资不直接增加本期产出，其生产收益通过 $q_{G,t}^j$ 体现。
+	
+	\paragraph{公共资本。}
+	时点 $t$ 选择的 $K_{G,t+1}^j$ 在当期资本约束中对应边际价值 $-q_{G,t}^j$，在下一期带来未折旧资本的延续价值、发展绩效和地方留成收入。其驻点条件为
+	\begin{align*}
+		q_{G,t}^j=\beta_G \E_t\Bigg[
+		&(1-\delta_G)q_{G,t+1}^j
+		+\frac{\omega_Y}{Y_{t+1}^j}
+		\frac{\partial Y_{t+1}^j}{\partial K_{G,t+1}^j}\\
+		&+\Lambda_{G,t+1}^j\tau_Y^{\mathrm{loc}}
+		\frac{\partial Y_{t+1}^j}{\partial K_{G,t+1}^j}
+		\Bigg].
+	\end{align*}
+	由式 \eqref{eq:local_gdp_derivative}，发展收益为 $\omega_Y\gamma_G/K_{G,t+1}^j$，税基收益为 $\Lambda_{G,t+1}^j\tau_Y^{\mathrm{loc}}\gamma_G Y_{t+1}^j/K_{G,t+1}^j$，从而得到式 \eqref{eq:QG_euler}。两者均来自同一技术弹性 $\gamma_G$，但税基收益还取决于未来财政资源的影子价格。下一期公共资本在时点 $t$ 已经选定，其收益则随下一期状态变化，故资本价值取决于这些收益的条件期望。
+	
+	\paragraph{期末债务。}
+	增加 $B_t^j$ 提供当期融资，同时产生债务管理成本和下一期偿付义务。式 \eqref{eq:PhiB} 中的稳态尺度 $\bar Y^j$ 与目标 $\bar b^j$ 均为常数，因而
+	\begin{equation*}
+		\frac{\partial\Phi_{B,t}^j}{\partial B_t^j}
+		=\varphi_B\left(\frac{B_t^j}{\bar Y^j}-\bar b^j\right).
+	\end{equation*}
+	成本函数外乘的稳态 GDP 与求导产生的分母抵消。给定融资报价和通胀过程，债务的驻点条件为
+	\begin{equation*}
+		0=\Lambda_{G,t}^j\left(1-\frac{\partial\Phi_{B,t}^j}{\partial B_t^j}\right)
+		-\beta_G \E_t\left[\Lambda_{G,t+1}^j\frac{R_{B,t}^j}{\Pi_{t+1}^j}\right].
+	\end{equation*}
+	代入成本导数即得式 \eqref{eq:B_FOC}：扣除边际管理成本的当期融资价值，等于未来偿付的贴现财政成本。该条件不包含融资报价对自身债务的导数：中介依据同类地区总体债务率报价，单个原子化政府不能改变这一指标。求导后再施加同类对称均衡关系，才能保持这一取价假设；若先以自身债务率替换总体指标并对报价求导，所得条件将对应不同的政府决策问题。
+	
+	\paragraph{终端条件与扩展。}
+	对两个乘子求导恢复预算约束与资本积累方程。上述条件与初始状态、债务终端限制 \eqref{eq:gov_noponzi} 和公共资本横截条件 \eqref{eq:gov_tvc} 共同约束政府路径，并与私人部门条件、政策规则和市场出清条件组成均衡系统。它们是局部内点必要条件，不构成全局最优性的充分条件。
+	
+	推导以单个政府不内生化自身决策对中央拨付的影响为前提；若转移支付随其债务或税基选择调整，且政府计入这一反馈，则须加入相应边际项。硬性债务上限需要增加乘子及互补条件，Stackelberg 扩展则加入私人部门可实施性约束。这些扩展改变约束或内生化范围，不能仅通过代入不同参数替代其最优条件的推导。
+	
+	\section{长期稳态求解与财政配平}
+	\label{app:steady_state}
+	
+	本附录说明基准确定性稳态的构造。给定结构参数、债务率与支出比率目标，先确定价格、资本和家庭配置，再由政府最优条件与预算约束确定财政乘子和转移支付。稳态转移支付是这一系统的配平结果，而非独立的校准目标。
+	
+	\paragraph{价格与计量口径。}
+	基准取零通胀与对称相对价格，即 $\bar\Pi=\bar\Pi^j=\bar\Pi_M^j=1$、$\bar Q_k^j=1$。无风险 Euler 方程确定稳态利率；地方债报价在目标债务率处的溢价为零，故两类总名义利率因子满足
+	\begin{equation}
+		\bar{R} = \bar{R}_B^j = \frac{1}{\beta}.
+	\end{equation}
+	零通胀下价格离散度为 $\bar V^j=1$，Calvo 定价条件给出稳态边际成本
+	\begin{equation}
+		\overline{\MC}^j = \frac{\epsilon_p-1}{\epsilon_p} = \frac{5}{6}.
+	\end{equation}
+	两地区取 $s_1=s_2=0.5$、$\bar A^1=\bar A^2=1$ 和相同的本地投入权重。归一化生产 GDP 为 $\bar Y^1=\bar Y^2=1$，中间品市场出清相应给出最终吸收 $\bar D^1=\bar D^2=1$。两地债务目标以四倍季度 GDP 为分母，换算为预算中的实际本金为
+	\begin{equation}
+		\bar d^{1,\mathrm{ann}}=0.40,\quad \bar d^{2,\mathrm{ann}}=1,\qquad
+		\bar B^1=4(0.40)\bar Y^1,\quad
+		\bar B^2=4(1.00)\bar Y^2.
+		\label{eq:ss_debt_frequency}
+	\end{equation}
+	
+	\paragraph{资本与投资。}
+	稳态投资增长率为 1，私人资本影子价格为 1。结合资本 Euler 方程与要素需求，在 $\bar V^j=\bar Q_j^j=1$、$\bar Y^j=\bar Y_M^j$ 下，资本租金和资本产出比为
+	\begin{equation}
+		\bar R_K^j=\frac1\beta-(1-\delta_K),\qquad
+		\frac{\bar K^j}{\bar Y^j}
+		=\frac{\alpha\overline{\MC}^j}{\frac1\beta-(1-\delta_K)}.
+	\end{equation}
+	稳态私人投资补偿折旧，即 $\bar I^j=\delta_K\bar K^j$。公共投资则由共同支出目标确定，公共资本存量由其积累方程反推：
+	\begin{equation}
+		\frac{\bar I_G^j}{\bar Y^j}=\kappa_G=0.12,\qquad
+		\frac{\bar K_G^j}{\bar Y^j}=\frac{\kappa_G}{\delta_G}.
+	\end{equation}
+	\paragraph{代表性家庭配置。}
+	给定两类资本，将生产 GDP 的归一化代入生产函数即可确定总劳动。政府消费目标为 $\bar G^j/\bar Y^j=0.10$，且稳态调整成本为零，因此最终品资源约束确定总消费：
+	\begin{equation}
+		\bar C^j=\bar D^j-\bar I^j-\bar G^j-\bar I_G^j,
+	\end{equation}
+	资源约束以最终吸收 $\bar D^j$ 而非生产 GDP $\bar Y^j$ 为左侧。本基准中二者相等，故上述配置也可表示为占 GDP 的比率。
+	
+	基准的代表性家庭劳动由生产函数确定，消费由上述资源约束确定。劳动偏好权重按 $\chi_N=(\bar C^j)^{-\sigma}\bar W^j/(\bar N^j)^{\varphi}$ 反推。因此消费、劳动和工资共同满足代表性家庭劳动供给条件，不增加家庭转移支付作为配平对象。
+	
+	\paragraph{政府影子价格与稳态相容性。}
+	稳态公共投资调整成本及其边际项为零，投资条件因而化为 $\bar\Lambda_G^j=\bar q_G^j$。将其代入基准局部决策设定的公共资本 Euler 方程，得到
+	\begin{equation}
+		\bar\Lambda_G^j\left(\frac{1}{\beta_G}-1+\delta_G\right)
+		=
+		\omega_Y\frac{\gamma_G}{\bar K_G^j}
+		+
+		\bar\Lambda_G^j\tau_Y^{\mathrm{loc}}\gamma_G\frac{\bar Y^j}{\bar K_G^j}.
+	\end{equation}
+	整理可得两个乘子的共同稳态值：
+	\begin{equation}
+		\bar\Lambda_G^j
+		=\bar q_G^j
+		=
+		\frac{\beta_G\gamma_G\omega_Y/\bar K_G^j}
+		{1-\beta_G(1-\delta_G)-\beta_G\gamma_G\tau_Y^{\mathrm{loc}}\bar Y^j/\bar K_G^j}.
+	\end{equation}
+	在正公共资本、正技术弹性和正目标权重下，有限正影子价格要求分母为正。基准分母为 $0.0331>0$，对应 $\bar\Lambda_G^j=\bar q_G^j=0.62311178$。目标尺度 $\omega_Y=1$ 仅确定乘子的计量单位。债务选择条件在目标处要求 $1=\beta_G\bar R_B^j$，与家庭 Euler 方程共同要求本基准采用 $\beta_G=\beta$。由于目标处的报价溢价为零，这一稳态相容条件不依赖风险报价敏感度 $\mu_B$。
+	
+	\paragraph{地方预算与中央账户。}
+	给定债务本金，零通胀稳态的净实际债务服务占 GDP 比率为
+	\begin{equation}
+		\overline{\DS}^j=(\bar R-1)\frac{\bar B^j}{\bar Y^j}
+		=4\left(\frac1\beta-1\right)\bar d^{j,\mathrm{ann}}.
+	\end{equation}
+	将已求得的支出和债务服务代入地方预算，中央对各地的稳态转移支付为
+	\begin{equation}
+		\bar Z^j=\bar G^j+\bar I_G^j
+		+(\bar R-1)\bar B^j-(1-\theta_T)\tau_Y\bar Y^j.
+	\end{equation}
+	稳态求解得到 $\bar Z^1=0.156161616$、$\bar Z^2=0.180404040$，中央稳态净余额为 $\bar{\mathcal S}^C=-0.048282828$。代表性家庭稳态消费为 $\bar C^1=\bar C^2=0.512913669$，劳动偏好权重为 $\chi_N=48.909781025$。 由式 \eqref{eq:financing_identity}，债务存量不变且调整成本为零时，新增融资前的财政资源恰好支付公共投资，即 $\overline{\FS}^j=\bar I_G^j$。两地支出比率和税制相同，故 $\bar Z^2>\bar Z^1$ 来自高债务地区更大的偿债需要，而非额外设定的托底强度。债务率目标是基准的原始地区异质性，中央转移差异是与之相容的财政安排。
+	
+	中央净余额以共同价格汇总中央分享收入和转移支出，并通过代表性家庭的一次性净税费余项在合并账户中结算。这使账户相容，但未显式确定中央债务、税收工具及其融资成本。 这里的一次性净税费是事后合并账户残差，并非独立税收工具。稳态劳动收入、资本租金和企业利润之和等于生产收入，因此可识别的合并净支出为
+\begin{equation}
+\overline{\mathcal T}_{\mathrm{net}}^j
+\equiv \bar W^j\bar N^j+\bar R_K^j\bar K^j+\bar{\mathcal P}^j-\bar C^j-\bar I^j
+=\bar Y^j-\bar C^j-\bar I^j=\bar G^j+\bar I_G^j,
+\end{equation}
+其中 $\bar{\mathcal P}^j$ 是企业利润，$\overline{\mathcal T}_{\mathrm{net}}^j$ 将税费、财政与金融净流量合并计量。稳态两地区的合并净支出残差均为 $0.220000$，中央净余额为 $-0.048282828$。 在未另定中央余额和共同基金收益的地区分配约定时，不能将该合并残差解释为唯一识别的地区税收或资产头寸。完全风险分担条件确定配置关系，并不补充这些未建模的账户分配规则。
+	
+	上述步骤给出基准稳态候选配置，仍须代回完整非线性系统检验残差与可行性。生产 GDP 与最终吸收相等是本基准的稳态性质，而非动态恒等式。一般异质稳态应分别求解二者；规模与发展水平实验则另行施加 $\bar D^j=\bar Y^j$ 的稳态设计，并重新配平贸易和资源账户。
+	
+	\section{模型扩展与补充结果}
+	
+	本附录考察基准传导机制对地区结构、政府决策范围和政策环境的依赖。首先说明规模与发展水平的联合实验，再给出纳入私人部门响应的 Stackelberg 扩展及其基准参数下的地区响应比较，随后补充债务限额的地区外溢、融资与财政反馈的联合作用，以及地区平衡型货币规则的探索性比较。各实验分别回答基准特征是否保留、高、低债务地区响应的相对强弱能否改变和政策目标是否一致，不将这些比较合并为单一的稳健性判断。
+	
+	\subsection{规模与发展水平的联合变化}
+	\label{app:scale_development}
+	
+	该实验检验低债务地区的经济权重提高后，高债务地区的标准化响应是否明显改变。定义稳态地区总 GDP 为 $Y^{j,\mathrm{tot}}\equiv s_j\bar Y^j$，令其相对规模 $r\equiv Y^{1,\mathrm{tot}}/Y^{2,\mathrm{tot}}\in\{1,1.5,2\}$。总量差距在对数尺度上等分为地区测度和单位 GDP 两部分：
+	\begin{equation}
+		\frac{s_1}{s_2}=\sqrt r,\qquad
+		\frac{\bar Y^1}{\bar Y^2}=\sqrt r,\qquad
+		s_1=\frac{\sqrt r}{1+\sqrt r},\quad s_2=\frac{1}{1+\sqrt r}.
+		\label{eq:scale_development_design}
+	\end{equation}
+	单位 GDP 差距通过永久 TFP 水平 $\bar A^j$ 配平。各情景均将稳态相对价格归一为 1，并采用 $\bar D^j=\bar Y^j$ 的稳态设计，但不在动态系统中施加这一等式。本地投入权重随之调整，使双边贸易流量保持不变并满足中间品市场出清：
+	\[
+	s_1(1-\omega_1)\bar D^1=s_2(1-\omega_2)\bar D^2=0.075.
+	\]
+	全国聚合和 Taylor 规则使用稳态 GDP 份额 $\upsilon_1=r/(1+r)$，而非地区测度 $s_1$；风险分担参数 $\xi_{12}$ 也随稳态配置配平。除永久 TFP 和这些配平对象外，其余偏好、技术与政策反馈参数不变。两地年化分母口径债务率固定为 40\% 和 100\%，故 $r=1$ 与正文基准使用相同债务率和对称规模配置。由于测度、发展水平和贸易权重共同变化，该设计检验的是联合结构变化，而非单独的规模效应。
+	
+	\begin{table}[H]
+		\centering
+		\caption{规模与发展水平实验：参数设定及高债务地区首期响应}
+		\label{tab:scale_development_robustness}
+		\small
+		\resizebox{\textwidth}{!}{%
+			\begin{tabular}{cccccccc}
+				\toprule
+				$r$ & $s_1$ & $\bar Y^1/\bar Y^2$ & $\upsilon_1$ & $(\omega_1,\omega_2)$ & $\Delta \DS_1^2/\overline{\DS}^2$ & $\Delta I_{G,1}^2/\bar I_G^2$ & $\Delta Y_1^2/\bar Y^2$ \\
+				\midrule
+				1.0 & 0.500 & 1.000 & 0.500 & $(0.850,0.850)$ & 0.175235 & -0.004021 & -0.002358 \\
+1.5 & 0.551 & 1.225 & 0.600 & $(0.875,0.812)$ & 0.176837 & -0.004046 & -0.002372 \\
+2.0 & 0.586 & 1.414 & 0.667 & $(0.887,0.775)$ & 0.177616 & -0.004058 & -0.002379 \\
+			\bottomrule
+		\end{tabular}}
+		\begin{flushleft}
+			\footnotesize 注：$\Delta$ 表示相对确定性稳态的水平偏离。各响应均除以相应情景、相应地区的自身稳态值；$\DS$ 列为标准化相对响应，不表示债务率或利率的百分点变化。
+		\end{flushleft}
+	\end{table}
+	
+	当 $r$ 由 1 升至 2 时，高债务地区首期债务服务相对偏离由 17.52\% 变为 17.76\%，公共投资由 -0.402\% 变为 -0.406\%，生产 GDP 由 -0.236\% 变为 -0.238\%。这些数值均以各情景自身稳态标准化，不能据此断言绝对损失不变；债务服务的分母是自身稳态净负担，其相对变动也不等于债务率或利率的百分点变化。
+	
+	\subsection{政府决策内生化范围的扩展检验}
+	
+	该比较考察基准局部决策设定仅计入公共资本直接技术与税基收益的假设是否影响主要结果。Stackelberg 扩展扩大政府内生化的本地私人部门响应范围，但保留相同的偏好、技术、财政和货币政策参数，因此不是分散地方决策与全国最优规划的比较。
+	
+	\paragraph{决策范围与可实施性。}
+	在 Stackelberg 扩展中，单个政府是本辖区私人部门的开环承诺领导者。政府仍接受总量价格、全国货币政策、同类地区融资报价以及由统一资产市场确定的代表性家庭边际效用路径，并将代表性家庭劳动供给、私人资本积累、资本 Euler 方程和私人投资条件纳入四项可实施性约束。相应乘子记为 $\nu_{N,t}^j$、$\nu_{K,t}^j$、$\nu_{Q,t}^j$ 和 $\nu_{I,t}^j$。
+	
+	记私人投资增长率为 $x_t^j\equiv I_t^j/I_{t-1}^j$。为紧凑表示资本积累和投资条件，定义
+	\begin{equation}
+		S(x)\equiv\frac{\phi_I}{2}(x-1)^2,\qquad
+		\mathcal A_I(x)\equiv1-S(x)-xS'(x),\qquad
+		\mathcal B_I(x)\equiv x^2S'(x).
+		\label{eq:stackelberg_investment_auxiliary}
+	\end{equation}
+	四项可实施性约束写为
+	\begin{align}
+		\mathcal F_{N,t}^j
+		&\equiv\chi_N(N_{t}^j)^{\varphi}-\Lambda_{t}^jW_t^j=0, \notag\\
+		\mathcal F_{K,t}^j
+		&\equiv(1-\delta_K)K_t^j+[1-S(x_t^j)]I_t^j-K_{t+1}^j=0, \notag\\
+		\mathcal F_{Q,t}^j
+		&\equiv q_{K,t}^j-\beta \E_t\left[
+		m_{t+1}^j\left(R_{K,t+1}^j+(1-\delta_K)q_{K,t+1}^j\right)
+		\right]=0, \notag\\
+		\mathcal F_{I,t}^j
+		&\equiv1-q_{K,t}^j\mathcal A_I(x_t^j)
+		-\beta \E_t\left[m_{t+1}^j q_{K,t+1}^j\mathcal B_I(x_{t+1}^j)\right]=0,
+		\label{eq:stackelberg_constraints}
+	\end{align}
+	其中，$m_{t+1}^j\equiv\Lambda_{t+1}^j/\Lambda_{t}^j$。GDP、工资和资本租金依式 \eqref{eq:local_gdp}、\eqref{eq:wage_demand} 和 \eqref{eq:rk_demand} 写为本地 $K_G^j$、$K^j$、$N^j$ 的函数并直接代入，无需另设乘子。以 $\mathcal G_t^j$ 表示式 \eqref{eq:gov_lagrangian} 中的预算剩余，以 $\mathcal K_{G,t}^j\equiv(1-\delta_G)K_{G,t}^j+I_{G,t}^j-K_{G,t+1}^j$ 表示公共资本积累剩余，政府的拉格朗日函数为
+	\begin{align}
+		\mathcal L_G^{j,\mathrm{stk}}
+		=\E_0\sum_{t=0}^{\infty}\beta_G^t\Big\{
+		&\omega_Y\log Y_t^j
+		+\Lambda_{G,t}^j\mathcal G_t^j
+		+q_{G,t}^j\mathcal K_{G,t}^j \notag\\
+		&+\nu_{N,t}^j\mathcal F_{N,t}^j \notag\\
+		&+\nu_{K,t}^j\mathcal F_{K,t}^j
+		+\nu_{Q,t}^j\mathcal F_{Q,t}^j
+		+\nu_{I,t}^j\mathcal F_{I,t}^j
+		\Big\}.
+		\label{eq:stackelberg_lagrangian}
+	\end{align}
+	式 \eqref{eq:stackelberg_lagrangian} 要求政府选择满足式 \eqref{eq:stackelberg_constraints} 的私人部门响应，不能任意指定本地配置。随机环境下，选择对象是各历史节点上的状态依赖计划。脉冲响应围绕包含承诺乘子的平稳稳态作一阶近似，采用 timeless-commitment 解释，而非时点 0 首次宣布承诺政策的转轨。
+	
+	\paragraph{跨期最优条件。}
+	定义劳动可实施性约束中与工资相关的乘子项
+	\begin{equation}
+		\Theta_t^j\equiv
+		\nu_{N,t}^j\Lambda_{t}^j.
+		\label{eq:stackelberg_auxiliary}
+	\end{equation}
+	公共资本影子价值由直接生产收益、财政收益与可实施性约束的边际影响共同决定：
+	\begin{align}
+		q_{G,t}^j
+		={}&\beta_G \E_t\left[
+		(1-\delta_G)q_{G,t+1}^j
+		+\frac{\gamma_G}{K_{G,t+1}^j}
+		\left(
+		\omega_Y+\Lambda_{G,t+1}^j\tau_Y^{\mathrm{loc}} Y_{t+1}^j
+		-\Theta_{t+1}^jW_{t+1}^j
+		\right)
+		\right] \notag\\
+		&-\beta\nu_{Q,t}^j \E_t\left[
+		m_{t+1}^j\gamma_G\frac{R_{K,t+1}^j}{K_{G,t+1}^j}
+		\right].
+		\label{eq:stackelberg_QG}
+	\end{align}
+	私人资本 $K_{t+1}^j$ 在时点 $t$ 选定，不能随下一期尚未实现的状态调整。相应条件对后继状态的边际价值取条件期望：
+	\begin{align}
+		\nu_{K,t}^j
+		={}&\beta_G \E_t\left[
+		\frac{\alpha}{K_{t+1}^j}
+		\left(
+		\omega_Y+\Lambda_{G,t+1}^j\tau_Y^{\mathrm{loc}} Y_{t+1}^j
+		-\Theta_{t+1}^jW_{t+1}^j
+		\right)
+		+(1-\delta_K)\nu_{K,t+1}^j
+		\right] \notag\\
+		&+\beta\nu_{Q,t}^j \E_t\left[
+		m_{t+1}^j(1-\alpha)
+		\frac{R_{K,t+1}^j}{K_{t+1}^j}
+		\right].
+		\label{eq:stackelberg_K_corrected}
+	\end{align}
+	其余驻点条件可用政府对总劳动的综合边际价值表示：
+	\begin{equation}
+		\mathcal M_{N,t}^j
+		\equiv\frac{1}{N_t^j}\left\{
+		(1-\alpha)\left(\omega_Y+\Lambda_{G,t}^j\tau_Y^{\mathrm{loc}} Y_t^j\right)
+		+\alpha\Theta_t^jW_t^j
+		-\frac{\beta}{\beta_G}\nu_{Q,t-1}^jm_t^j(1-\alpha)R_{K,t}^j
+		\right\}.
+		\label{eq:stackelberg_labor_margin}
+	\end{equation}
+	其中，$m_t^j\equiv\Lambda_{t}^j/\Lambda_{t-1}^j$。代表性家庭劳动的驻点条件为
+	\begin{align}
+		0={}&\mathcal M_{N,t}^j
+		+\nu_{N,t}^j\chi_N\varphi(N_{t}^j)^{\varphi-1},
+		\label{eq:stackelberg_NR}
+	\end{align}
+	私人资本影子价格 $q_{K,t}^j$ 同时进入本期与前一期的可实施性约束，其驻点条件为
+	\begin{align}
+		0={}&\nu_{Q,t}^j-\mathcal A_I(x_t^j)\nu_{I,t}^j \notag\\
+		&-\frac{\beta}{\beta_G}m_t^j\left[
+		(1-\delta_K)\nu_{Q,t-1}^j
+		+\mathcal B_I(x_t^j)\nu_{I,t-1}^j
+		\right].
+		\label{eq:stackelberg_QK}
+	\end{align}
+	私人投资 $I_t^j$ 同时影响 $x_t^j=I_t^j/I_{t-1}^j$ 和 $x_{t+1}^j=I_{t+1}^j/I_t^j$。保留其在相邻各期约束中的作用，得到
+	\begin{align}
+		0={}&\nu_{K,t}^j\mathcal A_I(x_t^j)
+		+\beta_G\E_t\left[\nu_{K,t+1}^j\mathcal B_I(x_{t+1}^j)\right] \notag\\
+		&+\nu_{I,t}^j\Bigg[
+		-q_{K,t}^j\frac{\mathcal A_I'(x_t^j)}{I_{t-1}^j}
+		+\beta \E_t\left(
+		m_{t+1}^j q_{K,t+1}^j
+		\frac{\mathcal B_I'(x_{t+1}^j)x_{t+1}^j}{I_t^j}
+		\right)\Bigg] \notag\\
+		&-\frac{\beta}{\beta_G}\nu_{I,t-1}^jm_t^j q_{K,t}^j
+		\frac{\mathcal B_I'(x_t^j)}{I_{t-1}^j} \notag\\
+		&+\beta_G\E_t\left[
+		\nu_{I,t+1}^j q_{K,t+1}^j
+		\frac{\mathcal A_I'(x_{t+1}^j)x_{t+1}^j}{I_t^j}
+		\right].
+		\label{eq:stackelberg_I}
+	\end{align}
+	公共投资与债务条件仍为式 \eqref{eq:IG_FOC} 和 \eqref{eq:B_FOC}；式 \eqref{eq:stackelberg_QG} 替换基准公共资本条件，私人资本、劳动、私人资本影子价格和投资的四条驻点条件与四个可实施性乘子一一对应。
+	
+	式 \eqref{eq:stackelberg_K_corrected} 的条件期望反映资本选择的信息约束，不能用下一期各状态上的逐点条件替代。Stackelberg 扩展每地区增加四个乘子及四条驻点条件；准确系统规模和数值诊断见附录 \ref{app:computation}。
+	
+	\paragraph{比较口径。}
+	固定正文基准校准和相同的货币紧缩冲击，比较公共投资、公共资本和生产 GDP 的地区差响应。每个地区的 IRF 先除以该设定下自身稳态，再计算高债务地区减低债务地区的标准化响应差。图 \ref{fig:AB_irf_compare} 展示第 1--40 季度的路径，两种设定在各面板内共用纵轴范围；表 \ref{tab:AB_baseline_gap} 报告这些标准化地区差在前 12 期的累计值。
+	
+	\paragraph{基准参数下的路径比较。}
+	直接 IRF 比较表明，基准局部决策设定与 Stackelberg 扩展下公共投资、公共资本和生产 GDP 的地区差路径高度接近。表 \ref{tab:AB_baseline_gap} 进一步显示，两种设定的前 12 期累计地区差方向一致，Stackelberg 扩展仅使负向地区差略微加深，数值差异很小。因此，本文主要传导结论不依赖于地方政府内生化私人部门响应范围的具体设定。
+	\begin{table}[H]
+		\centering
+		\caption{基准参数下不同政府决策范围的累计地区差比较}
+		\label{tab:AB_baseline_gap}
+		\small
+		\begin{tabular}{lrrr}
+			\toprule
+			变量 & 基准设定 & Stackelberg 扩展 & 扩展减基准 \\
+			\midrule
+			公共投资 $I_G$ & $-0.083937$ & $-0.084373$ & $-0.000436$ \\
+公共资本 $K_G$ & $-0.011131$ & $-0.011207$ & $-0.000076$ \\
+生产 GDP $Y$ & $-0.005552$ & $-0.005565$ & $-0.000014$ \\
+			\bottomrule
+		\end{tabular}
+		\begin{flushleft}
+			\footnotesize 注：基准设定与 Stackelberg 扩展两列均为第 1--12 期标准化地区差的累计值：每个地区的 IRF 先除以该设定下自身稳态，再计算高债务地区减低债务地区；最后一列为扩展减基准。数值经舍入展示。
+		\end{flushleft}
+	\end{table}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.96\textwidth]{code/stackelberg_B/robustness/sensitivity_sanity/figure_AB_irf_compare.pdf}
+		\caption{不同地方政府决策范围下的区域响应比较}
+		\label{fig:AB_irf_compare}
+		\par\smallskip
+		\begin{minipage}{0.94\textwidth}
+			\footnotesize 注：(a) 公共投资地区差，(b) 公共资本地区差，(c) 生产 GDP 地区差。每个地区的 IRF 先除以该设定下自身稳态，再计算高债务地区减低债务地区的响应差，未乘以 100。实线为 Baseline local-decision，虚线为 Stackelberg extension。两种设定使用相同的基准参数和货币紧缩冲击，各面板内共用纵轴范围，路径高度接近；科学计数法仅为坐标缩放。横轴为第 1--40 季度。公共资本沿用 Dynare 期末输出，对应正文 $K_{G,t+1}$，即当期公共投资形成的下一期资本。
+		\end{minipage}
+	\end{figure}
+	
+	\subsection{债务余额限额的地区效应}
+	
+	图 \ref{fig:debt_limit_regions} 考察仅约束高债务地区时，调整是否局限于当地。高债务地区的投资、资本与产出在初期收缩更深，随后恢复较强，与正文政策差一致。未直接受限的低债务地区也偏离基准：公共投资收缩较小，产出相对基准的变化则随时期而异。因此，局部债务约束通过共同价格、跨地区交易等一般均衡联系影响另一地区，不能仅依据受约束地区评价政策。该图未分解外溢渠道，也不能由后期恢复推断初期损失已获补偿。
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.92\textwidth]{code/policy_counterfactual/figure5_debt_limit_region_irfs.pdf}
+		\caption{严格债务余额限额下的两地区响应}
+		\label{fig:debt_limit_regions}
+		\par\smallskip
+		\begin{minipage}{0.92\textwidth}
+			\footnotesize 注：横轴为季度，纵轴为各地区变量相对自身稳态的水平偏离，并非地区差。低、高债务地区由面板标题区分，共享图例区分基准与严格限额情景。阴影为严格限额情景中高债务地区实际绑定期。科学计数法仅为坐标缩放，水平偏离不是稳态百分比。
+		\end{minipage}
+	\end{figure}
+	
+	图 \ref{fig:debt_limit_fiscal} 补充高债务地区的债务率和债务服务比较，与正文图 \ref{fig:debt_limit_high_debt} 及完整地区响应图 \ref{fig:debt_limit_regions} 使用相同情景。
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.90\textwidth]{code/policy_counterfactual/figure5_debt_limit_fiscal_details.pdf}
+		\caption{严格债务余额限额下高债务地区的债务率与债务服务响应}
+		\label{fig:debt_limit_fiscal}
+		\par\smallskip
+		\begin{minipage}{0.90\textwidth}
+			\footnotesize 注：横轴为季度。年化债务率面板为 $B_t^2/(4Y_t^2)-\bar B^2/(4\bar Y^2)$，净实际债务服务负担面板为 $\DS_t^2-\overline{\DS}^2$，均为水平偏离，不是比率的水平值或稳态百分比；政策差面板为严格限额情景减基准情景。正的政策差不一定表示变量高于自身稳态。阴影标示严格限额实际绑定期；科学计数法仅为坐标缩放。
+		\end{minipage}
+	\end{figure}
+	
+	\subsection{货币规则下的两地产出相关系数}
+	图 \ref{fig:policy_output_correlation} 单独报告正文图 \ref{fig:stability_sync} 中基准债务率 $1.00$ 曲线的原有五个规则点（$\phi_\pi=1.1,1.5,2.0,2.5,3.0$）对应的两地产出相关系数，与表 \ref{tab:policy_eval} 使用同一组原始无条件矩。相关系数衡量两地产出共同波动的方向和程度，不等同于地区产出响应差的标准差。
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.80\textwidth]{code/demand_monetary/figure4_policy_output_correlation.pdf}
+		\caption{不同通胀反应系数下的两地产出相关系数}
+		\label{fig:policy_output_correlation}
+		\par\smallskip
+		\begin{minipage}{0.90\textwidth}
+			\footnotesize 注：横轴为通胀反应系数 $\phi_\pi$，纵轴为两地生产 GDP 的理论无条件相关系数 $\operatorname{Corr}(Y_t^1,Y_t^2)$，不作百分数缩放。指标由仅激活全国需求冲击的一阶模型计算，不由 40 期 IRF 估计。连线仅表示离散规则点的排列关系，不是时间路径或连续效率前沿。
+		\end{minipage}
+	\end{figure}
+	
+	\subsection{融资报价、财政反馈与跨地区联系}
+	\label{app:extension_conditions}
+	
+	这一组实验考察融资支出、财政收入和商品交易如何共同决定高、低债务地区响应的相对强弱。表 \ref{tab:extension_robustness} 包含一个共同参照与五个扩展：分别启用风险报价、转移反馈及二者的组合，并比较强、弱投入联系。风险溢价系数控制报价对债务率偏离的敏感度，而非固定利差；转移情景取 $\rho_Z=0.50$、$\phi_{Z,\DS}=0.20$ 并关闭债务余额反馈，其强度及其他设置不同于正文的温和稳定器。投入联系情景同时改变本地权重和替代弹性，不识别单个贸易参数的独立效应。
+	
+	\begin{table}[H]
+		\centering
+		\caption{传导机制的条件性检验：扩展情景设计}
+		\label{tab:extension_robustness}
+		\small
+		\begin{tabular}{p{0.25\textwidth}p{0.28\textwidth}p{0.37\textwidth}}
+			\toprule
+			\textbf{情景} & \textbf{改变的结构} & \textbf{检验目的} \\
+			\midrule
+			基准 & $\mu_B=0$，$\omega_1=\omega_2=0.85$，$\eta=0.90$，$\phi_{Z,\DS}=\phi_{Z,B}=0$ & 作为共同参照 \\
+			地方债风险溢价 & $\mu_B=0.05$，政府仍价格接受 & 检验中介报价渠道 \\
+			中央转移支付缓冲 & $\rho_Z=0.50$，$\phi_{Z,\DS}=0.20$，$\phi_{Z,B}=0$ & 检验财政资源收入端缓冲 \\
+			风险溢价与转移缓冲 & 同时取 $\mu_B=0.05$ 与上述转移参数 & 检验两种渠道的联合作用 \\
+			强投入产出联系 & $\omega_1=\omega_2=0.70$，$\eta=0.75$ & 检验更强跨地区投入联系 \\
+			弱投入产出联系 & $\omega_1=\omega_2=0.95$，$\eta=2.50$ & 检验较弱跨地区投入联系 \\
+			\bottomrule
+		\end{tabular}
+		\begin{flushleft}
+			\footnotesize 注：本表列示参数调整与检验目的，不报告响应结果。各参数含义遵循模型设定；风险溢价系数并非固定利差，转移反馈系数并非转移支付占 GDP 的比例。响应方向与高、低债务地区响应的相对强弱需结合本小节的脉冲响应判断。
+		\end{flushleft}
+	\end{table}
+	
+	图 \ref{fig:extension_scenarios} 对应表 \ref{tab:extension_robustness} 的六组情景，纵轴为高债务地区减低债务地区的响应差。正值仅表示前者响应更高，不表示该变量已高于自身稳态。以下据此比较差异的方向、幅度和持续时间。
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.90\textwidth]{code/extension_scenarios/extension_scenario_diff_irfs.pdf}
+		\caption{扩展情景下高债务地区减低债务地区的响应差}
+		\label{fig:extension_scenarios}
+		\par\smallskip
+		\begin{minipage}{0.90\textwidth}
+			\footnotesize 注：横轴为季度，纵轴为高债务地区减低债务地区的水平响应差，各地区响应均相对自身稳态。六种情景由共享图例中的颜色与线型或标记共同区分，参数见表 \ref{tab:extension_robustness}。联合情景的响应差转正仅表示高、低债务地区响应的相对强弱发生逆转，不表示变量高于自身稳态，也不提供完整政策排序。科学计数法仅为坐标缩放。\capitalplotnote
+		\end{minipage}
+	\end{figure}
+	
+	单独引入风险溢价扩大了区域分化。债务服务的正向地区差持续更久，公共投资、公共资本和生产 GDP 的负向地区差均扩大，投资谷值仍先于资本谷值。该路径与报价反馈强化预算压力向资本存量传递的机制一致。政府仍接受报价，变化来自融资成本进入预算，而非策略性内生化报价斜率。
+	
+	转移反馈则缓冲这一差异：单独启用时，投资、资本和产出的负向地区差收窄；与风险溢价共同启用时，高、低债务地区响应的相对强弱发生逆转。联合情景的公共投资差在前中期为正，公共资本差随后累积为正向偏离，生产 GDP 差在图示期间为正。较大的初期偿债压力因此不必然导致更低的后续投资与产出，财政收入反馈能够改变融资压力的净结果。响应的相对强弱逆转应归于这一规则组合，而非风险溢价本身；它也不足以说明在计入中央融资成本后政策具有全国净收益。
+	
+	投入联系主要改变产出差异的幅度与持续性。强联系情景的生产 GDP 负向地区差在各期均较小，期末更接近零；弱联系情景的初期谷值也略浅于基准，但后段差距更持久，路径与基准交叉。投资与资本地区差的变化相对较小。仅比较初期谷值会遗漏恢复速度的差别，图形也不支持联系越弱、每一期差异就越大的单调判断。这些变化对应贸易权重与替代弹性的组合调整。
+	
+	这组结果界定了基准结论的政策条件：债务暴露能够放大财政调整，但响应的净方向仍取决于融资与转移规则，持续性还受到跨地区联系的影响。较强反馈下的响应的相对强弱逆转不能直接外推到正文的温和转移规则。
+	
+	\subsection{地区平衡型货币规则：探索性比较}
+	
+	本附录保留货币紧缩冲击下的地区平衡规则响应比较；与正文第 \ref{sec:demand_regional_balance} 小节的需求冲击无条件矩实验相比，这里的冲击和统计口径均不同。图 \ref{fig:app_regional_balance_gap} 在 Taylor 规则中加入两地区生产 GDP 的相对偏离项，取 $\phi_{reg}=2.0$。这是给定规则系数的探索性反事实，而非最优系数的选择，也不预设中央银行应承担地方债务协调职能。
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.90\textwidth]{code/policy_counterfactual/figure7_regional_balance_gap_irfs.pdf}
+		\caption{探索性反事实：地区平衡型 Taylor 货币规则下的区域差异响应}
+		\label{fig:app_regional_balance_gap}
+		\par\smallskip
+		\begin{minipage}{0.90\textwidth}
+			\footnotesize 注：横轴为季度，纵轴为高债务地区减低债务地区的水平响应差，各地区响应均相对自身稳态。通胀面板为地区通胀响应差，不是全国通胀；正值不一定表示变量高于自身稳态。实线与虚线分别为标准 Taylor 规则与地区平衡型 Taylor 规则，科学计数法仅为坐标缩放。有限期 L2 指标衡量路径幅度，不是无条件标准差，也不用于完整福利排序。\capitalplotnote
+		\end{minipage}
+	\end{figure}
+	
+	图 \ref{fig:app_regional_balance_gap} 显示，地区平衡项使初期债务服务与财政资源差异较快减弱，并收窄投资、资本和生产 GDP 的负向地区差。通胀地区差也减小，但这一面板并非全国通胀，区域价格响应更接近不意味着全国价格更稳定。
+	
+	路径汇总显示，加入 $\phi_{reg}=2.0$ 后，生产 GDP 差的 L2 诊断量由 0.002068 变为 0.001268，最大绝对生产 GDP 差由 0.000547 变为 0.000335，最大绝对公共投资差由 0.001028 变为 0.000627；全国通胀的 L2 诊断量由 0.002061 变为 0.003474。这些有限期 IRF 诊断量不等于需求冲击的理论无条件标准差，仅用于配置比较，不构成完整福利排序。
+	
+	\section{非线性动态方程组}
+	
+	本附录按家庭、企业、地方财政和全国政策汇总基准局部决策设定的非线性均衡条件，作为稳态求解与局部近似的基础。参数、冲击和政府决策范围沿用正文；转移反馈等系数保留一般形式，基准与反事实分别代入相应取值。下列方程不是对数线性化后的系统。
+	
+	家庭与地区变量按单位地区测度表示，地区实际价值以本地最终品价格平减。$Y_t^j$ 为生产地实际 GDP，$D_t^j$ 为使用地最终吸收，两者在动态中分别确定；$Y_{M,t}^j$ 为中间品物量产出。$K_t^j$ 与 $K_{G,t}^j$ 为期初既定资本，当期投资形成下一期资本；$B_t^j$ 为期末实际债务本金，按当期合同利率在下一期偿付。地区通式适用于 $j=1,2$，仅在特定地区成立的条件另行标明。
+	
+	\subsection{家庭、资产定价与私人资本（\texorpdfstring{$j=1,2$}{j=1,2}）}
+	资产市场以地区 1 最终品为定价基准，用无风险 Euler 方程与跨地区完全风险分担条件共同确定两地区代表性家庭消费配置。每地家庭劳动直接作为生产投入。需求楔子仅进入无风险 Euler 方程，不改变私人资本回报的贴现核。
+	\begin{align}
+		\Lambda_{t}^1 &=(C_{t}^1)^{-\sigma} \label{a1}\\
+		\Lambda_{t}^1 &=\beta \E_t\left[\Lambda_{t+1}^1\frac{R_t}{\Pi_{t+1}^1}\right]\exp(-\zeta_t) \label{a2}\\
+		\Lambda_{t}^2 &=(C_{t}^2)^{-\sigma} \label{a3}\\
+		\Lambda_{t}^2 &=\xi_{12}\Lambda_{t}^1\frac{Q_{1,t}^1}{Q_{1,t}^2} \label{a4}\\
+		\chi_N(N_{t}^j)^{\varphi} &=\Lambda_{t}^jW_t^j \label{a5}\\
+		K_{t+1}^j &=(1-\delta_K)K_t^j+ \left[1-\frac{\phi_I}{2}\left(\frac{I_t^j}{I_{t-1}^j}-1\right)^2\right]I_t^j \label{a10}\\
+		q_{K,t}^j
+		&=\beta \E_t\left[
+		\frac{\Lambda_{t+1}^j}{\Lambda_{t}^j}
+		\left(R_{K,t+1}^j+(1-\delta_K)q_{K,t+1}^j\right)
+		\right] \label{a11}\\
+		1
+		&=q_{K,t}^j
+		\left[
+		1-\frac{\phi_I}{2}\left(\frac{I_t^j}{I_{t-1}^j}-1\right)^2
+		-\phi_I\left(\frac{I_t^j}{I_{t-1}^j}-1\right)\frac{I_t^j}{I_{t-1}^j}
+		\right] \notag\\
+		&\quad+\beta \E_t\left[
+		\frac{\Lambda_{t+1}^j}{\Lambda_{t}^j}
+		q_{K,t+1}^j
+		\phi_I\left(\frac{I_{t+1}^j}{I_t^j}-1\right)
+		\left(\frac{I_{t+1}^j}{I_t^j}\right)^2
+		\right] \label{a12}
+	\end{align}
+	私人资本路径还须满足横截条件
+	\begin{equation}
+		\lim_{T\to\infty}\beta^{T-t}\E_t\left[
+		\Lambda_{T}^j q_{K,T}^jK_{T+1}^j
+		\right]=0. \label{a12tvc}
+	\end{equation}
+	完全风险分担是给定的资产市场安排，而非由单一无风险债券推出。式 \eqref{a4} 表示这一安排下的配置关系；正文式 \eqref{eq:fund_clearing_tvc} 另规定共同基金的清算与终端限制。缩约数值系统不显式求解基金头寸 $\mathcal A_t^j$ 和状态价格密度 $\mathcal M_{0,T}^{C}$，家庭合并收入通过下文的残差账户保持相容。
+	
+	\subsection{最终品组装与相对价格（\texorpdfstring{$j=1,2$}{j=1,2}）}
+	最终品企业的零利润与成本最小化条件确定价格指数以及对两地中间品的需求。相对价格 $Q_{k,t}^j$ 将来源地 $k$ 的中间品价格换算为使用地 $j$ 的最终品单位：
+	\begin{align}
+		1 &=\left[ \omega_j(Q_{j,t}^j)^{1-\eta} +(1-\omega_j)(Q_{-j,t}^j)^{1-\eta} \right]^{\frac{1}{1-\eta}} \label{a13}\\
+		M_{j,t}^j &=\omega_j(Q_{j,t}^j)^{-\eta}D_t^j \label{a14}\\
+		M_{-j,t}^j &=(1-\omega_j)(Q_{-j,t}^j)^{-\eta}D_t^j \label{a15}
+	\end{align}
+	四个相对价格由三条独立动态关系与一条交叉价格恒等式约束，无需再加入第四条动态方程：
+	\begin{align}
+		\frac{Q_{1,t}^1}{Q_{1,t-1}^1}&=\frac{\Pi_{M,t}^1}{\Pi_t^1},\qquad
+		\frac{Q_{2,t}^1}{Q_{2,t-1}^1}=\frac{\Pi_{M,t}^2}{\Pi_t^1},\qquad
+		\frac{Q_{1,t}^2}{Q_{1,t-1}^2}=\frac{\Pi_{M,t}^1}{\Pi_t^2}, \label{a16}\\
+		Q_{1,t}^1Q_{2,t}^2&=Q_{1,t}^2Q_{2,t}^1. \label{a16q}
+	\end{align}
+	
+	\subsection{中间品生产、要素需求与价格设定（\texorpdfstring{$j=1,2$}{j=1,2}）}
+	中间品生产使用期初私人资本、公共资本和当期劳动；公共资本是企业给定的生产条件。要素报酬按本地最终品计价，中间品市场按地区测度加总出清。Calvo 定价由重置价格、两个前瞻辅助变量及价格离散度共同刻画：
+	\begin{align}
+		\log\frac{A_t^j}{\bar A^j} &=\rho_A\log\frac{A_{t-1}^j}{\bar A^j} \label{a17}\\
+		Y_{M,t}^j &=\frac{A_t^j(K_{G,t}^j)^{\gamma_G}(K_t^j)^{\alpha}(N_t^j)^{1-\alpha}}{V_t^j} \label{a18}\\
+		Y_t^j&=Q_{j,t}^jY_{M,t}^j \label{a18x}\\
+		W_t^j &=(1-\alpha)Q_{j,t}^j\MC_t^j\frac{Y_{M,t}^jV_t^j}{N_t^j} \label{a19}\\
+		R_{K,t}^j &=\alpha Q_{j,t}^j\MC_t^j\frac{Y_{M,t}^jV_t^j}{K_t^j} \label{a20}\\
+		s_jY_{M,t}^j &=s_1M_{j,t}^1+s_2M_{j,t}^2 \label{a21}\\
+		1 &=(1-\theta_p)(p_{*,t}^j)^{1-\epsilon_p}+\theta_p(\Pi_{M,t}^j)^{\epsilon_p-1} \label{a22}\\
+		\mathcal P_{1,t}^j &=\Lambda_{t}^jQ_{j,t}^j\MC_t^jY_{M,t}^j +\beta\theta_p\E_t\left[(\Pi_{M,t+1}^j)^{\epsilon_p}\mathcal P_{1,t+1}^j\right] \label{a23}\\
+		\mathcal P_{2,t}^j &=\Lambda_{t}^jQ_{j,t}^jY_{M,t}^j +\beta\theta_p\E_t\left[(\Pi_{M,t+1}^j)^{\epsilon_p-1}\mathcal P_{2,t+1}^j\right] \label{a24}\\
+		p_{*,t}^j &=\frac{\epsilon_p}{\epsilon_p-1}\frac{\mathcal P_{1,t}^j}{\mathcal P_{2,t}^j} \label{a25}\\
+		V_t^j &=(1-\theta_p)(p_{*,t}^j)^{-\epsilon_p}+\theta_p(\Pi_{M,t}^j)^{\epsilon_p}V_{t-1}^j \label{a26}
+	\end{align}
+	生产 GDP 由本地中间品产出及其相对价格确定，不与最终吸收混同。TFP 过程不含随机创新，从稳态出发保持在 $\bar A^j$；发展水平实验改变的是这一长期水平。
+	
+	\subsection{地方财政与公共投资（\texorpdfstring{$j=1,2$}{j=1,2}）}
+	
+	地方财政方程将债务与财政资源的定义、融资报价、预算约束、资本积累和政府最优条件相联系。基准局部决策设定沿用式 \eqref{eq:local_gdp_derivative} 的内生化范围：在生产方程 \eqref{a18} 中，给定 $Q_{j,t}^j$、$A_t^j$、$K_t^j$、$N_t^j$ 和 $V_t^j$，公共资本的直接边际贡献为
+	\begin{equation}
+		\left.
+		\frac{\partial Y_t^j}{\partial K_{G,t}^j}
+		\right|_{Q_{j,t}^j,A_t^j,K_t^j,N_t^j,V_t^j}
+		=\gamma_G\frac{Y_t^j}{K_{G,t}^j}
+		\label{a25m}
+	\end{equation}
+	这一导数同时进入发展绩效与税基收益，使用与生产技术相同的 $\gamma_G$。投资条件 \eqref{a34} 保留本期调整成本及当期投资进入下一期成本分母的前瞻项。债务条件 \eqref{a37} 则在给定同类地区总体报价下求导，不包含报价对单个政府债务的导数；报价中的总体债务率仅在同类对称均衡中等于代表性辖区债务率。
+	\begin{align}
+		d_t^{j,\mathrm{ann}}
+		&=\frac{B_t^j}{4Y_t^j}, \label{a26d}\\
+		\DS_t^j
+		&=\left(\frac{R_{B,t-1}^j}{\Pi_t^j}-1\right)\frac{B_{t-1}^j}{Y_t^j}, \label{a27}\\
+		\FS_t^j
+		&=(1-\theta_T)\tau_Y Y_t^j+Z_t^j
+		-\left(\frac{R_{B,t-1}^j}{\Pi_t^j}-1\right)B_{t-1}^j
+		-G_t^j, \label{a28}\\
+		\Phi_{I,t}^j
+		&=\frac{\chi_I}{2}
+		\left(\frac{I_{G,t}^j}{I_{G,t-1}^j}-1\right)^2 I_{G,t}^j, \label{a29}\\
+		\Phi_{B,t}^j
+		&=\frac{\varphi_B}{2}
+		\left(\frac{B_t^j}{\bar Y^j}-\bar b^j\right)^2\bar Y^j, \label{a30}\\
+		\frac{R_{B,t}^j}{R_t}
+		&=\exp\left[
+		\mu_B\left(
+		\frac{\widetilde b_t^j}{\bar b^j}-1
+		\right)
+		\right],\qquad
+		\widetilde b_t^j=\frac{B_t^j}{Y_t^j}\ \text{（对称均衡）}, \label{a31}\\
+		B_t^j
+		&=\frac{R_{B,t-1}^j}{\Pi_t^j}B_{t-1}^j
+		+G_t^j+I_{G,t}^j+\Phi_{I,t}^j+\Phi_{B,t}^j
+		-(1-\theta_T)\tau_Y Y_t^j-Z_t^j, \label{a32}\\
+		K_{G,t+1}^j
+		&=(1-\delta_G)K_{G,t}^j+I_{G,t}^j, \label{a33}\\
+		\Lambda_{G,t}^j
+		&\left[
+		1+\chi_I\left(\frac{I_{G,t}^j}{I_{G,t-1}^j}-1\right)
+		\frac{I_{G,t}^j}{I_{G,t-1}^j}
+		+\frac{\chi_I}{2}
+		\left(\frac{I_{G,t}^j}{I_{G,t-1}^j}-1\right)^2
+		\right] \notag\\
+		&=q_{G,t}^j
+		+\beta_G \E_t\left[
+		\Lambda_{G,t+1}^j\chi_I
+		\left(\frac{I_{G,t+1}^j}{I_{G,t}^j}-1\right)
+		\left(\frac{I_{G,t+1}^j}{I_{G,t}^j}\right)^2
+		\right], \label{a34}\\
+		q_{G,t}^j
+		&=\beta_G \E_t\left[
+		(1-\delta_G)q_{G,t+1}^j
+		+\frac{\gamma_G}{K_{G,t+1}^j}
+		\left(\omega_Y+\Lambda_{G,t+1}^j(1-\theta_T)\tau_Y Y_{t+1}^j\right)
+		\right], \label{a35}\\
+		\Lambda_{G,t}^j
+		&\left[
+		1-\varphi_B\left(\frac{B_t^j}{\bar Y^j}-\bar b^j\right)
+		\right] \notag\\
+		&=\beta_G \E_t\left[
+		\Lambda_{G,t+1}^j
+		\frac{R_{B,t}^j}{\Pi_{t+1}^j}
+		\right], \label{a37}\\
+		\log\left(\frac{G_t^j}{\bar G^j}\right)
+		&=\rho_G\log\left(\frac{G_{t-1}^j}{\bar G^j}\right), \label{a38}\\
+		\log\left(\frac{Z_t^j}{\bar Z^j}\right)
+		&=\rho_Z\log\left(\frac{Z_{t-1}^j}{\bar Z^j}\right)
+		+\phi_{Z,\DS}\left(\frac{\DS_t^j}{\overline{\DS}^j}-1\right) \notag\\
+		&\quad
+		+\phi_{Z,B}
+		\left(
+		\frac{B_{t-1}^j/Y_{t-1}^j}{\bar B^j/\bar Y^j}-1
+		\right). \label{a40z}
+	\end{align}
+	债务偿付使用上期合同利率与当期通胀，新债报价决定下一期偿付。上述内点条件还须与无限期问题的债务终端限制及公共资本横截条件共同使用：
+	\begin{align}
+		\lim_{T\to\infty}\E_t\left[
+		\left(\prod_{\ell=t}^{T-1}\frac{\Pi_{\ell+1}^j}{R_{B,\ell}^j}\right)B_T^j
+		\right]&=0, \\
+		\lim_{T\to\infty}\beta_G^{T-t}\E_t\left[q_{G,T}^jK_{G,T+1}^j\right]&=0,
+	\end{align}
+	求解取满足这些限制的局部有界路径。终端条件用于限制跨期解，不作为额外的逐期动态方程；硬性债务余额限额需要另行加入约束及互补条件，不能由这里的内点债务条件单独刻画。
+	
+	\subsection{全国聚合、货币政策与资源约束}
+	全国生产 GDP 与最终吸收先换算为共同价格单位，再按地区测度加总；通胀和货币规则采用稳态 GDP 权重 $\upsilon_j$。全国需求楔子与货币扰动分别演化，统一利率响应全国通胀和生产 GDP 相对确定性稳态的偏离：
+	\begin{align}
+		\upsilon_j&=\frac{s_j\bar Y^j}{\bar Y},\qquad
+		\bar Y=s_1\bar Y^1+s_2\bar Y^2, \label{a39w}\\
+		Y_t&=s_1Y_t^1\left(\frac{Q_{1,t}^2}{Q_{1,t}^1}\right)^{\upsilon_2}
+		+s_2Y_t^2\left(\frac{Q_{1,t}^1}{Q_{1,t}^2}\right)^{\upsilon_1}, \label{a39y}\\
+		D_t&=s_1D_t^1\left(\frac{Q_{1,t}^2}{Q_{1,t}^1}\right)^{\upsilon_2}
+		+s_2D_t^2\left(\frac{Q_{1,t}^1}{Q_{1,t}^2}\right)^{\upsilon_1}, \label{a39ya}\\
+		\Pi_t &=(\Pi_t^1)^{\upsilon_1}(\Pi_t^2)^{\upsilon_2}, \label{a39pi}\\
+		\MP_t &=\rho_{\MP}\MP_{t-1}+\varepsilon_{\MP,t}, \label{a39mp}\\
+		\zeta_t &=\rho_\zeta \zeta_{t-1} - \varepsilon_{\zeta,t}, \label{a41D}\\
+		\frac{R_t}{\bar R}
+		&=\left(\frac{R_{t-1}}{\bar R}\right)^{\rho_R}
+		\left[
+		\left(\frac{\Pi_t}{\bar\Pi}\right)^{\phi_\pi}
+		\left(\frac{Y_t}{\bar Y}\right)^{\phi_y}
+		\right]^{1-\rho_R}
+		\exp(\MP_t) \label{a41}
+	\end{align}
+	最终品在地区内用于私人消费与投资、政府消费、公共投资及财政调整成本，资源约束为
+	\begin{equation}
+		D_t^j=C_t^j+I_t^j+G_t^j+I_{G,t}^j+\Phi_{I,t}^j+\Phi_{B,t}^j \label{a42}
+	\end{equation}
+	跨地区交易已通过中间品需求和市场出清进入系统，不在最终品资源约束中再次加入净出口。求得配置与价格后，企业利润和中央净余额按以下账户关系核算：
+	\begin{align}
+		\Omega_{M,t}^j&=Q_{j,t}^jY_{M,t}^j-Q_{j,t}^j\MC_t^jY_{M,t}^jV_t^j,\\
+		\mathcal S_t^C&=
+		s_1\left[\theta_T\tau_Y Y_t^1-Z_t^1\right]
+		\left(\frac{Q_{1,t}^2}{Q_{1,t}^1}\right)^{\upsilon_2}
+		+s_2\left[\theta_T\tau_Y Y_t^2-Z_t^2\right]
+		\left(\frac{Q_{1,t}^1}{Q_{1,t}^2}\right)^{\upsilon_1}.
+	\end{align}
+	企业利润、共同基金收益、金融中介净利差与 $\mathcal S_t^C$ 经代表性家庭合并账户分配，不构成额外资源需求。一次性净税费 $\mathcal T_{t}^j$ 由该合并预算反推，吸收财政与金融净流量，而非独立税收规则。该闭合保证账户与已解配置相容，但未进一步指定中央债务、当期税收或未来扭曲性税收，因而不提供完整的中央融资成本评价。
+	
+	\paragraph{数值系统与扩展。}
+	基准模型包含 78 个内生变量和 78 条方程；Stackelberg 扩展包含 86 个变量和 86 条方程；债务限额 OccBin 系统包含 79 个变量和 79 条方程。 上述计数不将终端限制和事后残差账户另计为动态方程。变量与方程数相等不单独证明均衡存在或唯一性；静态残差、Jacobian 秩、特征值和 Blanchard--Kahn 条件均由模型独立验证。
+	
+	\section{计算方法与复现说明}
+	\label{app:computation}
+	
+	本附录说明数值求解、结果度量及复现材料的对应关系。计算区分两类对象：给定创新后的动态响应，以及随机需求过程下的理论无条件矩。二者的计算口径与解释范围不同，不以同一组脉冲响应统计量相互替代；均用于配置比较。
+	
+	\paragraph{求解方法。}
+	不含偶尔绑定约束的模型在相应确定性稳态附近采用 Dynare 一阶扰动方法求解，以 \nolinkurl{order=1, irf=40} 报告 40 期脉冲响应。严格债务余额限额采用 OccBin，以分段一阶近似求解一次性未预期冲击后的约束切换及配置路径，而非在无约束响应上事后截取债务余额。这里的 40 期是响应报告期限，不应据此将资本或债务强制设为期末回到稳态。本文记录的原始运行环境为 Windows、MATLAB R2026a 与 Dynare 7.0；给定创新的响应计算不依赖随机种子。
+	
+	\paragraph{响应口径与政策评价。}
+	规模与发展水平实验、政府决策内生化范围比较均以各情景自身稳态标准化，地区差定义为地区 2 与地区 1 标准化响应之差；其余未注明的 IRF 为水平偏离。跨情景比较须保持冲击规模与展示单位一致，并区分单位地区变量和共同价格口径的全国总量。资本响应的图示采用原始 Dynare 期末输出，按正文符号应读作 $K_{G,t+1}$：公共资本为期初存量，当期投资形成下一期资本，不能将图中第 1 个资本响应点解释为当期期初响应。
+	
+	需求冲击下的无条件协方差由一阶状态空间转移矩阵、需求创新协方差及离散 Lyapunov 方程求得。相应标准差与相关系数描述零均值需求过程下的随机波动，不由 40 期截断 IRF 估计，也不以某次创新的正负号为条件。这些无条件矩衡量全国通胀和产出波动、地区产出差波动及两地产出相关性；结合债务服务、公共投资和公共资本差异，构成本文的配置评价维度。
+	
+	\paragraph{中央转移支付的评价指标。}
+	表 \ref{tab:central_transfer_cost} 列示转移支付反事实的地方响应指标与中央支出口径，不报告中央融资成本的数值结果。峰值、谷值和累计量应在同一考察期限内计算。地方变量采用相对稳态的水平偏离，中央增量支出采用式 \eqref{eq:central_transfer_cost} 定义的共同价格口径，两者均不与稳态标准化响应直接混用。
+	
+	\begin{table}[H]
+		\centering
+		\caption{中央转移支付稳定器的地方端评价指标与成本边界}
+		\label{tab:central_transfer_cost}
+		\small
+		\begin{tabular}{p{0.42\textwidth}p{0.46\textwidth}}
+			\toprule
+			\textbf{指标} & \textbf{经济含义} \\
+			\midrule
+			$\max_t(Z_t^2-\bar Z^2)$ & 高债务地区转移支付增量的峰值，衡量地方端拨付强度 \\
+			$\sum_t\Delta Z_t^C$ & 共同价格口径的中央增量转移支出，是完整融资缺口的支出端构成项；本文不作数值和净福利报告 \\
+			$\min_t(I_{G,t}^2-\bar I_G^2)$、$\min_t(K_{G,t}^2-\bar K_G^2)$ & 公共投资及资本存量相对稳态偏离的谷值 \\
+			$\max_t|(Y_t^2-\bar Y^2)-(Y_t^1-\bar Y^1)|$ & 生产 GDP 响应的最大绝对地区差异 \\
+			\bottomrule
+		\end{tabular}
+	\end{table}
+	
+	这些指标分别刻画拨付强度、支出规模和地方调整幅度：地方拨付峰值不等于全国累计支出，投资与资本谷值的改善也不等于累计配置收益。最大绝对产出地区差衡量响应幅度差异，而非以相关系数度量的同步性。中央净融资需求还取决于分享税收的变化，须结合式 \eqref{eq:central_residual} 核算中央净余额。因此，仅凭地方端的缓冲效果和支出端指标，不能确定单位资金效率或政策净福利排序。
+	
+	\paragraph{复现文件与归档约定。}
+	模型源代码、运行脚本、绘图函数及数值输出统一保存在 \path{code/}。总入口 \path{code/run_rank_all.m} 运行各实验并验证模型；每个实验的运行脚本在求解和保存结果后，直接调用该实验唯一的正式绘图函数。矢量 PDF 和 600 dpi PNG 从同一 figure handle 导出，论文直接嵌入运行脚本生成的同一 PDF 文件。正文、公式、表格和数值均直接保存在本论文源文件中。
+	\begin{itemize}[leftmargin=2em,itemsep=0.1em]
+		\item 基准模型：\path{code/baseline/RANK_two_region_baseline.mod}；基准运行脚本：\path{code/baseline/run_baseline.m}。
+		\item 实验目录：\path{code/debt_intensity/}、\path{code/scale_development/}、\path{code/stackelberg_B/robustness/sensitivity_sanity/}、\path{code/demand_monetary/}、\path{code/policy_counterfactual/} 与 \path{code/extension_scenarios/}，对应运行脚本采用 \path{run_*.m} 命名。
+		\item 结果文件：\path{*_irf_series.csv} 记录响应序列，\path{*_summary.csv} 或 \path{*_key_diffs.csv} 记录汇总指标，\path{*_status.csv} 记录求解状态。需求冲击的波动与相关性指标对应 \path{negative_demand_policy_tradeoff_metrics.csv}；地区平衡规则的六项无条件矩对应 \path{demand_regional_balance_moments.csv}。
+		\item 各实验正式绘图函数位于对应实验目录；共享字体、坐标轴和导出设置位于 \path{code/utils/}。基准运行脚本直接生成论文引用的 \path{code/baseline/baseline_irf_comparison.pdf} 及同名 PNG。
+		\item 统一检验脚本：\path{code/validate_all_models.m}；方程数、稳态残差及 BK/OccBin 状态汇总：\path{code/model_validation_status.csv}。
+	\end{itemize}
+	
+	\paragraph{材料可得性与复核范围。}
+	绘图脚本、CSV 和 MAT 输出可用于核对图形口径、公共资本时点及实际约束状态。公共资本原始输出满足期末积累关系，图中保留原始序列，对应正文 $K_{G,t+1}$；因此图示资本峰谷季度不能直接视为同期期初资本峰谷。债务率面板为年化债务率 $B/(4Y)$ 的稳态水平偏离。OccBin 原始状态记录表明严格限额的实际绑定期由分段解确认，图中阴影据此绘制；无约束基准超过上限的时期不作为绑定记录。
+	
+	稳态残差、Jacobian 秩和 Blanchard--Kahn（BK）条件分别记录；逐项状态见 \path{code/model_validation_status.csv}。各实验 CSV 和 MAT 结果用于复核表格、响应路径、账户一致性及 OccBin 实际绑定状态。所有输出路径均从脚本自身位置构造，模型求解和正式图形生成不依赖 MATLAB 的当前工作目录。
+	
+\end{document}
